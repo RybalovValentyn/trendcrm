@@ -1,79 +1,99 @@
-import { Link } from 'react-router-dom';
-import s from './signIn.module.scss';
 import imgLogo from '../../images/logo-new.png';
 import imgLogoMobile from '../../images/logo-mobile.png';
-import { useFormik } from 'formik';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import {BpCheckbox} from './checkBox';
-
+import { Card, CardMedia, Input, FormControlLabel, Checkbox, Button, Tooltip } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import {containerSize, TypographyStyle, logoStyle, inputStyle,
+     formStyle, checkBoxStyle, iconHelpStyle, buttonStyle} from './styles';
+import {useRef, useEffect, useState} from 'react';
+import {textTooltip, BootstrapTooltip} from '../alerts/alerts';
 
 export function SignIn() {
-    const formik = useFormik({
-        initialValues: {
-          email: '',
-          password: '',
-        },
-      });
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+    const [checked, setChecked] = useState(false);
+    const btnRef = useRef();
+ 
+    useEffect(() => {
+     btnRef.current.disabled = true
+}, []);
 
+function onChecked(e) {
+    setChecked(e.target.checked)
+    if (login.trim(' ') !== '' && password.trim(' ') !== '') {        
+        btnRef.current.disabled = checked
+    }
 
-function onHoverQuest() {
-    console.log('sddddddddddd');
 }
-function offHoverQuest(params) {
-    console.log('1323');
-}
+const handlerSubmit = e => {
+    e.preventDefault();
+    if (login.trim(' ') !== '' && password.trim(' ') !== '' && checked) {
 
-    return(
+    }
 
-<section className={s.loginForm}>
-        <picture>
-        <source
-          srcSet={imgLogoMobile}
-          media="(max-width:768px)"
-          type="image/png"
-        ></source>
-        <source
-          srcSet={imgLogo}
-          media="(min-width:768px)"
-          type="image/png"
-        ></source>
-        <img src={imgLogo} alt="logoTrendCrm" className={s.imgLogo} />
-      </picture>
-      <p className={s.signText}>Вхід</p>
-      <form className={s.signForm}>
-        <label htmlFor="login" className={s.label}>
-          <input
-            className={s.input}
-            id="login"
-            name="login"
-            type="login"
-            // onChange={inputHandler}
-            // value={email}
+  };
+
+const inputHandler = ({ target: { name, value } }) => {
+    switch (name) {
+      case 'login':
+        return setLogin(value);
+      case 'password':
+        return setPassword(value);
+      default:
+        return;
+    }
+  };
+return(
+        <Card sx={containerSize} >
+        <CardMedia component="img"image= {imgLogo}  alt="logo"
+        sx={logoStyle}
+      />
+        <Typography component="h2" variant="h2" align="center" sx={TypographyStyle}>
+           Вхід
+        </Typography>
+        <Input value={login}
+            required fullWidth id="login"
+            onChange={inputHandler}
             placeholder="Логін"
-            required
-          />
-        </label>
+            name="login"
+            autoFocus 
+            autoComplete="current-login"
+            sx={inputStyle} 
+            disableUnderline={true}/>
 
-        <label htmlFor="password" className={s.label}>
-          <input
-            className={s.input}
-            id="password"
+        <Input value={password} 
+            onChange={inputHandler}
+            required fullWidth 
             name="password"
-            type="password"
-            // onChange={inputHandler}
-            // value={password}
-            placeholder="Пароль"
-            required
-          />
-        </label>
-<div className={s.checkBox}>
-<BpCheckbox onTouchStart={onHoverQuest}/>
-<p>Дозволити використовувати Cookie</p>
-<HelpOutlineIcon onMouseEnter={onHoverQuest} onMouseLeave={offHoverQuest} sx={{ fontSize: 17, fontWeight: 900 }}/>
-</div>
-<button disabled='true' className={s.formButton} type='submit'>Увійти</button>
-      </form>   
-</section>
+            placeholder="Пароль" 
+            type="password" 
+            id="password" 
+            autoComplete="current-password"
+            sx={inputStyle} 
+            disableUnderline={true} />
+         <FormControlLabel sx={formStyle} 
+            control={<Checkbox 
+                onInput ={onChecked} 
+                sx={checkBoxStyle} 
+                required value="cookie" 
+                color="primary" />}
+            label={<Typography 
+                    component="p" 
+                    variant="h5" 
+                    align="center" 
+                    sx={{fontSize: '13px'}}>
+                Дозволити використовувати Cookie
+                <BootstrapTooltip title={textTooltip}>
+                <HelpOutlineIcon 
+                    // onMouseEnter={onHoverQuest} 
+                    // onMouseLeave={offHoverQuest} 
+                sx={iconHelpStyle}/>
+                </BootstrapTooltip>
+                </Typography>
+             }
+            />
+        <Button onClick={handlerSubmit} ref={btnRef} sx={buttonStyle} variant="contained" fullWidth={true}>Увійти</Button>
+      </Card>
     )
 }
 
