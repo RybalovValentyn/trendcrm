@@ -1,6 +1,7 @@
 import {colorsRef} from '../../consts/colorConstants.js';
 import {sizeConsts} from '../../consts/sizeConst.js';
-
+import { styled } from '@mui/material/styles';
+import { red, green, blue } from '@mui/material/colors';
 
 export const containerSize = {
     maxWidth: sizeConsts.containerFormWdth,
@@ -12,6 +13,10 @@ export const containerSize = {
     marginLeft: 'auto',
     marginRight: 'auto',
     alignItems: 'center',
+    '@media (max-width:600px)': {
+        padding: '5px 30px',
+        maxWidth: sizeConsts.containerFormMobiWidth,
+      },
 }
 export const TypographyStyle = {
     color: colorsRef.typografyColor,
@@ -28,6 +33,10 @@ export const logoStyle ={
     width: '250px',
     marginLeft: 'auto',
     marginRight: 'auto',
+    '@media (max-width:600px)': {
+        height: '30px',
+        width: '180px',
+      },
 }
 
 export const inputStyle = {
@@ -56,13 +65,28 @@ export const checkBoxStyle ={
     width: 13,
     height: 13,
     marginRight: '3px',
+    '@media (max-width:600px)': {
+        '& .MuiSvgIcon-root': { fontSize: 20 },
+      },
+}
+export const  typographyStyle = {
+    fontSize: 13,
+    '@media (max-width:600px)': {
+        fontSize: '10px',
+        marginBottom: '2px'
+      },
 }
 export const iconHelpStyle= {
     fontSize: 19,
     fontWeight: 900,
     marginLeft: '3px',
     marginBottom: '-4px' ,
-    cursor: 'progress'
+
+    '@media (max-width:600px)': {
+        fontSize: '15px',
+        marginBottom: '-4px',
+
+      },
 }
 export const buttonStyle ={
     marginTop: '20px',

@@ -1,10 +1,9 @@
 import imgLogo from '../../images/logo-new.png';
-import imgLogoMobile from '../../images/logo-mobile.png';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { Card, CardMedia, Input, FormControlLabel, Checkbox, Button, Tooltip } from '@mui/material';
+import { Card, CardMedia, Input, FormControlLabel, Checkbox, Button} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import {containerSize, TypographyStyle, logoStyle, inputStyle,
-     formStyle, checkBoxStyle, iconHelpStyle, buttonStyle} from './styles';
+     formStyle, checkBoxStyle, iconHelpStyle, buttonStyle, typographyStyle} from './styles';
 import {useRef, useEffect, useState} from 'react';
 import {textTooltip, BootstrapTooltip} from '../alerts/alerts';
 
@@ -12,16 +11,18 @@ export function SignIn() {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [checked, setChecked] = useState(false);
+    const [disabledBtn, setDisabledBtn] = useState(true);
+    const [open, setOpen] = useState(false);
     const btnRef = useRef();
  
     useEffect(() => {
-     btnRef.current.disabled = true
-}, []);
+     btnRef.current.disabled = disabledBtn
+}, [disabledBtn]);
 
 function onChecked(e) {
     setChecked(e.target.checked)
-    if (login.trim(' ') !== '' && password.trim(' ') !== '') {        
-        btnRef.current.disabled = checked
+    if (login.trim(' ').length > 1 && password.trim(' ').length > 1) {        
+        setDisabledBtn(checked)
     }
 
 }
@@ -30,10 +31,14 @@ const handlerSubmit = e => {
     if (login.trim(' ') !== '' && password.trim(' ') !== '' && checked) {
 
     }
-
+    setLogin('');
+    setPassword('');
   };
 
 const inputHandler = ({ target: { name, value } }) => {
+    if (login.trim(' ').length >1 && password.trim(' ').length >1 && checked) {
+        setDisabledBtn(false)
+    } else setDisabledBtn(true)
     switch (name) {
       case 'login':
         return setLogin(value);
@@ -42,6 +47,12 @@ const inputHandler = ({ target: { name, value } }) => {
       default:
         return;
     }
+  };
+  const handleTooltipClose = () => {
+    setOpen(false);
+  };
+  const handleTooltipOpen = () => {
+        setOpen(true);
   };
 return(
         <Card sx={containerSize} >
@@ -81,14 +92,18 @@ return(
                     component="p" 
                     variant="h5" 
                     align="center" 
-                    sx={{fontSize: '13px'}}>
+                    sx={typographyStyle}>
                 Дозволити використовувати Cookie
-                <BootstrapTooltip title={textTooltip}>
+                <BootstrapTooltip
+                 onClose={handleTooltipClose}
+                 open={open}
+                 onMouseEnter ={handleTooltipOpen}
+                onTouchMove ={handleTooltipOpen} 
+                onClick = {handleTooltipOpen}
+                title={textTooltip}>
                 <HelpOutlineIcon 
-                    // onMouseEnter={onHoverQuest} 
-                    // onMouseLeave={offHoverQuest} 
                 sx={iconHelpStyle}/>
-                </BootstrapTooltip>
+                </BootstrapTooltip >
                 </Typography>
              }
             />
