@@ -25,14 +25,3 @@ export const textTooltip =  `Наш сайт використовує файли
     },
   }));
 
-  export default function TriggersTooltips() {
-    const [open, setOpen] = useState(false);
-  
-    const handleTooltipClose = () => {
-      console.log('sdssssssssss');
-      setOpen(false);
-    };
-  
-    const handleTooltipOpen = () => {
-      setOpen(true);
-    };}
