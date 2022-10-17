@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {Children, useState} from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -15,11 +15,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import {mainNavBarItem} from './navBarItems';
+import {useNavigate, useParams, Outlet} from 'react-router-dom'
 
-const drawerWidth = 240;
+
+const drawerWidth = 200;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -89,6 +89,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -102,7 +103,7 @@ export function MiniDrawer() {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
+        <Toolbar >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -116,7 +117,7 @@ export function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            {/* Mini variant drawer */}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -129,7 +130,7 @@ export function MiniDrawer() {
         </DrawerHeader>
          <List>
           {mainNavBarItem.map((text, index) => (
-            <ListItem key={text.id} disablePadding sx={{ display: 'block' }}>
+            <ListItem onClick={() => navigate(text.route)} key={text.id} disablePadding sx={{ display: 'block' }}>
               <ListItemButton >
                 <ListItemIcon  >
                   {text.item}
@@ -141,7 +142,9 @@ export function MiniDrawer() {
         </List>
 
       </Drawer>
-
+      <Box component="main" sx={{ flexGrow: 1, p: 3, paddingTop: '70px' }}>
+      <Outlet />
+      </Box>
     </Box>
-  );
+  )
 }

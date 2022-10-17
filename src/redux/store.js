@@ -23,7 +23,8 @@ import {
 
   export const store = configureStore({
     reducer: {
-      auth: authPersistReducer,
+      // auth: authPersistReducer,
+      auth: authReduser
     },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({

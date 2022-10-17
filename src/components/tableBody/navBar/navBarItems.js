@@ -13,64 +13,64 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 export const mainNavBarItem = [
     {
-        id: 0,
+        id: 'homeBar',
         item: <HomeOutlinedIcon />,
         label: 'Головна',
-        route: 'route'
+        route: 'homebar'
     },    {
-        id: 1,
+        id: 'users',
         item: <PeopleAltOutlinedIcon/>,
         label: 'Користувачі',
-        route: 'route'
+        route: 'users'
     },    {
-        id: 2,
+        id: 'order',
         item: <BookmarksOutlinedIcon/>,
         label: 'Замовлення',
-        route: 'route'
+        route: 'order'
     },    {
-        id: 3,
+        id: 'products',
         item:  <UnarchiveOutlinedIcon/>,
-        label: 'Замовлення',
-        route: 'route'
+        label: 'Товари',
+        route: 'products'
     },    {
-        id: 4,
+        id: 'delivery',
         item: <CalendarMonthOutlinedIcon/>,
         label: 'Доставка',
-        route: 'route'
+        route: 'delivery'
     },    {
-        id: 5,
+        id: 'calls',
         item: <PhoneEnabledOutlinedIcon/>,
         label: 'Дзвінки',
-        route: 'route'
+        route: 'calls'
     },    {
-        id: 6,
+        id: 'message',
         item: <MarkEmailUnreadOutlinedIcon/>,
         label: 'Повідомлення',
-        route: 'route'
+        route: 'message'
     },    {
-        id: 7,
+        id: 'analytics',
         item: <BarChartOutlinedIcon/>,
         label: 'Аналітика',
-        route: 'route'
+        route: 'analytics'
     },    {
-        id: 8,
+        id: 'settings',
         item: <SettingsSuggestOutlinedIcon/>,
         label: 'Налаштування',
-        route: 'route'
+        route: 'settings'
     },    {
-        id: 9,
+        id: 'faq',
         item: <InfoOutlinedIcon/>,
         label: 'FAQ',
-        route: 'route'
+        route: 'faq'
     },    {
-        id: 10,
+        id: 'purchasing',
         item: <ShoppingCartOutlinedIcon/>,
         label: 'Закупівлі',
-        route: 'route'
+        route: 'purchasing'
     },    {
-        id: 11,
+        id: 'help',
         item: <PhoneInTalkOutlinedIcon/>,
         label: 'Допомога',
-        route: 'route'
+        route: 'help'
     },
 ]

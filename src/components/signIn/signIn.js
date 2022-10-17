@@ -6,6 +6,8 @@ import {containerSize, TypographyStyle, logoStyle, inputStyle,
      formStyle, checkBoxStyle, iconHelpStyle, buttonStyle, typographyStyle} from './styles';
 import {useRef, useEffect, useState} from 'react';
 import {textTooltip, BootstrapTooltip} from '../alerts/alerts';
+import {currentThunk} from '../../redux/asyncThunc';
+import { useDispatch } from 'react-redux';
 
 export function SignIn() {
     const [login, setLogin] = useState('');
@@ -14,6 +16,8 @@ export function SignIn() {
     const [disabledBtn, setDisabledBtn] = useState(true);
     const [open, setOpen] = useState(false);
     const btnRef = useRef();
+    const dispatch = useDispatch();
+
  
     useEffect(() => {
      btnRef.current.disabled = disabledBtn
@@ -28,11 +32,11 @@ function onChecked(e) {
 }
 const handlerSubmit = e => {
     e.preventDefault();
-    if (login.trim(' ') !== '' && password.trim(' ') !== '' && checked) {
-
-    }
+    // const user = { email, password };
+    dispatch(currentThunk());
     setLogin('');
     setPassword('');
+    setDisabledBtn(true);
   };
 
 const inputHandler = ({ target: { name, value } }) => {
@@ -107,7 +111,7 @@ return(
                 </Typography>
              }
             />
-        <Button onClick={handlerSubmit} ref={btnRef} sx={buttonStyle} variant="contained" fullWidth={true}>Увійти</Button>
+        <Button  onClick={handlerSubmit} ref={btnRef} sx={buttonStyle} variant="contained" fullWidth={true}>Увійти</Button>
       </Card>
     )
 }
