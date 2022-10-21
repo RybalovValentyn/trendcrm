@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/trendcrm/static/css/main.a165d197.css",
-    "main.js": "/trendcrm/static/js/main.5b3b85ca.js",
+    "main.css": "/trendcrm/static/css/main.88511179.css",
+    "main.js": "/trendcrm/static/js/main.838821e8.js",
     "static/media/logo-hp.svg": "/trendcrm/static/media/logo-hp.f4ec94c68c8efd87e2510a0b97dbbd8d.svg",
     "static/media/hero-image-1.webp": "/trendcrm/static/media/hero-image-1.b4177ecd0fde32c4b12f.webp",
     "index.html": "/trendcrm/index.html",
-    "main.a165d197.css.map": "/trendcrm/static/css/main.a165d197.css.map",
-    "main.5b3b85ca.js.map": "/trendcrm/static/js/main.5b3b85ca.js.map"
+    "main.88511179.css.map": "/trendcrm/static/css/main.88511179.css.map",
+    "main.838821e8.js.map": "/trendcrm/static/js/main.838821e8.js.map"
   },
   "entrypoints": [
-    "static/css/main.a165d197.css",
-    "static/js/main.5b3b85ca.js"
+    "static/css/main.88511179.css",
+    "static/js/main.838821e8.js"
   ]
 }
