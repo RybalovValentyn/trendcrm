@@ -6,27 +6,27 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import {dataParse} from './dataParse';
 import TableRow from '@mui/material/TableRow';
-import {Paper,TableSortLabel, Stack, Tab, Checkbox, 
-    TablePagination, FormControlLabel, Switch} from '@mui/material';
-// import {TableIn} from './tableInBody';
-// import {mainTableHead} from './tableInBody';
+import {Paper,TableSortLabel, Stack, Tab, Checkbox,Divider, 
+    TablePagination, FormControlLabel, Switch, Hidden} from '@mui/material';
 import {rows} from './tRow';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import { visuallyHidden } from '@mui/utils';
 import {HeaderTable} from './tHead';
 import {tableParse} from './tableParse';
 import {translater} from './translate';
+import {ScrollTabsButton} from './tableInBody';
+import {SearchInput} from './tableInBody';
+import { colorsRef } from '../../../../consts/colorConstants';
+import { styled } from '@mui/material/styles';
+
 
 const tableHead = dataParse.orders_status_count
 const tableHeaderWidth = 100;
 const rowWidth = 150;
 const rowBgColor = "#afffff";
 let TableHeadFromResponse = [];
-
-
-
-
 function handleClickOnChip(e) {
+
   
 
 }
@@ -61,8 +61,10 @@ function descendingComparator(a, b, orderBy) {
   }
 
 
-function EnhancedTableHead(props) {
+function EnhancedTableHead({props}) {
   const [tHead, setTHead] = useState([]);
+  const [elWidth, setElWidth] = useState(100)
+
   useEffect(() => {
     refreshTHead( [...tableParse.data] , translater )  
  
@@ -79,6 +81,7 @@ keysOfData.reduce((acc, str,ind) => {
     if (Object.keys(translater).includes(str) && Object.values(translater)[ind] !== null
     && Number.isNaN(Number(Object.values(translater)[ind]))
     ){
+      // console.log(str);
       return arrayOfdata.push({id: str, label: Object.values(translater)[ind],
         numeric: false, disablePadding: true })
        }
@@ -92,35 +95,67 @@ keysOfData.reduce((acc, str,ind) => {
     onRequestSort(event, property);
   };
 
-  return (
-    
-    <TableHead >
-      <TableRow  > 
-        {tableHead.map((tableHead) => (       
-          <TableCell colSpan={1} key={tableHead.id} align= 'center' padding= 'none'           
-            sx={{ minWidth: 'min-content', whiteSpace: 'nowrap',paddingBottom: '2px', outline: 0 }}>
-        <Tab    onClick={handleClickOnChip}        
-            label={tableHead.name }  key={tableHead.name} align= 'center' padding= 'none'           
-           sx={{ minWidth: 'min-content', whiteSpace: 'nowrap', paddingLeft: 3, paddingRight: 3,}}/>    
-          </TableCell>
-        ))}
-      </TableRow>
-      <TableRow colSpan={1}  >
-        {tableHead.map((tableHead) => (
-          <TableCell key={tableHead.name} align="center"           
-            sx={{ minWidth: 'min-content', backgroundColor: tableHead.style, maxHeight:'3px', padding: '2px'}}>
-          </TableCell>
-        ))}
-      </TableRow>
-      <TableRow>
-        
-        {tHead.map((HeaderTable) => (
-          <TableCell colSpan={1}
+const [width, setWidth] = useState(120);
+const [objWidts, setObjWidts] = useState([]);
+
+
+const onDeltaWidth =(e)=>{
+    let id = e.target.id;
+    let width = e.target.clientWidth;
+if (objWidts.find(el=> el.id === e.target.id)) {
+const result =  objWidts.map((str, ind) =>{
+  // console.log(str.id);
+    if (str.id === e.target.id) {
+      // console.log(str);
+  
+  return {id: e.target.id, width: e.target.clientWidth}
+    } else return str
+  })
+  // console.log(result);
+ return setObjWidts([...result])
+} else{
+  // console.log(objWidts, 'objWidts');
+  return setObjWidts([...objWidts, {id: e.target.id, width: e.target.clientWidth}])
+}
+}
+
+
+
+ const dividerStyle = {
+  padding: '1px',
+   height: '60%', 
+  position: 'absolute',
+  top: '20%',
+  right: 0,
+   backgroundColor: colorsRef.tableRowSecondColor,
+  border: 'none',
+  borderRadius: '10px',
+    '&:hover':{cursor: "ew-resize"}
+  };
+  
+
+const tHeadStyle = {
+  minWidth: '100px',
+   whiteSpace: 'nowrap',
+   padding: '0px',
+  borderRadius: '15px'
+   
+ }
+
+  return (    
+    <TableHead >      
+      <TableRow>      
+        {tHead.map((HeaderTable) => (          
+          <TableCell  onMouseUp={onDeltaWidth} colSpan={1}
             key={HeaderTable.id}
-            sx={{ minWidth: 'min-content', whiteSpace: 'nowrap',paddingLeft: 3, paddingRight: 3}}
-            >
-              
-            <TableSortLabel
+            id={HeaderTable.id}
+            sx={tHeadStyle} 
+            align= "center"        
+            >  
+            <div  id={HeaderTable.id} style={{resize: 'horizontal', overflow: 'hidden',
+             width: '100%', padding: '3px 10px', alignItems: 'center', minWidth: width
+          }} key={HeaderTable.id}>
+            <TableSortLabel            
               active={orderBy === HeaderTable.id}
               direction={orderBy === HeaderTable.id ? order : 'asc'}
               onClick={createSortHandler(HeaderTable.id)}
@@ -131,12 +166,30 @@ keysOfData.reduce((acc, str,ind) => {
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </Box>
               ) : null}
+             
             </TableSortLabel>
-          </TableCell>
-        ))}
+            <Divider  id={HeaderTable.id} sx={dividerStyle} orientation="vertical" flexItem />
+            </div>
+          </TableCell>  ))}
       </TableRow>
 
-    </TableHead>
+      <TableRow  >
+          {tHead.map((call) =>(
+          <TableCell
+          key={call.id}
+          align='center'
+          sx={{ whiteSpace: 'nowrap', backgroundColor: tableHead.style, padding: '5px 0px'}}
+          >
+             <SearchInput props={'wwwwwww'} options={props}/>
+             
+          </TableCell>
+          ))}
+      </TableRow>
+      <TableRow sx= {{padding: '10px 0px', width: '100%'}}>
+<TableCell sx={{width: '100%', padding: '10px'}}></TableCell>
+      </TableRow>
+      </TableHead>
+    
   );
 }
 
@@ -147,7 +200,7 @@ export  function Order() {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(15);
     const [rowsTable, useRowsTable] = useState([])
 
     useEffect(() => {
@@ -157,20 +210,19 @@ export  function Order() {
 
   let arrayRows = []
  const GetRenderRows =(TableHeadFromResponse, tableParse) =>{ 
-  console.log(TableHeadFromResponse);     
+  // console.log(TableHeadFromResponse);     
      const arrayRow = tableParse.map((str, ind) =>{
       let result = []
        const rowSpan = TableHeadFromResponse.reduce((acc,val, ind) =>{
-        // console.log(val);
-           return result.push(
-            str[val.id]
+           return result.push({id:val.id, value: str[val.id]}
+              
                )         
 
         },[])
         arrayRows.push(result)
         return result.push(rowSpan)        
       })    
-      // console.log(arrayRows.length);
+      // console.log(arrayRows);
       useRowsTable([...rowsTable,...arrayRows ])
     }
    
@@ -228,74 +280,63 @@ export  function Order() {
     const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rowsTable.length) : 0;
 
+
+
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+      backgroundColor: colorsRef.tableRowBgFirstColor,
+      '&:nth-of-type(odd)': {
+        backgroundColor: colorsRef.tableRowSecondColor,
+        
+      }
+
+    }));
+
 return (
-    <Box sx={{ width: '100%', }}>        
+    <Box sx={{ width: '96vw', backgroundColor: '#f4f4f4'}}>        
       <Paper  sx={{ width: '100%', mb: 2 ,}}>
-         <TableContainer >
+      <ScrollTabsButton  item={tableHead } />
+         <TableContainer  >
           <Table stickyHeader
             sx={{ minWidth: 750}}
             aria-labelledby="tableTitle"
           >
-            <EnhancedTableHead 
+            <EnhancedTableHead  props ={rowsTable}
                           numSelected={selected.length}
                           order={order}
                           orderBy={orderBy}
                           onSelectAllClick={handleSelectAllClick}
                           onRequestSort={handleRequestSort}
                           rowCount={rowsTable.length}/>
-            <TableBody>
+            <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}}>
               {stableSort(rowsTable, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  console.log(row);
-                  const isItemSelected = isSelected(row.index);
+                .map((rows, index) => {
+                  // console.log(rows);
+                  const isItemSelected = isSelected(rows.index);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-
-                    <TableRow
+                    <StyledTableRow 
                     hover
-                    onClick={(event) => handleClick(event, row.name)}
+                    onClick={(event) => handleClick(event, rows.name)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={index}
+                    key={`${rows.id}+${index}`}
                     selected={isItemSelected}
                   >
-
-{row.map((row,ind) => (
-          <TableCell key={ind} align="left"           
-
-            >
-              {row}
-          </TableCell>
-))}
-                      {/* <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="center">{row.calories}</TableCell>
-                      <TableCell align="center">{row.fat}</TableCell>
-                      <TableCell align="center">{row.carbs}</TableCell>
-                      <TableCell align="center">{row.protein}</TableCell> */}
-                      
-                    </TableRow>
-                  );
+            {rows.map((row,ind) => (
+              
+            <TableCell 
+                       sx={{ minWidth: '100px', whiteSpace: 'nowrap', padding: '10px 10px', overflow: 'hidden' ,borderRight: '1px solid #fff'
+                      }}
+            key={row.id+ind+rows.name} align="center" >{row.value} </TableCell>
+            
+            ))} 
+             </StyledTableRow> );
+             
                 })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
+             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination

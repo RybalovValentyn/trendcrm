@@ -36,7 +36,7 @@ export const translater = {
     "datetime_sent":"Дата відправлення",
     "DT_RowId":"117680",
     "delivery_type_id":"Пошта",
-    "client":"ПІБ клієнта",
+    "client": "ПІБ клієнта",
     "client_phone":"Телефон",
     "banned_phone":"0",
     "ig_username":"",

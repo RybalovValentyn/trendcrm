@@ -8,6 +8,7 @@
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.9",
     "@mui/styled-engine-sc": "^5.10.6",
+    "@react-hook/resize-observer": "^1.2.6",
     "@reduxjs/toolkit": "^1.8.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -63,5 +64,8 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "use-resize-observer": "^9.0.2"
+  }
 }
