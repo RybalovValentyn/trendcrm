@@ -1,20 +1,14 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  registerThunk,
-  loginThunk,
-  currentThunk,
-  logOutThunk,
-  userGetTransaction,
-  userPutBallance,
-} from './asyncThunc';
+import { currentThunk, loginThunk} from './asyncThunc';
 
-axios.defaults.baseURL = 'https://kapusta-35.herokuapp.com';
+// axios.defaults.baseURL = 'https://react.trendcrm.biz/';
 
+axios.defaults.baseURL = 'http://localhost:5000/';
 
-const token = Object.freeze({
+const hashKey = Object.freeze({
   set(token) {
-    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+    axios.defaults.headers.common.Authorization = `Bearer ${hashKey}`;
   },
   unset() {
     axios.defaults.headers.common.Authorization = '';
@@ -22,60 +16,77 @@ const token = Object.freeze({
 });
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: 'user',
   initialState: {
-    name: '',
-    email: '',
-    token: null,
-    error: null,
+   id : '',
+   hashKey: '',
+   login: '',
+   role: null,
+   name: null,
+   sip_login: null,
     isLoading: false,
     isAuth: false,
-    id: '',
     balance: '0',
     rebalancing: false,
+    menu_list_access: [],
+    order_statuses_access: [],
+    payment_received: null,
+    order_return: null,
+    create_ttn: null,
+    admin: null,
+    marketer: null,
+    manager: null,
+    courier: null,
+    show_phone_number: null,
+    port: null,
+    vers: null,
+    lang: null,
+    tour: null,
+    group: null
   },
+
   reducers: {
     initUser: (state, action) => {
-      token.set(action.payload.user.token);
+      hashKey.set(action.payload.user.hashKey);
       return { ...state, ...action.payload.user, isAuth: true };
     },
   },
   extraReducers: {
-    [registerThunk.pending](state, action) {
-      return {
-        isLoading: true,
-      };
-    },
-    [registerThunk.fulfilled](state, action) {
-      return {
-        ...state,
-        isLoading: false,
-        name: action.payload.name,
-        email: action.payload.email,
-        id: action.payload.id,
-        isAuth: false,
-      };
-    },
-    [registerThunk.rejected](state, action) {
-      return {
-        ...state,
-        isLoading: false,
-        error: action.payload,
-      };
-    },
+
     [loginThunk.pending](state, action) {
       return {
+        ...state,
         isLoading: true,
+        isAuth: false,
       };
     },
     [loginThunk.fulfilled](state, action) {
-      token.set(action.payload.token);
+
       return {
         ...state,
-        isLoading: false,
-        token: action.payload.token,
-        id: action.payload.id,
-        isAuth: false,
+        id : action.payload.id,
+        hashKey: action.payload.hashKey,
+        login: action.payload.login,
+        role: action.payload.role,
+        name: action.payload.name,
+        sip_login: action.payload.sip_login,
+         isLoading: false,
+         isAuth: true,
+         menu_list_access: action.payload.menu_list_access,
+         order_statuses_access: action.payload.order_statuses_access,
+         payment_received: action.payload.payment_received,
+         order_return: action.payload.order_return,
+         create_ttn: action.payload.create_ttn,
+         admin: action.payload.admin,
+         marketer: action.payload.marketer,
+         manager: action.payload.manager,
+         courier: action.payload.courier,
+         show_phone_number: action.payload.show_phone_number,
+         port: action.payload.port,
+         vers: action.payload.vers,
+         lang: action.payload.lang,
+         tour: action.payload.is_tour,
+         group: action.payload.group,
       };
     },
     [loginThunk.rejected](state, action) {
@@ -83,59 +94,10 @@ const authSlice = createSlice({
         ...state,
         isLoading: false,
         error: action.payload,
-      };
-    },
-    [currentThunk.pending](state, action) {
-      return {
-        ...state,
-        isLoading: true,
         isAuth: false,
       };
     },
-    [currentThunk.fulfilled](state, action) {
-      return {
-        ...state,
-        isLoading: false,
-        name: action.payload.name,
-        email: action.payload.email,
-        isAuth: true,
-        balance: action.payload.balance,
-        rebalancing: action.payload.rebalancing,
-      };
-    },
-    [currentThunk.rejected](state, action) {
-      return {
-        ...state,
-        isLoading: false,
-        error: action.payload,
-        isAuth: false,
-      };
-    },
-    [logOutThunk.pending](state, action) {
-      return {
-        ...state,
-        isLoading: true,
-        isAuth: false,
-      };
-    },
-    [logOutThunk.fulfilled](state, action) {
-      return {
-        ...state,
-        isLoading: false,
-        name: '',
-        email: '',
-        token: '',
-        isAuth: false,
-      };
-    },
-    [logOutThunk.rejected](state, action) {
-      return {
-        ...state,
-        isLoading: false,
-        //  error: action.payload,
-        isAuth: false,
-      };
-    },
+
  
   },
 });

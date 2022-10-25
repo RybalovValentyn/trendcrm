@@ -6,7 +6,7 @@ import {containerSize, TypographyStyle, logoStyle, inputStyle,
      formStyle, checkBoxStyle, iconHelpStyle, buttonStyle, typographyStyle} from './styles';
 import {useRef, useEffect, useState} from 'react';
 import {textTooltip, BootstrapTooltip} from '../alerts/alerts';
-import {currentThunk} from '../../redux/asyncThunc';
+import {loginThunk} from '../../redux/asyncThunc';
 import { useDispatch } from 'react-redux';
 
 export function SignIn() {
@@ -32,8 +32,7 @@ function onChecked(e) {
 }
 const handlerSubmit = e => {
     e.preventDefault();
-    // const user = { email, password };
-    dispatch(currentThunk());
+    dispatch(loginThunk({login: login, password: password }));
     setLogin('');
     setPassword('');
     setDisabledBtn(true);

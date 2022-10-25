@@ -1,4 +1,4 @@
-import {Children, useState} from 'react';
+import {Children, useState, useEffect} from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -16,10 +16,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {mainNavBarItem} from './navBarItems';
-import {useNavigate, useParams, Outlet} from 'react-router-dom'
-
+import {useNavigate, useParams, Outlet} from 'react-router-dom';
+import {colorsRef} from '../../../consts/colorConstants';
 
 const drawerWidth = 200;
+
+
+
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -141,7 +144,10 @@ export function MiniDrawer() {
         </List>
 
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, paddingTop: '70px' }}>
+      <Box component="main" sx={{ flexGrow: 1, paddingTop: '63px',
+
+       height: '100vh', backgroundColor: colorsRef.tableHeaderBgColor,
+        maxidth: '100%', overflowX: 'hidden' }}>
       <Outlet/>
       </Box>
     </Box>

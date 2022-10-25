@@ -14,9 +14,9 @@ import {
   import authReduser from './authReduser.js';
 
   const authPersistConfig = {
-    key: 'authToken',
+    key: 'hash_key',
     storage,
-    whiteList: ['token'],
+    whiteList: ['hash_key'],
   };
   
   const authPersistReducer = persistReducer(authPersistConfig, authReduser);
@@ -34,4 +34,4 @@ import {
       }),
   });
   
-//   export const persistor = persistStore(store);
+  export const persistor = persistStore(store);

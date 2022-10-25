@@ -7,6 +7,7 @@ export const colorsRef = {
     enabledBtnColor: '#f2bf26',
     alertBgColor: '#3b3b3b',
     tableHeaderBgColor: '#EEEEEE',
+    boxTableColor: '#f4f4f4',
 tabHeaderTextColor: '#272727',
 tabBgColor: '#f1f3f4',
 tabsBgColor: '#ffffff',

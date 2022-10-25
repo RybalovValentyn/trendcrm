@@ -8,7 +8,6 @@ import {dataParse} from './dataParse';
 import TableRow from '@mui/material/TableRow';
 import {Paper,TableSortLabel, Stack, Tab, Checkbox,Divider, 
     TablePagination, FormControlLabel, Switch, Hidden} from '@mui/material';
-import {rows} from './tRow';
 import {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import { visuallyHidden } from '@mui/utils';
 import {HeaderTable} from './tHead';
@@ -18,13 +17,19 @@ import {ScrollTabsButton} from './tableInBody';
 import {SearchInput} from './tableInBody';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
-
-
+import {currentThunk} from '../../../../redux/asyncThunc';
+import { useDispatch } from 'react-redux';
+import {HeaderContainer} from './header';
 const tableHead = dataParse.orders_status_count
 const tableHeaderWidth = 100;
 const rowWidth = 150;
 const rowBgColor = "#afffff";
 let TableHeadFromResponse = [];
+
+
+
+
+
 function handleClickOnChip(e) {
 
   
@@ -138,13 +143,15 @@ const tHeadStyle = {
   minWidth: '100px',
    whiteSpace: 'nowrap',
    padding: '0px',
-  borderRadius: '15px'
+  borderRadius: '15px',
+   maxWidth: '400px',
    
  }
 
   return (    
-    <TableHead >      
+    <TableHead sx={{backgroundColor: colorsRef.formBgColor,  position: 'fixed', overflow: 'clip'}} >      
       <TableRow>      
+
         {tHead.map((HeaderTable) => (          
           <TableCell  onMouseUp={onDeltaWidth} colSpan={1}
             key={HeaderTable.id}
@@ -153,7 +160,7 @@ const tHeadStyle = {
             align= "center"        
             >  
             <div  id={HeaderTable.id} style={{resize: 'horizontal', overflow: 'hidden',
-             width: '100%', padding: '3px 10px', alignItems: 'center', minWidth: width
+             width: '100%', padding: '3px 10px', alignItems: 'center', minWidth: width, position: 'relative',
           }} key={HeaderTable.id}>
             <TableSortLabel            
               active={orderBy === HeaderTable.id}
@@ -185,16 +192,20 @@ const tHeadStyle = {
           </TableCell>
           ))}
       </TableRow>
-      <TableRow sx= {{padding: '10px 0px', width: '100%'}}>
-<TableCell sx={{width: '100%', padding: '10px'}}></TableCell>
-      </TableRow>
-      </TableHead>
+          </TableHead>
     
   );
 }
 
 
 export  function Order() {
+  const dispatch = useDispatch();
+
+
+  // useEffect(() => {
+  //   dispatch(currentThunk());
+  
+  // }, []);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
@@ -292,24 +303,39 @@ export  function Order() {
     }));
 
 return (
-    <Box sx={{ width: '96vw', backgroundColor: '#f4f4f4'}}>        
-      <Paper  sx={{ width: '100%', mb: 2 ,}}>
-      <ScrollTabsButton  item={tableHead } />
-         <TableContainer  >
-          <Table stickyHeader
-            sx={{ minWidth: 750}}
+    <Box 
+        sx={{height: '100%', width: '100%', backgroundColor: colorsRef.boxTableColor, paddingBottom: '20px 0px'}}
+    >     
+   < HeaderContainer>
+   sdf
+   </HeaderContainer>
+      <Paper sx={{position: "relative", width: '98%', marginLeft: 'auto', marginRight: 'auto',overflowY: 'auto',
+        boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'
+    }}>
+
+      <ScrollTabsButton  item={tableHead } /> 
+
+         <TableContainer 
+          sx={{ width: '100%', height: '700px',  backgroundColor: '#fff', paddingBottom: '80px', overflowY: 'scroll',overflowX: 'scroll',
+        }} 
+           >
+                <Table 
+            sx={{ minWidth: 550}}
             aria-labelledby="tableTitle"
           >
-            <EnhancedTableHead  props ={rowsTable}
+            <EnhancedTableHead   props ={rowsTable}
                           numSelected={selected.length}
                           order={order}
                           orderBy={orderBy}
                           onSelectAllClick={handleSelectAllClick}
                           onRequestSort={handleRequestSort}
                           rowCount={rowsTable.length}/>
-            <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}}>
-              {stableSort(rowsTable, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
+        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}}>
+              {stableSort(rowsTable,
+               getComparator(order, orderBy)
+               )
+                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((rows, index) => {
                   // console.log(rows);
                   const isItemSelected = isSelected(rows.index);
@@ -328,7 +354,8 @@ return (
             {rows.map((row,ind) => (
               
             <TableCell 
-                       sx={{ minWidth: '100px', whiteSpace: 'nowrap', padding: '10px 10px', overflow: 'hidden' ,borderRight: '1px solid #fff'
+                       sx={{ minWidth: '100px', whiteSpace: 'nowrap', padding: '10px 10px', overflow: 'hidden' ,borderRight: '1px solid #fff',
+                      maxWidth: '400px',  overflowX: 'hidden',
                       }}
             key={row.id+ind+rows.name} align="center" >{row.value} </TableCell>
             
@@ -337,11 +364,14 @@ return (
              
                 })}
              </TableBody>
+
           </Table>
+
         </TableContainer>
+        {/* <Box sx={{backgroundColor: colorsRef.formBgColor, width:'100%'}}> */}
         <TablePagination
-         sx={{ maxWidth: '400px',}}
-          rowsPerPageOptions={[5, 10, 25]}
+         sx={{ maxWidth: '450px'}}
+          rowsPerPageOptions={[5, 10, 25, 50]}
           component="div"
           count={rowsTable.length}
           rowsPerPage={rowsPerPage}
@@ -349,11 +379,9 @@ return (
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
+        {/* </Box> */}
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
+
     </Box>
   );
 }

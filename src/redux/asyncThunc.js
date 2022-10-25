@@ -1,77 +1,54 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 // import { alert } from '@pnotify/core';
-// axios.defaults.baseURL = 'https://kapusta-35.herokuapp.com';
-// axios.defaults.baseURL = 'http://localhost:5000';
-// Request URL: https://react.trendcrm.biz/api/authenticate?id=1&hashKey=87b5520fbc53275e54387ddcfe53692317fe31b0&role=administrator
+// axios.defaults.baseURL = 'https://react.trendcrm.biz';
+// axios.defaults.baseURL = 'http://localhost:5000/api';
 
-const testUrl = 'https://react.trendcrm.biz/api/menu/list'
-const userLogin = '/auth/login';
-const userRegister = '/auth/registration';
-const userLogOut = '/auth/logout';
-const userCurrent = '/users/';
-const userTransaction = '/transactions/';
-const userBalance = '/users/balance ';
 
-export const registerThunk = createAsyncThunk(
-  'users/register',
-  async (user, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.post(userRegister, { ...user });
+// const testUrl = 'https://react.trendcrm.biz/api/menu/list';
+const login = "/login";
+const auth = '/authenticate'
+// const REBASE_URL = 'https://react.trendcrm.biz';
+const REBASE_URL= 'http://localhost:5000/api';
 
-      alert({
-        text: 'Регистрация прошла успешно, нажмите кнопку войти',
-        delay: 1500,
-        hide: true,
-      });
-      return data.data;
-    } catch (error) {
-      alert({
-        text: 'Такой пользователь уже есть, попробуйте другое имя или нажмите кнопку войти',
-        delay: 1500,
-        hide: true,
-      });
-      return rejectWithValue(error);
-    }
-  },
-);
 
 export const loginThunk = createAsyncThunk(
   'users/login',
   async (user, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post(userLogin, { ...user });
-      // !data.data.rebalancing ? alert(`С возвращением, ${user.email}`) :
-
-      alert({
-        text: `Добро пожаловать, ${user.email}`,
-        delay: 1500,
-        hide: true,
-      });
-
-      // alert(`Добро пожаловать, ${user.email}`);
-      // console.log(alert);
-
+      const response = await axios({
+        method: 'post',
+        url: REBASE_URL+login,
+        data: user});      
+      const data = await response
+      console.log(data.data);
       return data.data;
     } catch (error) {
-      alert({
-        text: 'Нету такого пользователя, попробуйте другое',
-        delay: 1500,
-        hide: true,
-      });
       return rejectWithValue({
-        error,
+        error: error.message,
       });
     }
   },
 );
+// var response = http_get('./api/authenticate', {id: $.cookie("user.id"), hashKey: $.cookie("user.hashKey"), role: $.cookie("user.role")})
 
 export const currentThunk = createAsyncThunk(
   'users/current',
   async (_, { rejectWithValue, getState }) => {
-    // const state = getState();
+    const state = getState();
+   
+    console.log(state.auth.id);
           try {
-        const { data } = await axios.get(testUrl);
+        const { data } = await axios({
+          method: "get",
+           url:  REBASE_URL+auth,
+           params: {
+            id: state.auth.id,
+            hashKey: state.auth.hashKey,
+            role: state.auth.role
+          },
+          })
+
         console.log(data);
         return data.data;
       } catch (error) {
@@ -83,74 +60,20 @@ export const currentThunk = createAsyncThunk(
   },
 );
 
-export const logOutThunk = createAsyncThunk(
-  'users/logout',
-  async (_, { rejectWithValue, getState }) => {
-    const state = getState();
-    if (state.auth.token) {
-      try {
-        const response = await axios.post(userLogOut);
-        return response.data.statusText;
-      } catch (error) {
-        return rejectWithValue({
-          error: error.message,
-        });
-      }
-    }
-  },
-);
 
-// export const currentUserTransaction = createAsyncThunk(
-//   'users/transaction',
+
+// export const currentThunk = createAsyncThunk(
+//   'users/current',
 //   async (_, { rejectWithValue, getState }) => {
-//     const state = getState();
-//     if (state.auth.token) {
-//       try {
-//         const {data} = await axios.get(userTransaction)
-//         console.log(data.data);
-//          return data.data;
+//           try {
+//         const { data } = await axios.get(REBASE_URL+auth);
+//         console.log(data);
+//         return data.data;
 //       } catch (error) {
 //         return rejectWithValue({
 //           error: error.message,
 //         });
 //       }
-//     }
+    
 //   },
 // );
-
-export const userGetTransaction = createAsyncThunk(
-  'users/transaction',
-  async (transactions, { rejectWithValue, getState }) => {
-    const state = getState();
-    if (state.auth.token) {
-      try {
-        const { data } = await axios.post(userTransaction, { ...transactions });
-        return data.data;
-      } catch (error) {
-        return rejectWithValue({
-          error: error.message,
-        });
-      }
-    }
-  },
-);
-
-export const userPutBallance = createAsyncThunk(
-  'users/balance',
-  async (ballance, { rejectWithValue, getState }) => {
-    const state = getState();
-    if (state.auth.token) {
-      try {
-        const data = await axios.put(userBalance, {
-          id: state.auth.id,
-          balance: ballance,
-        });
-        return data.data;
-      } catch (error) {
-        return rejectWithValue({
-          error: error.message,
-        });
-      }
-    }
-  },
-);

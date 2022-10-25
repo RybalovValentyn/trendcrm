@@ -23,12 +23,13 @@ export function BodyContainer({children}) {
       const Root = styled('div')(({ theme }) => ({
         padding: theme.spacing(1),
         height: '100vh',
+        width: '1200px',
         paddingTop: '0px',
         paddinRight: '15px',
         paddingLeft: '15px',
         marginRight: 'auto',
         marginLeft: 'auto',
-        overflowX: 'skrolx',
+        // overflowX: 'skrolx',
         [theme.breakpoints.down('sm')]: {
             maxWidth: sizeConsts.containerWidthBigMobile,
             backgroundColor: 'transparent',

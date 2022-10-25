@@ -17,10 +17,20 @@ import {Settings} from './components/tableBody/pages/settings/settings';
 import {Faq} from './components/tableBody/pages/faq/faq';
 import {Purchasing} from './components/tableBody/pages/purchasing/purchasing';
 import {Help} from './components/tableBody/pages/help/help';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { currentThunk } from './redux/asyncThunc';
 
 function App() {
-  // const isAuth = true;
-  // const isAuth = false;
+  const dispatch = useDispatch();
+  const hashKey = useSelector(state => state.auth.hashKey);
+
+  useEffect(() => {
+    if (hashKey) {
+      dispatch(currentThunk());
+    }
+  }, [hashKey]);
+
   return (
     <div >
       <CssBaseline />

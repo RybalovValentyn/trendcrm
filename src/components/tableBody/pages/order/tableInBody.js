@@ -19,6 +19,7 @@ export function ScrollTabsButton({item}) {
     maxWidth: '100%',
     backgroundColor: '#fff',
     maxHeight: '32px',
+
   }
 
   const tabsStyles ={
@@ -26,9 +27,12 @@ export function ScrollTabsButton({item}) {
     [`& .${tabsClasses.scrollButtons}`]: {
       '&.Mui-disabled': { opacity: 0.3 },
       maxHeight: '32px',
-
     },
-  }
+    '& .MuiTabs-indicator': {
+      backgroundColor: '#fff',
+      width: 0,
+    },
+   }
 
   return (
     <Box sx={boxStyles} >
@@ -44,13 +48,20 @@ export function ScrollTabsButton({item}) {
         <Tab
         sx={{ borderTop: `6px solid ${tab.style}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
         backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px',
+ 
         margin: '0px 1px 0px 1px', textTransform: 'none',
-      '&.Mui-selected': {backgroundColor: '#fff',color: colorsRef.tabHeaderTextColor }
+      '&.Mui-selected': {backgroundColor: '#fff',color: colorsRef.tabHeaderTextColor,
+
+    }
       }}
         key={tab.id} label= {`${tab.name}: 0`} />
        ))}
 
+
+
+
       </Tabs>
+
     </Box> 
   );
 }
