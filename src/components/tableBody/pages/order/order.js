@@ -146,10 +146,11 @@ const tHeadStyle = {
   borderRadius: '15px',
    maxWidth: '400px',
    
+   
  }
 
   return (    
-    <TableHead sx={{backgroundColor: colorsRef.formBgColor,  position: 'fixed', overflow: 'clip'}} >      
+    <TableHead sx={{backgroundColor: colorsRef.formBgColor}} >      
       <TableRow>      
 
         {tHead.map((HeaderTable) => (          
