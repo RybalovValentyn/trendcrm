@@ -6,6 +6,7 @@ import {colorsRef} from '../../../../consts/colorConstants';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
+import {AddStatusForm} from './modalAddStatus';
 
 export function ScrollTabsButton({item}) {
   const [value, setValue] = useState(0);
@@ -44,27 +45,31 @@ export function ScrollTabsButton({item}) {
         aria-label="visible arrows tabs example"
         sx={tabsStyles}
       >
+          <AddStatusForm/>
        {item.map((tab) =>(        
         <Tab
         sx={{ borderTop: `6px solid ${tab.style}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
-        backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px',
- 
+        backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px', 
         margin: '0px 1px 0px 1px', textTransform: 'none',
       '&.Mui-selected': {backgroundColor: '#fff',color: colorsRef.tabHeaderTextColor,
-
-    }
+         }
       }}
         key={tab.id} label= {`${tab.name}: 0`} />
+       
        ))}
-
-
-
-
+       
+    
       </Tabs>
-
+     
     </Box> 
   );
 }
+
+
+
+
+
+
 
 function sleep(delay = 0) {
   return new Promise((resolve) => {

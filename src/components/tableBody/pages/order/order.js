@@ -20,12 +20,12 @@ import { styled } from '@mui/material/styles';
 import {currentThunk} from '../../../../redux/asyncThunc';
 import { useDispatch } from 'react-redux';
 import {HeaderContainer} from './header';
+import {getRowsComparator} from './getRowsComparator';
 const tableHead = dataParse.orders_status_count
 const tableHeaderWidth = 100;
 const rowWidth = 150;
 const rowBgColor = "#afffff";
 let TableHeadFromResponse = [];
-
 
 
 
@@ -143,15 +143,20 @@ const tHeadStyle = {
   minWidth: '100px',
    whiteSpace: 'nowrap',
    padding: '0px',
-  borderRadius: '15px',
-   maxWidth: '400px',
+   maxWidth: '600px', 
+   marginTop: '-1px'
    
-   
+ }
+const rowPosition={
+position: '-webkit-sticky',
+position: 'sticky',
+top: '-3px', zIndex: 2
  }
 
   return (    
-    <TableHead sx={{backgroundColor: colorsRef.formBgColor}} >      
-      <TableRow>      
+    <TableHead sx={{backgroundColor: colorsRef.formBgColor, position: '-webkit-sticky', position: 'sticky', top: '0', zIndex: 2}} >    
+
+      <TableRow sx={rowPosition}>       
 
         {tHead.map((HeaderTable) => (          
           <TableCell  onMouseUp={onDeltaWidth} colSpan={1}
@@ -161,7 +166,7 @@ const tHeadStyle = {
             align= "center"        
             >  
             <div  id={HeaderTable.id} style={{resize: 'horizontal', overflow: 'hidden',
-             width: '100%', padding: '3px 10px', alignItems: 'center', minWidth: width, position: 'relative',
+             maxWidth: '600px', padding: '3px 10px', alignItems: 'center', minWidth: width, position: 'relative',
           }} key={HeaderTable.id}>
             <TableSortLabel            
               active={orderBy === HeaderTable.id}
@@ -179,9 +184,9 @@ const tHeadStyle = {
             <Divider  id={HeaderTable.id} sx={dividerStyle} orientation="vertical" flexItem />
             </div>
           </TableCell>  ))}
-      </TableRow>
+      </TableRow >
 
-      <TableRow  >
+      <TableRow sx={rowPosition}  >
           {tHead.map((call) =>(
           <TableCell
           key={call.id}
@@ -333,10 +338,7 @@ return (
                           rowCount={rowsTable.length}/>
 
         <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}}>
-              {stableSort(rowsTable,
-               getComparator(order, orderBy)
-               )
-                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              {stableSort(rowsTable, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((rows, index) => {
                   // console.log(rows);
                   const isItemSelected = isSelected(rows.index);
@@ -354,11 +356,10 @@ return (
                   >
             {rows.map((row,ind) => (
               
-            <TableCell 
-                       sx={{ minWidth: '100px', whiteSpace: 'nowrap', padding: '10px 10px', overflow: 'hidden' ,borderRight: '1px solid #fff',
-                      maxWidth: '400px',  overflowX: 'hidden',
+            <TableCell  sx={{ minWidth: '100px', whiteSpace: 'nowrap', padding: '10px 10px',borderRight: '1px solid #fff',
+                      maxWidth: '400px',  overflowX: 'auto', width: '200px'
                       }}
-            key={row.id+ind+rows.name} align="center" >{row.value} </TableCell>
+            key={row.id+ind+rows.name} align="center" >{getRowsComparator(row.value, row.id)} </TableCell>
             
             ))} 
              </StyledTableRow> );
