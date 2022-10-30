@@ -4,7 +4,7 @@ const statusReduser = createSlice({
   name: 'status',
   initialState: {
     name: '',
-    statusId: 0,
+    statusId: '',
     color: '#9f9f9f',
     group: [],
     runInStore: '',
@@ -12,6 +12,7 @@ const statusReduser = createSlice({
     deliveryStatus: true,
     infoStatus: true,
     allStatuses: [],
+    isValid: false,
     groupsName:[
       'Адміністратори',
       'Менеджери',
@@ -31,6 +32,19 @@ const statusReduser = createSlice({
   },
 
     reducers: {
+      clearStatusState: (state, action) => {
+        return { ...state, 
+             name: '',
+            statusId:'',
+            color: '#9f9f9f',
+            group: [],
+            runInStore: '',
+            accepted: true,
+            deliveryStatus: true,
+            infoStatus: true,
+            allStatuses: [],  
+            isValid: false,  
+      }},
         idStatus: (state, action) => {
         return { ...state, statusId: action.payload };
       },
@@ -56,14 +70,20 @@ const statusReduser = createSlice({
             return { ...state, infoStatus: action.payload };
           },
           allStatuses: (state, action) => {
-            return { ...state, allStatuses: action.payload };
-          
-      },
+            return { ...state, allStatuses: action.payload };     
+      },     
+       validationForm: (state, action) => {
+        return { ...state, isValid: action.payload};
+      }
+
+
   },
   extraReducers: {},
 });
 
 export const { nameStatus, numberStatus, colorStatus,
      groupStatus, runStatus, acceptedStatus, 
-     deliverypStatus, infoStatus, allStatuses, idStatus } = statusReduser.actions;
+     deliverypStatus, infoStatus, allStatuses, idStatus,
+     clearStatusState, validationForm
+    } = statusReduser.actions;
 export default statusReduser.reducer;

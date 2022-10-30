@@ -1,16 +1,11 @@
 import Button from '@mui/material/Button';
-import {TextField ,OutlinedInput } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import BootstrapDialogTitle from '@mui/material/DialogTitle';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {colorsRef} from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
-import { color } from '@mui/system';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
@@ -18,26 +13,37 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {forwardRef} from 'react';
 import Slide from '@mui/material/Slide';
 import { StoreInput } from '../../../inputs/tableInput';
-import { FormControl, InputLabel, Box, Typography  } from '@mui/material';
+import {Typography  } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ColorPicker } from '../../../inputs/colorInput';
 import {SelectInput} from '../../../inputs/select';
 import {IsAcceptedInput} from '../../../inputs/isAccepted';
 import { CustomizedCheckboxInfo, CustomizedCheckboxDelivery } from '../../../inputs/checkBox'; 
-import {orderStatusThunk} from '../../../../redux/asyncOrders';
+import {orderStatusThunk, getValidationForm} from '../../../../redux/asyncOrders';
 import { StyledNumInput} from '../../../inputs/number';
 import { StyledInput } from '../../../inputs/textfield';
-
+import {clearStatusState} from '../../../../redux/statusReduser';
+import {SimpleSnackbar} from '../../../alerts/alertStatus';
+import {StatusesSelectInput} from '../../../inputs/statusses';
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
   });
 
 export function AddStatusForm() {
-  
+  const isError = useSelector((state) => state.ordersAll.isError);
+  const errorMessage = useSelector((state) => state.ordersAll.error);
+  const isValid = useSelector((state) => state.ordersAll.isValid);
   const dispatch = useDispatch();
-  const statusName = useSelector((state) => state.addStatus.value)
-  const numberState = useSelector((state) => state.addStatus.numberStatus);
+
+
+  useEffect(()=>{
+if (isValid) {
+  console.log('ssssssssssssssss');
+  dispatch(orderStatusThunk())
+  handleClose()
+} 
+  },[isValid])
   
     function BootstrapDialogTitle(props) {
         const { children, onClose, ...other } = props;      
@@ -78,10 +84,9 @@ export function AddStatusForm() {
 
   const [open, setOpen] = useState(false);
 
-
-  const handleStatusesUpdate =()=>{
-    dispatch(orderStatusThunk())
-    handleClose()
+const handleStatusesUpdate =()=>{
+dispatch(getValidationForm())
+     
   }
 
   const handleClickOpen = () => {
@@ -89,6 +94,7 @@ export function AddStatusForm() {
   };
 
   const handleClose = () => {
+    dispatch(clearStatusState())
     setOpen(false);
   };
 
@@ -127,7 +133,7 @@ const ColorButton = styled(Button)(({ theme }) => ({
       </ColorButton>
 
       <BootstrapDialog TransitionComponent={Transition} keepMounted open={open} >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+        <BootstrapDialogTitle id="customized-dialog-title">
           Створення нового статусу  
         </BootstrapDialogTitle>
         
@@ -160,15 +166,16 @@ const ColorButton = styled(Button)(({ theme }) => ({
           <ListItem sx={inputGroupStyle}> <Typography sx={textStyle} > Основна інформація:</Typography>
            <CustomizedCheckboxInfo  />
             </ListItem>
-          {/* <ListItem sx={inputGroupStyle}> <Typography sx={textStyle} > Статуси:</Typography> 
-          <BaseInput type={'select'} />
-           </ListItem> */}
+          <ListItem sx={inputGroupStyle}> <Typography sx={textStyle} > Статуси:</Typography> 
+          <StatusesSelectInput />
+           </ListItem>
           </List>
         <DialogActions>
           <Button onClick={handleStatusesUpdate}>Створити</Button>
           <Button onClick={handleClose}>Відмінити</Button>
         </DialogActions>
       </BootstrapDialog>
+      <SimpleSnackbar/>
     </div>
   );
 }

@@ -22,13 +22,19 @@ const MenuProps = {
   },
 };
 
-export function SelectInput() {
+export function StatusesSelectInput() {
   const dispatch = useDispatch();
-  const names = useSelector((state) => state.addStatus.groupsName);
-  const [groups, setgroups] = useState(['Нічого не вибрано']);
+  const names = useSelector((state) => state.addStatus.groupsName);  
   const [open, setOpen] = useState(false);
+  const statuses = useSelector((state) => state.ordersAll.getStatuses);
+  const [groups, setgroups] = useState([`Всі:  ${statuses.length}`]);
+console.log(groups);
 
-  const handleClose = () => {
+const statusName = statuses.map((str, ind)=>{    
+    return str.name
+})
+
+const handleClose = () => {
     dispatch(groupStatus(groups))
     setOpen(false);
   };
@@ -45,6 +51,7 @@ export function SelectInput() {
        typeof value === 'string' ? value.split(',') : value,
     );
   };  
+
   return (
     <div>
       <FormControl sx={{minWidth:'158px', maxWidth: '158px', padding: 0 }}>
@@ -61,9 +68,9 @@ export function SelectInput() {
           MenuProps={MenuProps}
         >
 
-          {names.map((name) => (
-            <MenuItem  key={name} value={name} >
-              <Checkbox checked={groups.indexOf(name) > -1} />
+          {statusName.map((name, ind) => (
+            <MenuItem  key={ind} value={name} >
+              <Checkbox defaultChecked />
               <ListItemText sx={{fontSize: '12px' }} primary={name} />
             </MenuItem>
           ))}

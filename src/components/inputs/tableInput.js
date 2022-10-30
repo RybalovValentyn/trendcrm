@@ -58,11 +58,12 @@ export function StoreInput() {
 
         {groupsStore.map((group, ind) =>(
         <MenuItem  key={ind} value={group} >
-        <FormControlLabel checked={groups.indexOf(group) > -1}  onChange={handleChange} key ={ind+group} value={group} control={<Radio />} label={group} />
-        </MenuItem>
-        
+        <FormControlLabel checked={groups.indexOf(group) > -1}
+          onChange={handleChange} key ={ind+group} value={group} 
+          control={<Radio />} label={group} 
+          />
+        </MenuItem>        
         ))}        
-
         </Select>
       </FormControl>
     </div>
