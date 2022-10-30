@@ -19,41 +19,26 @@ import {idStatus} from '../../redux/statusReduser';
 
 export function StyledNumInput() {
     const dispatch = useDispatch();
-    const numStatus = useSelector((state) => state.addStatus.statusId);
-   
+    const numStatus = useSelector((state) => state.addStatus.statusId); 
 
-    const BootstrapInput = styled(InputBase)(({ theme }) => ({
-        '& .MuiInputBase-input': {
-          borderRadius: 4,
-          position: 'relative',
-          backgroundColor: theme.palette.mode === 'light' ? '#fcfcfb' : '#2b2b2b',
-          fontSize: 12,
-          border: `1px solid #d0d0d0`,
-          width: 'auto',
-          padding: '6px',
-        },
-        '&:focus &:hover': {
-          
-          },
-      }));
+
 const handleInputchange =(e)=>{
-// console.log(e.target.value);
-let result = e.target.value
-dispatch(idStatus(result))
-}
+    if (Number(e.target.value)) {
+        dispatch(idStatus(e.target.value))
+    } }
 
     return (
       <Box
       component="form"
       sx={{
-        '& > :not(style)': { m: 1, width: '100%', maxWidth: '158px', margin: 0,  },
-      }}
+        '& > :not(style)': { m: 1, width: '100%', maxWidth: '158px', margin: 0, borderRadius: '4px', fontSize: 12, border: '1px solid #d0d0d0', padding: '6px', },
+      }}     
        autoComplete="off"
     >
-      <BootstrapInput type='text'
+      <input 
     onChange={handleInputchange}
       value={numStatus}
-      id="outlined" variant="outlined"
+      id="outlined" 
        />  
     </Box>
     );

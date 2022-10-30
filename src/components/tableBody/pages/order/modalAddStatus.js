@@ -81,7 +81,7 @@ export function AddStatusForm() {
 
   const handleStatusesUpdate =()=>{
     dispatch(orderStatusThunk())
-console.log('ASD');
+    handleClose()
   }
 
   const handleClickOpen = () => {

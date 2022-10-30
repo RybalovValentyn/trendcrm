@@ -4,8 +4,7 @@ const statusReduser = createSlice({
   name: 'status',
   initialState: {
     name: '',
-    statusId: 'sdc',
-    numberStatus: '',
+    statusId: 0,
     color: '#9f9f9f',
     group: [],
     runInStore: '',
@@ -37,9 +36,6 @@ const statusReduser = createSlice({
       },
         nameStatus: (state, action) => {
           return { ...state, name: action.payload };
-        },
-        numberStatus: (state, action) => {
-          return { ...state, numberStatus: action.payload };
         },
         colorStatus: (state, action) => {
           return { ...state, color: action.payload };
