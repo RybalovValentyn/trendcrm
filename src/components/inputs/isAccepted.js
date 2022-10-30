@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useDispatch, useSelector } from 'react-redux';
-import {runStatus} from '../../redux/statusReduser';
+import {acceptedStatus} from '../../redux/statusReduser';
 import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Chip from '@mui/material/Chip';
@@ -20,11 +20,10 @@ const MenuProps = {
   },
 };
 
-export function StoreInput() {
-
+export function IsAcceptedInput() {
   const dispatch = useDispatch();
-  const groupsStore = useSelector((state) => state.addStatus.storeRuns)
-  const [groups, setgroups] = useState(['Нічого не робити']);
+  const groupsStore = useSelector((state) => state.addStatus.isAccepted)
+  const [groups, setgroups] = useState(['Так']);
 
   const handleChange = (e) => {
     const event = e.target.value
@@ -34,9 +33,10 @@ export function StoreInput() {
     setgroups(
        typeof value === 'string' ? value.split(',') : value,
     );
-    dispatch(runStatus(event))
+    if (event === 'Так') {
+        dispatch(acceptedStatus(true))
+    } else dispatch(acceptedStatus(false))
   };
-
 
   return (
     <div>

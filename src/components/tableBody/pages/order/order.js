@@ -337,7 +337,7 @@ return (
                           onRequestSort={handleRequestSort}
                           rowCount={rowsTable.length}/>
 
-        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}}>
+        {/* <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}}>
               {stableSort(rowsTable, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((rows, index) => {
                   // console.log(rows);
@@ -365,7 +365,7 @@ return (
              </StyledTableRow> );
              
                 })}
-             </TableBody>
+             </TableBody> */}
 
           </Table>
 

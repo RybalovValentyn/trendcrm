@@ -12,6 +12,8 @@ import {
   } from 'redux-persist';
   import storage from 'redux-persist/lib/storage';
   import authReduser from './authReduser.js';
+import statusReduser from './statusReduser.js';
+import ordersReduser from './ordersReduser.js';
 
   const authPersistConfig = {
     key: 'hash_key',
@@ -24,7 +26,9 @@ import {
   export const store = configureStore({
     reducer: {
       // auth: authPersistReducer,
-      auth: authReduser
+      auth: authReduser,
+      addStatus: statusReduser,
+      ordersAll: ordersReduser,
     },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
