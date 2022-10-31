@@ -7,14 +7,15 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {AddStatusForm} from './modalAddStatus';
+import { useDispatch, useSelector } from 'react-redux';
 
 export function ScrollTabsButton({item}) {
   const [value, setValue] = useState(0);
 // console.log(item);
+const statuses = useSelector((state) => state.ordersAll.getStatuses);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  
   const boxStyles={
     flexGrow: 1,
     maxWidth: '100%',
@@ -45,10 +46,10 @@ export function ScrollTabsButton({item}) {
         aria-label="visible arrows tabs example"
         sx={tabsStyles}
       >
-          <AddStatusForm/>
-       {item.map((tab) =>(        
+          
+       {statuses.map((tab) =>(        
         <Tab
-        sx={{ borderTop: `6px solid ${tab.style}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
+        sx={{ borderTop: `6px solid ${tab.color}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
         backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px', 
         margin: '0px 1px 0px 1px', textTransform: 'none',
       '&.Mui-selected': {backgroundColor: '#fff',color: colorsRef.tabHeaderTextColor,
@@ -58,7 +59,7 @@ export function ScrollTabsButton({item}) {
        
        ))}
        
-    
+       <AddStatusForm/>
       </Tabs>
      
     </Box> 

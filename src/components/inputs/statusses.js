@@ -9,6 +9,7 @@ import { colorsRef } from '../../consts/colorConstants';
 import { useDispatch, useSelector } from 'react-redux';
 import {groupStatus} from '../../redux/statusReduser';
 import { selectStylesCheck } from './stylesInputs';
+import {orderStatusUpdate} from '../../redux/asyncOrders';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -24,18 +25,26 @@ const MenuProps = {
 
 export function StatusesSelectInput() {
   const dispatch = useDispatch();
-  const names = useSelector((state) => state.addStatus.groupsName);  
   const [open, setOpen] = useState(false);
   const statuses = useSelector((state) => state.ordersAll.getStatuses);
-  const [groups, setgroups] = useState([`Всі:  ${statuses.length}`]);
-console.log(groups);
+  let totalChecked = statuses.filter(str=>str.checked === true);
+  const stringSelectInput =() =>{
+    if (statuses.length === totalChecked.length) {
+      return `Всі:  ${totalChecked.length}`
+    } else return totalChecked.length
+  }
+  const [groups, setgroups] = useState([stringSelectInput()]);
 
-const statusName = statuses.map((str, ind)=>{    
-    return str.name
-})
+ 
+
+const setStatuses =(e)=>{
+  let check = e.target.checked;
+  let name = e.target.id;
+dispatch(orderStatusUpdate({name,check}))
+}
+
 
 const handleClose = () => {
-    dispatch(groupStatus(groups))
     setOpen(false);
   };
 
@@ -68,10 +77,12 @@ const handleClose = () => {
           MenuProps={MenuProps}
         >
 
-          {statusName.map((name, ind) => (
-            <MenuItem  key={ind} value={name} >
-              <Checkbox defaultChecked />
-              <ListItemText sx={{fontSize: '12px' }} primary={name} />
+          {statuses.map((str, ind) => (
+            <MenuItem  key={ind} value={str.name} >
+              <Checkbox id={str.name} onChange={setStatuses} 
+               checked={str.checked}
+               />
+              <ListItemText sx={{fontSize: '12px' }} primary={str.name} />
             </MenuItem>
           ))}
         </Select>

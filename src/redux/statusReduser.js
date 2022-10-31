@@ -13,6 +13,7 @@ const statusReduser = createSlice({
     infoStatus: true,
     allStatuses: [],
     isValid: false,
+    checked: true,
     groupsName:[
       'Адміністратори',
       'Менеджери',
@@ -44,6 +45,7 @@ const statusReduser = createSlice({
             infoStatus: true,
             allStatuses: [],  
             isValid: false,  
+         
       }},
         idStatus: (state, action) => {
         return { ...state, statusId: action.payload };

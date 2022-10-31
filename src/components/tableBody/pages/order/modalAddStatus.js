@@ -39,7 +39,7 @@ export function AddStatusForm() {
 
   useEffect(()=>{
 if (isValid) {
-  console.log('ssssssssssssssss');
+
   dispatch(orderStatusThunk())
   handleClose()
 } 

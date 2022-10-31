@@ -9,7 +9,6 @@ export const getValidationForm = createAsyncThunk(
   'orders/valid',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
-    const valid = false;
          const error = {message: 'Потрібно заповнити обовязкові поля'}
       try {
         if (state.addStatus.name.trim().length === 0) {
@@ -37,6 +36,7 @@ export const orderStatusThunk = createAsyncThunk(
   'orders/status',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
+  
     try {
       const data = await {
         name: state.addStatus.name,
@@ -47,8 +47,40 @@ export const orderStatusThunk = createAsyncThunk(
         accepted: state.addStatus.accepted,
         deliveryStatus:state.addStatus.deliveryStatus,
         infoStatus: state.addStatus.infoStatus,
+        checked:  state.addStatus.checked,
       }
         return data;
+    }catch (error) {
+       return rejectWithValue({        
+        error
+      });
+    }
+  },
+);
+
+export const orderStatusUpdate = createAsyncThunk(
+  'update/status',
+  async ({name, check}, { rejectWithValue, getState }) => {
+    const state = getState();
+    let ind = state.ordersAll.getStatuses.findIndex(str=>str.name === name)
+    let el = state.ordersAll.getStatuses[ind]
+ 
+    try {
+      const data = await { 
+        name: el.name,
+        statusId: el.statusId,
+        color: el.color,
+        group:el.group,
+        runInStore: el.runInStore,
+        accepted: el.accepted,
+        deliveryStatus:el.deliveryStatus,
+        infoStatus: el.infoStatus,
+        checked:  check,
+      }
+      const copyStatus = [...state.ordersAll.getStatuses]
+      copyStatus.splice(ind,1, data)
+      const result = copyStatus
+        return result
     }catch (error) {
        return rejectWithValue({        
         error

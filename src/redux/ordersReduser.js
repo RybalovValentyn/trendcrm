@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { orderStatusThunk, getValidationForm } from './asyncOrders';
+import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
+
 const initStatus =[
   {
     name: '1111111111111',
@@ -15,7 +16,8 @@ const initStatus =[
     runInStore: 'Бронювати',
     accepted: true,
     deliveryStatus: true,
-    infoStatus: true
+    infoStatus: true,
+    checked: true
   },
   {
     name: '222222222',
@@ -30,7 +32,8 @@ const initStatus =[
     runInStore: 'Бронювати',
     accepted: true,
     deliveryStatus: true,
-    infoStatus: true
+    infoStatus: true,
+    checked: true
   },
   {
     name: '3333333',
@@ -45,7 +48,8 @@ const initStatus =[
     runInStore: 'Бронювати',
     accepted: true,
     deliveryStatus: true,
-    infoStatus: true
+    infoStatus: true,
+    checked: false
   }
   
   
@@ -64,11 +68,11 @@ const ordersReduser = createSlice({
   },
 
   //  reducers: {
-  //       getStatusUpdate: (state) => {        
-
-  //         return { ...state, getStatuses: {
-  //         name: 'state.name'
-  //         } };
+  //       getStatusUpdate: (state, action) => {  
+  
+  //         return { ...state,
+  //           // getStatuses: 
+  //       };
   //       },        
   // },
 
@@ -123,6 +127,29 @@ const ordersReduser = createSlice({
               error: action.payload,
               isError: true,
               isValid: false,
+            };      
+          },
+          [orderStatusUpdate.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+          
+                }; 
+          },
+          [orderStatusUpdate.fulfilled](state, action) {    
+              return{
+             ...state,
+             getStatuses: [...action.payload],
+
+            }
+          },
+          [orderStatusUpdate.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+             
             };      
           },
      
