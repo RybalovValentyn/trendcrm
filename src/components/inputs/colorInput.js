@@ -22,13 +22,11 @@ const MenuProps = {
 
 export function ColorPicker() {
   const dispatch = useDispatch();
-  const statusColor = useSelector((state) => state.addStatus.color);
+  const statusColor = useSelector((state) => state.addStatus.style);
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
-
-    setOpen(false);
-    
+    setOpen(false);    
   };
 
   const handleOpen = () => {
@@ -44,8 +42,7 @@ export function ColorPicker() {
              onOpen={handleOpen}
           id="demo-multiple-checkbox"
           value="1"
-          input={<OutlinedInput sx={{height: '32px'}}/>}
-         
+          input={<OutlinedInput sx={{height: '32px'}}/>}         
           MenuProps={MenuProps}
         >
            <MenuItem value="1" >

@@ -13,7 +13,7 @@ const BpIcon = styled('span')(({ theme }) => ({
 
 
 
-function BpCheckbox(props) {
+export function BpCheckbox(props) {
   return (
     <Checkbox
       sx={{padding: 0,
@@ -71,5 +71,29 @@ const onCheck=(e)=>{
     
         </div>
       );
+
+}
+
+export function CustomizedCheckboxAutoSaved() {    
+  const dispatch = useDispatch();
+
+  // const delyvery = useSelector((state) => state.addStatus.deliveryStatus);
+  
+const onCheck=(e)=>{
+  const check = e.target.checked
+  console.log(check);
+  // dispatch(deliverypStatus(check))
+
+}
+
+  return (
+      <div style={{width: '50%', alignItems: 'left', padding: '2px 10px'}}>
+  
+        <BpCheckbox onChange={onCheck}
+        //  checked={delyvery}
+          />
+  
+      </div>
+    );
 
 }

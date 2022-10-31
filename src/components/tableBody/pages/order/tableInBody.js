@@ -16,6 +16,8 @@ const statuses = useSelector((state) => state.ordersAll.getStatuses);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const newStatus = [...statuses, ...item]
   const boxStyles={
     flexGrow: 1,
     maxWidth: '100%',
@@ -47,15 +49,15 @@ const statuses = useSelector((state) => state.ordersAll.getStatuses);
         sx={tabsStyles}
       >
           
-       {statuses.map((tab) =>(        
+       {newStatus.map((tab, ind) =>(        
         <Tab
-        sx={{ borderTop: `6px solid ${tab.color}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
+        sx={{ borderTop: `6px solid ${tab.style}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
         backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px', 
         margin: '0px 1px 0px 1px', textTransform: 'none',
       '&.Mui-selected': {backgroundColor: '#fff',color: colorsRef.tabHeaderTextColor,
          }
       }}
-        key={tab.id} label= {`${tab.name}: 0`} />
+        key={ind} label= {`${tab.name}: 0`} />
        
        ))}
        
@@ -65,10 +67,6 @@ const statuses = useSelector((state) => state.ordersAll.getStatuses);
     </Box> 
   );
 }
-
-
-
-
 
 
 

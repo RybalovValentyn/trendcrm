@@ -22,6 +22,11 @@ modalHeaderBgColor: '#455A64',
 modalBodyBgColor: '#fff',
 modalInputBorderColor: '#d0d0d0',
 
+buttonBorderInModal: '#7bb31a',
+buttonTextColorInModal: '#4b4b4b',
+
+
+
 }
 
 // height: 30px;

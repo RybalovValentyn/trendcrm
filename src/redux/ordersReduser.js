@@ -6,7 +6,7 @@ const initStatus =[
   {
     name: '1111111111111',
     statusId: '1',
-    color: '#b74343',
+    style: '#b74343',
     group: [
       'Адміністратори',
       'Менеджери',
@@ -22,7 +22,7 @@ const initStatus =[
   {
     name: '222222222',
     statusId: '1',
-    color: '#b74343',
+    style: '#b74343',
     group: [
       'Адміністратори',
       'Менеджери',
@@ -38,7 +38,7 @@ const initStatus =[
   {
     name: '3333333',
     statusId: '1',
-    color: '#b74343',
+    style: '#b74343',
     group: [
       'Адміністратори',
       'Менеджери',
@@ -51,8 +51,7 @@ const initStatus =[
     infoStatus: true,
     checked: false
   }
-  
-  
+ 
   
 ]
 
@@ -65,16 +64,27 @@ const ordersReduser = createSlice({
  isValid: false,
  error: '',
  isError: false,
+ widthOfColumn:[],
+ openCreator: false,
   },
 
-  //  reducers: {
-  //       getStatusUpdate: (state, action) => {  
-  
-  //         return { ...state,
-  //           // getStatuses: 
-  //       };
-  //       },        
-  // },
+   reducers: {
+        getWidthUpdate: (state, action) => {  
+          return { ...state,
+            widthOfColumn: [...action.payload ] 
+        };
+        },  
+        setWidthColumn: (state, action) => {  
+          return { ...state,
+            widthOfColumn: [...state.widthOfColumn, action.payload]
+        };
+        }, 
+        getOpenTableCreate:  (state, action) => {  
+          return { ...state,
+            openCreator: action.payload
+        };
+        },     
+  },
 
 
       extraReducers: {
@@ -121,6 +131,7 @@ const ordersReduser = createSlice({
             }
           },
           [getValidationForm.rejected](state, action) {
+           
             return {
               ...state,
               isLoading: false,
@@ -158,6 +169,6 @@ const ordersReduser = createSlice({
         }}
 );
 
-export const { getStatusUpdate} = ordersReduser.actions;
+export const { getWidthUpdate, setWidthColumn, getOpenTableCreate} = ordersReduser.actions;
 export default ordersReduser.reducer;
 

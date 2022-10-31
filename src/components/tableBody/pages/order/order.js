@@ -18,57 +18,23 @@ import {SearchInput} from './tableInBody';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
 import {currentThunk} from '../../../../redux/asyncThunc';
-import { useDispatch } from 'react-redux';
 import {HeaderContainer} from './header';
 import {getRowsComparator} from './getRowsComparator';
+import { descendingComparator, getComparator, stableSort} from './functionOrder';
+import { useDispatch, useSelector } from 'react-redux';
+import {dividerStyle, rowPosition, tHeadStyle} from './styles';
+import {getWidthUpdate, setWidthColumn} from '../../../../redux/ordersReduser';
+import {replaceRows} from './tHead';
+
 const tableHead = dataParse.orders_status_count
-const tableHeaderWidth = 100;
-const rowWidth = 150;
-const rowBgColor = "#afffff";
+
 let TableHeadFromResponse = [];
-
-
-
-
-function handleClickOnChip(e) {
-
-  
-
-}
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  }
-  
-  function getComparator(order, orderBy) {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
-  }
-  
-  
-  function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-  }
 
 
 function EnhancedTableHead({props}) {
   const [tHead, setTHead] = useState([]);
-  const [elWidth, setElWidth] = useState(100)
+  const widthOfColumn = useSelector((state) => state.ordersAll.widthOfColumn);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     refreshTHead( [...tableParse.data] , translater )  
@@ -81,7 +47,10 @@ function EnhancedTableHead({props}) {
   return [...Object.keys(str)]
 },[]);
 
+
+
 let arrayOfdata = [] ;  
+
 keysOfData.reduce((acc, str,ind) => { 
     if (Object.keys(translater).includes(str) && Object.values(translater)[ind] !== null
     && Number.isNaN(Number(Object.values(translater)[ind]))
@@ -101,57 +70,21 @@ keysOfData.reduce((acc, str,ind) => {
   };
 
 const [width, setWidth] = useState(120);
-const [objWidts, setObjWidts] = useState([]);
 
-
-const onDeltaWidth =(e)=>{
-    let id = e.target.id;
-    let width = e.target.clientWidth;
-if (objWidts.find(el=> el.id === e.target.id)) {
-const result =  objWidts.map((str, ind) =>{
-  // console.log(str.id);
-    if (str.id === e.target.id) {
-      // console.log(str);
-  
-  return {id: e.target.id, width: e.target.clientWidth}
-    } else return str
-  })
-  // console.log(result);
- return setObjWidts([...result])
-} else{
-  // console.log(objWidts, 'objWidts');
-  return setObjWidts([...objWidts, {id: e.target.id, width: e.target.clientWidth}])
-}
+const getWidthColumnUpdate =(e)=>{
+  let id = e.target.id;
+  let width = e.target.clientWidth;
+  const duplicateColumn = [...widthOfColumn];
+  let ind = duplicateColumn.findIndex(str=>str.id === id);
+if (ind >=0) {
+  duplicateColumn.splice(ind, 1,{id,width})
+ return dispatch(getWidthUpdate(duplicateColumn))
+} else return dispatch(setWidthColumn({id,width}))
 }
 
 
 
- const dividerStyle = {
-  padding: '1px',
-   height: '60%', 
-  position: 'absolute',
-  top: '20%',
-  right: 0,
-   backgroundColor: colorsRef.tableRowSecondColor,
-  border: 'none',
-  borderRadius: '10px',
-    '&:hover':{cursor: "ew-resize"}
-  };
-  
 
-const tHeadStyle = {
-  minWidth: '100px',
-   whiteSpace: 'nowrap',
-   padding: '0px',
-   maxWidth: '600px', 
-   marginTop: '-1px'
-   
- }
-const rowPosition={
-position: '-webkit-sticky',
-position: 'sticky',
-top: '-3px', zIndex: 2
- }
 
   return (    
     <TableHead sx={{backgroundColor: colorsRef.formBgColor, position: '-webkit-sticky', position: 'sticky', top: '0', zIndex: 2}} >    
@@ -159,7 +92,7 @@ top: '-3px', zIndex: 2
       <TableRow sx={rowPosition}>       
 
         {tHead.map((HeaderTable) => (          
-          <TableCell  onMouseUp={onDeltaWidth} colSpan={1}
+          <TableCell onMouseDown={(e) =>replaceRows(e)}  onMouseUp={getWidthColumnUpdate} colSpan={1}
             key={HeaderTable.id}
             id={HeaderTable.id}
             sx={tHeadStyle} 
@@ -168,10 +101,11 @@ top: '-3px', zIndex: 2
             <div  id={HeaderTable.id} style={{resize: 'horizontal', overflow: 'hidden',
              maxWidth: '600px', padding: '3px 10px', alignItems: 'center', minWidth: width, position: 'relative',
           }} key={HeaderTable.id}>
+
             <TableSortLabel            
               active={orderBy === HeaderTable.id}
               direction={orderBy === HeaderTable.id ? order : 'asc'}
-              onClick={createSortHandler(HeaderTable.id)}
+              // onClick={createSortHandler(HeaderTable.id)}
             >
               {HeaderTable.label}
               {orderBy === HeaderTable.id ? (
@@ -193,8 +127,7 @@ top: '-3px', zIndex: 2
           align='center'
           sx={{ whiteSpace: 'nowrap', backgroundColor: tableHead.style, padding: '5px 0px'}}
           >
-             <SearchInput props={'wwwwwww'} options={props}/>
-             
+             <SearchInput props={'wwwwwww'} options={props}/>             
           </TableCell>
           ))}
       </TableRow>
@@ -207,16 +140,10 @@ top: '-3px', zIndex: 2
 export  function Order() {
   const dispatch = useDispatch();
 
-
-  // useEffect(() => {
-  //   dispatch(currentThunk());
-  
-  // }, []);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
-    const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(15);
     const [rowsTable, useRowsTable] = useState([])
 
@@ -288,16 +215,9 @@ export  function Order() {
       setPage(0);
     };
   
-    const handleChangeDense = (event) => {
-      setDense(event.target.checked);
-    };
   
     const isSelected = (name) => selected.indexOf(name) !== -1;
   
-    const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rowsTable.length) : 0;
-
-
 
     const StyledTableRow = styled(TableRow)(({ theme }) => ({
       backgroundColor: colorsRef.tableRowBgFirstColor,
@@ -312,9 +232,8 @@ return (
     <Box 
         sx={{height: '100%', width: '100%', backgroundColor: colorsRef.boxTableColor, paddingBottom: '20px 0px'}}
     >     
-   < HeaderContainer>
-   sdf
-   </HeaderContainer>
+   < HeaderContainer/>
+
       <Paper sx={{position: "relative", width: '98%', marginLeft: 'auto', marginRight: 'auto',overflowY: 'auto',
         boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'
     }}>
@@ -342,7 +261,7 @@ return (
                 .map((rows, index) => {
                   // console.log(rows);
                   const isItemSelected = isSelected(rows.index);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                  // const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <StyledTableRow 
@@ -370,7 +289,7 @@ return (
           </Table>
 
         </TableContainer>
-        {/* <Box sx={{backgroundColor: colorsRef.formBgColor, width:'100%'}}> */}
+  
         <TablePagination
          sx={{ maxWidth: '450px'}}
           rowsPerPageOptions={[5, 10, 25, 50]}
@@ -381,7 +300,7 @@ return (
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-        {/* </Box> */}
+
       </Paper>
 
     </Box>

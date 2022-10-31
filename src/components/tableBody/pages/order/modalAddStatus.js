@@ -15,7 +15,6 @@ import Slide from '@mui/material/Slide';
 import { StoreInput } from '../../../inputs/tableInput';
 import {Typography  } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { ColorPicker } from '../../../inputs/colorInput';
 import {SelectInput} from '../../../inputs/select';
 import {IsAcceptedInput} from '../../../inputs/isAccepted';
@@ -23,19 +22,20 @@ import { CustomizedCheckboxInfo, CustomizedCheckboxDelivery } from '../../../inp
 import {orderStatusThunk, getValidationForm} from '../../../../redux/asyncOrders';
 import { StyledNumInput} from '../../../inputs/number';
 import { StyledInput } from '../../../inputs/textfield';
-import {clearStatusState} from '../../../../redux/statusReduser';
+import {clearStatusState, modalOpenUpdate} from '../../../../redux/statusReduser';
 import {SimpleSnackbar} from '../../../alerts/alertStatus';
 import {StatusesSelectInput} from '../../../inputs/statusses';
+import { ColorButton, buttonStyle, textStyle, inputGroupStyle } from './styles';
+
+
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
   });
 
 export function AddStatusForm() {
-  const isError = useSelector((state) => state.ordersAll.isError);
-  const errorMessage = useSelector((state) => state.ordersAll.error);
   const isValid = useSelector((state) => state.ordersAll.isValid);
+  const modalOpen = useSelector((state) => state.addStatus.modalOpen);
   const dispatch = useDispatch();
-
 
   useEffect(()=>{
 if (isValid) {
@@ -82,7 +82,6 @@ if (isValid) {
         },
       }));  
 
-  const [open, setOpen] = useState(false);
 
 const handleStatusesUpdate =()=>{
 dispatch(getValidationForm())
@@ -90,41 +89,16 @@ dispatch(getValidationForm())
   }
 
   const handleClickOpen = () => {
-     setOpen(true);
+    dispatch(modalOpenUpdate(true))
   };
 
   const handleClose = () => {
     dispatch(clearStatusState())
-    setOpen(false);
+    dispatch(modalOpenUpdate(false))
   };
 
 
-const ColorButton = styled(Button)(({ theme }) => ({
-    borderRadius: 0,
-    fontSize: '14px',
-    color: colorsRef.typografyColor,
-    fontWeight: 700,
-    backgroundColor: colorsRef.buttonStatusBgColor,
-    textTransform: 'none',
-    boxShadow: 'none',
-    padding: '0px 20px',
-   height: '32px',
-    '&:hover': {
-      backgroundColor: '#d7d6d8 ',
-      boxShadow: 'none',
-       },
-  }));
 
-  const inputGroupStyle = {maxWidth: '100%',
-    display: 'flex',
-    justifyContent: 'space-between', 
-    padding: '2px 10px',
-    alignItems: 'center'
-  }
-
-  const textStyle = {display: 'block', 
-  fontSize: '14px',
-   width: '50%'};
  
   return (
     <div>
@@ -132,8 +106,8 @@ const ColorButton = styled(Button)(({ theme }) => ({
         Створити статус
       </ColorButton>
 
-      <BootstrapDialog TransitionComponent={Transition} keepMounted open={open} >
-        <BootstrapDialogTitle id="customized-dialog-title">
+      <BootstrapDialog  TransitionComponent={Transition} keepMounted open={modalOpen} >
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}  >
           Створення нового статусу  
         </BootstrapDialogTitle>
         
@@ -170,9 +144,9 @@ const ColorButton = styled(Button)(({ theme }) => ({
           <StatusesSelectInput />
            </ListItem>
           </List>
-        <DialogActions>
-          <Button onClick={handleStatusesUpdate}>Створити</Button>
-          <Button onClick={handleClose}>Відмінити</Button>
+        <DialogActions  sx={{alignSelf: 'center', dicplay: 'block', marginBottom: '20px'}}>
+          <Button sx={buttonStyle} onClick={handleStatusesUpdate}>Створити</Button>
+          <Button sx={buttonStyle} onClick={handleClose}>Відмінити</Button>
         </DialogActions>
       </BootstrapDialog>
       <SimpleSnackbar/>

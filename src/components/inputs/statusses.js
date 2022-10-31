@@ -27,6 +27,7 @@ export function StatusesSelectInput() {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const statuses = useSelector((state) => state.ordersAll.getStatuses);
+
   let totalChecked = statuses.filter(str=>str.checked === true);
   const stringSelectInput =() =>{
     if (statuses.length === totalChecked.length) {
@@ -40,7 +41,7 @@ export function StatusesSelectInput() {
 const setStatuses =(e)=>{
   let check = e.target.checked;
   let name = e.target.id;
-dispatch(orderStatusUpdate({name,check}))
+// dispatch(orderStatusUpdate({name,check}))
 }
 
 
@@ -78,9 +79,10 @@ const handleClose = () => {
         >
 
           {statuses.map((str, ind) => (
-            <MenuItem  key={ind} value={str.name} >
-              <Checkbox id={str.name} onChange={setStatuses} 
-               checked={str.checked}
+            <MenuItem  key={ind} value={str.name} onChange={setStatuses} >
+              <Checkbox id={str.name} 
+              defaultChecked
+              //  checked={str.checked}
                />
               <ListItemText sx={{fontSize: '12px' }} primary={str.name} />
             </MenuItem>

@@ -5,7 +5,7 @@ const statusReduser = createSlice({
   initialState: {
     name: '',
     statusId: '',
-    color: '#9f9f9f',
+    style: '#9f9f9f',
     group: [],
     runInStore: '',
     accepted: true,
@@ -14,6 +14,7 @@ const statusReduser = createSlice({
     allStatuses: [],
     isValid: false,
     checked: true,
+    modalOpen: false,
     groupsName:[
       'Адміністратори',
       'Менеджери',
@@ -37,7 +38,7 @@ const statusReduser = createSlice({
         return { ...state, 
              name: '',
             statusId:'',
-            color: '#9f9f9f',
+            style: '#9f9f9f',
             group: [],
             runInStore: '',
             accepted: true,
@@ -54,7 +55,7 @@ const statusReduser = createSlice({
           return { ...state, name: action.payload };
         },
         colorStatus: (state, action) => {
-          return { ...state, color: action.payload };
+          return { ...state, style: action.payload };
         },
         groupStatus: (state, action) => {
           return { ...state, group: action.payload };
@@ -76,7 +77,10 @@ const statusReduser = createSlice({
       },     
        validationForm: (state, action) => {
         return { ...state, isValid: action.payload};
-      }
+      },
+      modalOpenUpdate: (state, action) => {
+        return { ...state, modalOpen: action.payload};
+      }, 
 
 
   },
@@ -86,6 +90,6 @@ const statusReduser = createSlice({
 export const { nameStatus, numberStatus, colorStatus,
      groupStatus, runStatus, acceptedStatus, 
      deliverypStatus, infoStatus, allStatuses, idStatus,
-     clearStatusState, validationForm
+     clearStatusState, validationForm, modalOpenUpdate
     } = statusReduser.actions;
 export default statusReduser.reducer;

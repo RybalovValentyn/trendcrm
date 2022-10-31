@@ -41,7 +41,7 @@ export const orderStatusThunk = createAsyncThunk(
       const data = await {
         name: state.addStatus.name,
         statusId: state.addStatus.statusId,
-        color: state.addStatus.color,
+        style: state.addStatus.style,
         group:state.addStatus.group,
         runInStore: state.addStatus.runInStore,
         accepted: state.addStatus.accepted,
@@ -69,7 +69,7 @@ export const orderStatusUpdate = createAsyncThunk(
       const data = await { 
         name: el.name,
         statusId: el.statusId,
-        color: el.color,
+        style: el.style,
         group:el.group,
         runInStore: el.runInStore,
         accepted: el.accepted,
