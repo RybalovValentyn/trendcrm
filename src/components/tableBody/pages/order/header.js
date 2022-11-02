@@ -1,7 +1,4 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import {colorsRef} from '../../../../consts/colorConstants';
-import {buttonStyle} from './styles';
 import {clasListContainer, svgStyle} from './styles';
 import AddIcon from '@mui/icons-material/Add';
 import AddTaskIcon from '@mui/icons-material/AddTask';
@@ -15,12 +12,15 @@ import ListItem from '@mui/material/ListItem';
 import { useDispatch, useSelector } from 'react-redux';
 import {getOpenTableCreate} from '../../../../redux/ordersReduser';
 import {CreateTable} from './createTable';
+import {StyledButton} from '../../../buttons/buttons';
+import {CreateRows} from './createRow/createRows';
 
 export function HeaderContainer() {
 const dispatch = useDispatch();
+const isOpen = useSelector((state) => state.ordersAll.openCreator);
 
 const handleClick = (e)=>{
-  dispatch(getOpenTableCreate(true))
+  dispatch(getOpenTableCreate(!isOpen))
   console.log('shandleClicked');
 }
 
@@ -41,10 +41,13 @@ const listItemStyle={
 
   return (
     <Box sx={clasListContainer}  component="section">
-      <Button sx={buttonStyle} onClick={handleClick} 
-      startIcon={<AddIcon fontSize='large' />}
-      >Створити</Button>
-      <CreateTable/>
+      <StyledButton
+        text={isOpen?'Cloused': 'Створити'}
+        func= {handleClick}
+        startIcon = { <AddIcon fontSize='large' />}
+           />
+      {/* <CreateTable/> */}
+      <CreateRows/>
     <List  sx={listStyle}>
 
       <ListItem sx={listItemStyle}>

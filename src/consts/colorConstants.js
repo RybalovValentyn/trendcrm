@@ -25,7 +25,8 @@ modalInputBorderColor: '#d0d0d0',
 buttonBorderInModal: '#7bb31a',
 buttonTextColorInModal: '#4b4b4b',
 
-
+createBorderColorOFAll: '#e5e5e5',
+labelTextColor: '#232323'
 
 }
 

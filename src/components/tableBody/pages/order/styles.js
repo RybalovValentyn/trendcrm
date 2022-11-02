@@ -61,11 +61,12 @@ fontSize: '14px',
   height: '30px',
   color: colorsRef.buttonTextColorInModal,
   borderRadius: '8px',
-  padding: '4px 30px'
+  padding: '4px 35px'
 }
 
 export const clasListContainer ={
   width: '100%',
+  position: 'relative',
   backgroundColor: colorsRef.boxTableColor,
   display: 'flex',
   justifyContent: 'space-between',
