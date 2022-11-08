@@ -7,16 +7,18 @@ import {getOpenTableCreate} from '../../../../../redux/ordersReduser';
 import { colorsRef } from '../../../../../consts/colorConstants';
 import { Paper, Typography } from '@mui/material';
 import {StyledSelect} from './select';
-import {MultiInput} from './textField';
+import {MultiInput} from './multiInputs';
 import {styled } from '@mui/material/styles';
 
 import { useState } from 'react';
+
+
 export function CreateRows(){
     const dispatch = useDispatch();
 
-    // const isOpen = useSelector((state) => state.ordersAll.openCreator);
+    const isOpen = useSelector((state) => state.ordersAll.openCreator);
 
-    const isOpen = true;
+    // const isOpen = true;
 
 
 
@@ -28,7 +30,7 @@ let boxHeight = 0;
 if (isOpen) {
     index = 3;
     positionTop = '100%';
-    boxHeight = '85vh';
+    boxHeight = '130vh';
 }
     const boxStyle ={
         width: '99%',
@@ -79,11 +81,11 @@ return(
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Коментарій:' name='comment' type='textarea' />
+    <MultiInput label='Коментарій:' name='client_comment' type='textarea' />
     </StyledList>
     
     <StyledList>
-    <MultiInput label='Доп. поле:' name='client_comment' type='textarea' />
+    <MultiInput label='Доп. поле:' name='additional_field' type='textarea' />
     </StyledList>
 
 </List>
@@ -107,7 +109,63 @@ return(
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Дата відправки:' name='datetime_sentm' type='data'/>
+    <MultiInput label='Дата відправки:' name='datetime' type='data'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Час відправки:' name='datetime' type='time'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Доставка:' name='delivery_type_id' type='select'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Місто відділення:' name='warehouse_city' type='autocomplete'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Адреса відділення:' name='warehouse_address' type='autocomplete'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Платник за доставку:' name='payment_name'  type='select'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Платник наложеного платежу:' name='payment_name'  type='select'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Вага (кг):' name='weight' type='num'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Обємна вага:' name='volume_general' type='num'/>
+    </StyledList>
+    
+    <StyledList>
+    <MultiInput label='Кількість місць:' name='count_calls' type='num'/>
+    </StyledList>
+    
+    <StyledList>
+    <MultiInput label='ТТН:' name='ttn' type='readOnly'/>
+    </StyledList>
+    
+    <StyledList>
+    <MultiInput label='Номер повернення:' name='order_return' type='readOnly'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Статус:' name='order_return' type='readOnly'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Розрахункова вартість:' name='cost' type='readOnly'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Коментарій:' name='novaposhta_comment' type='textarea'/>
     </StyledList>
     {/* <StyledList>
     <MultiInput label='Телефон:' name='client_phone' type='text'/>

@@ -10,7 +10,7 @@ import {BpCheckbox} from '../../../inputs/checkBox'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useDispatch, useSelector } from 'react-redux';
-import {getOpenTableCreate} from '../../../../redux/ordersReduser';
+import {getOpenTableCreate, getClouseTableCreate} from '../../../../redux/ordersReduser';
 import {CreateTable} from './createTable';
 import {StyledButton} from '../../../buttons/buttons';
 import {CreateRows} from './createRow/createRows';
@@ -22,6 +22,7 @@ const isOpen = useSelector((state) => state.ordersAll.openCreator);
 const handleClick = (e)=>{
   dispatch(getOpenTableCreate(!isOpen))
   console.log('shandleClicked');
+  dispatch(getClouseTableCreate())
 }
 
 const onChangeCheckBox =() =>{

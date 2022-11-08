@@ -58,6 +58,7 @@ const authSlice = createSlice({
         ...state,
         isLoading: true,
         isAuth: false,
+        isError: false,
       };
     },
     [loginThunk.fulfilled](state, action) {
@@ -97,7 +98,30 @@ const authSlice = createSlice({
         isAuth: false,
       };
     },
+    [currentThunk.pending](state, action) {
+      return {
+        ...state,
+        isLoading: true,
+        isAuth: false,
+        isError: false
+       };
+    },
+    [currentThunk.fulfilled](state, action) {
 
+      return {
+        ...state,
+         isLoading: false,
+         isAuth: true,
+        };
+    },
+    [currentThunk.rejected](state, action) {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+        isAuth: false,
+      };
+    },
  
   },
 });

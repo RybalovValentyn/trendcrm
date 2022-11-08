@@ -1,43 +1,41 @@
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector  } from 'react-redux';
 import {getFormTable} from '../../redux/ordersReduser';
 import { ValidationTextField } from './stylesInputs';
+import { useState } from 'react';
 
-export  function BasicDateTimePicker({label, name, func, val, type}) {
+export  function BasicTimePicker({label, name, func, val, type}) {
     const dispatch = useDispatch();
     const client = useSelector((state) => state.ordersAll.createRows);
-    let initDate = dayjs().format('YYYY-MM-DD T HH:mm:ss');
-   
 
-  const daateChange =(newValue) =>{
+  const timeChange =(newValue) =>{
 let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString();
 dispatch(getFormTable({id: name, str }))
   }
 
- const onDataUpdate = () =>{
-  let str = initDate
+ const onTimeUpdate = () =>{
+let str = dayjs().format('YYYY-MM-DD T HH:mm:ss');
     dispatch(getFormTable({id: name, str }))
-}
+};
 
 
   return (
     <Box sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
     <LocalizationProvider   dateAdapter={AdapterDayjs}>
-      <DatePicker
-      id={name}
-      sx={{backgroundColor: '#9a9a9a'}}
-      inputFormat="YYYY-MM-DD"
-       value={client[name]}
-        onChange={daateChange}
-        renderInput={(params) => <ValidationTextField align='left' {...params} />}
+
+    <TimePicker
+          value={client[name]}
+          onChange={timeChange}
+          inputFormat="HH-mm-ss"
+          renderInput={(params) => <ValidationTextField align='left' {...params} />}
         />
     </LocalizationProvider>
-    <AddIcon onClick={onDataUpdate} sx={{border: '1px solid', marginRight: '3px', borderRadius: '50%', marginLeft: '3px'}} fontSize='small' />
+    <AddIcon onClick={onTimeUpdate} sx={{border: '1px solid', marginRight: '3px', borderRadius: '50%', marginLeft: '3px'}} fontSize='small' />
     </Box>
   );
 }

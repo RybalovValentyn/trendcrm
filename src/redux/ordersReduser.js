@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
+import { getSitysFromNp, getAdressFromNp } from './asyncThunc';
+
 
 const initStatus =[
   {
@@ -53,6 +55,48 @@ const initStatus =[
   }
   
 ]
+
+// https://react.trendcrm.biz/api/order/2
+// {fio: "Петрович", phone: "38 (066) 255-90-69", email: "valentlov@gmail.com", ig_username: "",…}
+// additional_field: "",
+// backward_delivery_summ: "0.00",
+// comment: "ккккккккккк",
+// cost: "0.00",
+// delivery_payers:"Recipient",
+// delivery_payers_redelivery:"Recipient",
+// delivery_service_type: "1",
+// delivery_type: "12",
+// discount_total: "0",
+// doors_address: "",
+// doors_city: "",
+// doors_flat: "",
+// doors_house: "",
+// email: "valentlov@gmail.com",
+// fio: "Петрович",
+// ig_username: "",
+// list_script:"1",
+// novaposhta_comment: "",
+// payment_type:"15",
+// phone: "38 (066) 255-90-69",
+// responsible: "1",
+// responsible_group: "0",
+// responsible_packer: "0",
+// script_id: "1",
+// seats_amount: "1",
+// sent: "",
+// status: "4",
+// tnn: ""
+// type_discount_total: "0"
+// utm_campaign: ""
+// utm_content: ""
+// utm_medium: ""
+// utm_source: ""
+// utm_term: ""
+// volume_general: "0.0000"
+// warehouse_address: "Відділення №11 (до 30 кг): просп. Слобожанський (ран. Газети Правди), 6"
+// warehouse_city: "Дніпро"
+// weight: "0.00"
+
 const rows=  { 
  id: 0,
 client_id: 0,
@@ -73,7 +117,7 @@ discount: 0,
 discount_type: 0,
 order_return: 0,
 total: 0.00,
-backward_delivery_summ: 0.00,
+backward_delivery_summ: '0.00',
 total_weight:0.00,
 total_volume_general: 0.00,
 comment:'',
@@ -92,11 +136,11 @@ datetime_sent: null,
 DT_RowId: 0,
 delivery_type_id: 0,
 client: '',
-client_phone:'380673280447',
+client_phone:'+38(0__)___-__-__',
 banned_phone: 0,
 ig_username: '',
 client_ip: '',
-count_calls: null,
+count_calls: 0,
 sms_count: null,
 packer_name: null,
 group_name: null,
@@ -106,13 +150,13 @@ products_names: 'Услуги - 1 шт',
 product_amount: 1,
 system_action: '',
 storage_income_price_sum: 1.00,
-payment_name: null,
+payment_name: '',
 j_number: null,
 justin_account: null,
 j_ttn_cost: null,
 j_status: '',
 j_name: null,
-ttn: null,
+ttn: '',
 ttn_cost: 0.00,
 ttn_status: null,
 ttn_status_code: null,
@@ -132,6 +176,16 @@ repeat_client: 1,
 doubl_client: 1,
 client_mail: '',
 instagram: '',
+warehouse_city: '',
+warehouse_address: '',
+weight: 0,
+volume_general: 0,
+novaposhta_comment: "",
+cost: 0,
+doors_address: "",
+doors_city: "",
+doors_flat: "",
+doors_house: "",
 };
 
 const ordersReduser = createSlice({
@@ -148,6 +202,10 @@ const ordersReduser = createSlice({
  createRows:{...rows},
  delivery_type: ['Нова пошта', 'justin', 'delivery', 'Курєр', 'УкрПошта', 'Самовивіз'],
  payment_type :['Оплачено', 'Наложений', 'Передплата'],
+ delivery_type_id: ['Відділення','Адреса'],
+ sityNewPost:[],
+ adressNewPost: [],
+ payment_name: ['Відправник', 'Отримувач'],
   },
 
    reducers: {
@@ -166,6 +224,11 @@ const ordersReduser = createSlice({
             openCreator: action.payload
         };
         },  
+        getClouseTableCreate:  (state, action) => {  
+          return { ...state,
+            createRows: {...rows}
+        };
+        },
         getFormTable: (state, action) => { 
           console.log(action.payload);
           switch (action.payload.id) {
@@ -175,12 +238,26 @@ const ordersReduser = createSlice({
             };
             case ('client_phone'):              
               return { ...state,
-                createRows:{ ...state.createRows, client_phone: Number(action.payload.str)}
+                createRows:{ ...state.createRows, client_phone: action.payload.str}
             };
             case ('backward_delivery_summ'):              
             return { ...state,
-              createRows:{ ...state.createRows, backward_delivery_summ:[ Number.parseFloat(action.payload.str).toFixed(2)]}
+              createRows:{ ...state.createRows, backward_delivery_summ:action.payload.str}
           };
+          case ('datetime'):              
+          return { ...state,
+            createRows:{ ...state.createRows, datetime:action.payload.str}
+        };
+          case ('payment_name'):                    
+          return { ...state,
+            createRows:{ ...state.createRows, payment_name:action.payload.str}
+        };
+        case ('warehouse_city'): 
+        console.log('dddddddddd');             
+        return { ...state,
+          createRows:{ ...state.createRows, warehouse_city:action.payload.str,warehouse_address: '' }
+      };
+        
          default:
           return { ...state,
             createRows:{ ...state.createRows, [action.payload.id]: action.payload.str}
@@ -267,12 +344,62 @@ const ordersReduser = createSlice({
              
             };      
           },
+          [getSitysFromNp.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+              isError: false,
+                }; 
+          },
+          [getSitysFromNp.fulfilled](state, action) {    
+              return{
+             ...state,
+             sityNewPost: [...action.payload],
+             isLoading: false,
+            }
+          },
+          [getSitysFromNp.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+             
+            };      
+          },
+    
+          [getAdressFromNp.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+              isError: false,
+              error: ''
+                }; 
+          },
+          [getAdressFromNp.fulfilled](state, action) {    
+            console.log(action.payload);
+              return{
+             ...state,
+             adressNewPost: [...action.payload],
+             isError: false,
+             isLoading: false,
+            }
+          },
+          [getAdressFromNp.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+            };      
+          },
+          
      
       
 
         }}
 );
 
-export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, getFormTable} = ordersReduser.actions;
+export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, getFormTable, getClouseTableCreate} = ordersReduser.actions;
 export default ordersReduser.reducer;
 

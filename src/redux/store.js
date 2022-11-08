@@ -20,16 +20,26 @@ import ordersReduser from './ordersReduser.js';
     storage,
     whiteList: ['hash_key'],
   };
+  const orderPersistConfig = {
+    key: 'orderAll',
+    storage,
+    blacklist: ['isError', 'error']
+    };
   
   const authPersistReducer = persistReducer(authPersistConfig, authReduser);
+  const orderPersistReduser = persistReducer(orderPersistConfig, ordersReduser);
 
   export const store = configureStore({
+    // reducer: {
+    //    auth: authReduser,
+    //   addStatus: statusReduser,
+    //   ordersAll: ordersReduser,
+    // },
     reducer: {
-      // auth: authPersistReducer,
-      auth: authReduser,
-      addStatus: statusReduser,
-      ordersAll: ordersReduser,
-    },
+      auth: authPersistReducer,
+     addStatus: statusReduser,
+     ordersAll: orderPersistReduser,
+   },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: {

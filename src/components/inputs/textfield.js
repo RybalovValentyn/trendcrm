@@ -1,24 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
-import InputBase from '@mui/material/InputBase';
-import {styled } from '@mui/material/styles';
 import {nameStatus} from '../../redux/statusReduser';
-
-
-
-const BootstrapInput = styled(InputBase)(({ theme }) => ({
-    '& .MuiInputBase-input': {
-      borderRadius: 4,
-      position: 'relative',
-      fontSize: 12,
-      border: `1px solid #d0d0d0`,
-      width: 'auto',
-      padding: '6px',
-    },
-    '&:focus &:hover': {
-      
-      },
-  }));
+import { BootstrapInput } from './stylesInputs';
 
 
 export function StyledInput() {

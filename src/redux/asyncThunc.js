@@ -10,7 +10,9 @@ const login = "/login";
 const auth = '/authenticate'
 // const REBASE_URL = 'https://react.trendcrm.biz';
 const REBASE_URL= 'http://localhost:5000/api';
-
+const APINP = '269d273b9f6c3d24a96414527df4f702';
+const novaposhta = '/novaposhta/cities/list';
+const adress = '/novaposhta/warehouses/list';
 
 export const loginThunk = createAsyncThunk(
   'users/login',
@@ -30,7 +32,6 @@ export const loginThunk = createAsyncThunk(
     }
   },
 );
-// var response = http_get('./api/authenticate', {id: $.cookie("user.id"), hashKey: $.cookie("user.hashKey"), role: $.cookie("user.role")})
 
 export const currentThunk = createAsyncThunk(
   'users/current',
@@ -61,7 +62,48 @@ export const currentThunk = createAsyncThunk(
 );
 
 
+export const getSitysFromNp = createAsyncThunk(
+  'order/DeliveryCity',
+  async (_, { rejectWithValue, getState }) => {
+          try {
+        const { data } = await axios({
+          method: "get",
+           url:  REBASE_URL+novaposhta,
 
+          })
+
+        return data.suggestions.flatMap(sity=> sity.value).filter((sity, index, array) => array.indexOf(sity) === index)
+        ;
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+export const getAdressFromNp = createAsyncThunk(
+  'order/adress',
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState();   
+    let sity = state.ordersAll.createRows.warehouse_city
+    console.log(sity);
+       try {
+        const { data } = await axios({
+          method: "post",
+           url:  REBASE_URL+adress,
+           data: {warehouse_city: sity}
+          })
+         return data.flatMap(street=> street.value).filter((street, index, array) => array.indexOf(street) === index)
+      } catch (error) {
+        return rejectWithValue({
+         error: error.message
+        });
+      }
+    
+  },
+);
 // export const currentThunk = createAsyncThunk(
 //   'users/current',
 //   async (_, { rejectWithValue, getState }) => {
