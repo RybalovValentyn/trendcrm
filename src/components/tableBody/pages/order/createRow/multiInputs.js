@@ -68,6 +68,7 @@ const boxStyle={
      justifyContent: 'space-between',
      alignItems: 'center',
      
+     
 };
 
 export function MultiInput({label, name, func, val, type}) {
@@ -156,7 +157,7 @@ const keyCodeInput = (e) =>{
    }else if (name === 'delivery_type'|| name === 'payment_type' || name === 'delivery_type_id' ) {
         dispatch(getFormTable({id:name, str})) 
 
-  }else if (name === 'payment_name' ) {
+  }else if (name === 'delivery_payers' || name ==='delivery_payers_redelivery' ) {
       dispatch(getFormTable({id:name, str})) 
 } else dispatch(getFormTable({id, str}))       
           
@@ -223,7 +224,6 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
 
       </Select>
       </FormControl>
-
       </Box>
 
      )} else if(type === 'data'){
@@ -283,6 +283,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
                {label && <Label htmlFor="named-select">
                {label}
                </Label>}
+               <Box sx={{  width: '100%', maxWidth: '250px' ,display: 'flex',  justifyContent: 'start',alignItems: 'center',}}>
            <BootstrapInput
            autoComplete="off"
            type={type}
@@ -291,6 +292,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
            readOnly
            variant="outlined" />
           {name === 'ttn' && <DotMenu/>}
+          </Box>
         </Box>
          )};
 

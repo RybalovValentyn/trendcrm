@@ -186,6 +186,8 @@ doors_address: "",
 doors_city: "",
 doors_flat: "",
 doors_house: "",
+delivery_payers:"",
+delivery_payers_redelivery:"",
 };
 
 const ordersReduser = createSlice({
@@ -205,7 +207,8 @@ const ordersReduser = createSlice({
  delivery_type_id: ['Відділення','Адреса'],
  sityNewPost:[],
  adressNewPost: [],
- payment_name: ['Відправник', 'Отримувач'],
+ delivery_payers: ['Відправник', 'Отримувач'],
+ delivery_payers_redelivery: ['Відправник', 'Отримувач'],
   },
 
    reducers: {
@@ -247,10 +250,6 @@ const ordersReduser = createSlice({
           case ('datetime'):              
           return { ...state,
             createRows:{ ...state.createRows, datetime:action.payload.str}
-        };
-          case ('payment_name'):                    
-          return { ...state,
-            createRows:{ ...state.createRows, payment_name:action.payload.str}
         };
         case ('warehouse_city'): 
         console.log('dddddddddd');             

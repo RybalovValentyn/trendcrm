@@ -9,8 +9,8 @@ import { Paper, Typography } from '@mui/material';
 import {StyledSelect} from './select';
 import {MultiInput} from './multiInputs';
 import {styled } from '@mui/material/styles';
-
 import { useState } from 'react';
+import { SaveButton } from '../../../../buttons/saveButton';
 
 
 export function CreateRows(){
@@ -129,11 +129,11 @@ return(
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Платник за доставку:' name='payment_name'  type='select'/>
+    <MultiInput label='Платник за доставку:' name='delivery_payers'  type='select'/>
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Платник наложеного платежу:' name='payment_name'  type='select'/>
+    <MultiInput label='Платник наложеного платежу:' name='delivery_payers_redelivery'  type='select'/>
     </StyledList>
 
     <StyledList>
@@ -167,29 +167,11 @@ return(
     <StyledList>
     <MultiInput label='Коментарій:' name='novaposhta_comment' type='textarea'/>
     </StyledList>
-    {/* <StyledList>
-    <MultiInput label='Телефон:' name='client_phone' type='text'/>
-    </StyledList>
 
-    <StyledList>
-    <MultiInput label='E-mail:' name='client_mail' type='e-mail' />
-    </StyledList>
-
-    <StyledList>
-    <MultiInput label='Instagram:' name='instagram' type='text' />
-    </StyledList>
-
-    <StyledList>
-    <MultiInput label='Коментарій:' name='comment' type='textarea' />
-    </StyledList>
-    
-    <StyledList>
-    <MultiInput label='Доп. поле:' name='client_comment' type='textarea' />
-    </StyledList> */}
 
 </List>
         </Paper>
-
+<SaveButton  />
     </Box>
 )
 
