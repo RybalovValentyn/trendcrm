@@ -14,10 +14,11 @@ import {getOpenTableCreate, getClouseTableCreate} from '../../../../redux/orders
 import {CreateTable} from './createTable';
 import {StyledButton} from '../../../buttons/buttons';
 import {CreateRows} from './createRow/createRows';
-
+import { ListAutocompliteStatuses } from './createRow/listStatuses';
 export function HeaderContainer() {
 const dispatch = useDispatch();
-const isOpen = useSelector((state) => state.ordersAll.openCreator);
+
+const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
 
 const handleClick = (e)=>{
   dispatch(getOpenTableCreate(!isOpen))
@@ -48,6 +49,7 @@ const listItemStyle={
         startIcon = { <AddIcon fontSize='large' />}
            />
       {/* <CreateTable/> */}
+      {isOpen && <ListAutocompliteStatuses/>}
       <CreateRows/>
     <List  sx={listStyle}>
 

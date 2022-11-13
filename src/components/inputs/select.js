@@ -24,12 +24,22 @@ const MenuProps = {
 
 export function SelectInput() {
   const dispatch = useDispatch();
-  const names = useSelector((state) => state.addStatus.groupsName);
+  const groupNames = useSelector((state) => state.addStatus.groups);
   const [groups, setgroups] = useState(['Нічого не вибрано']);
   const [open, setOpen] = useState(false);
 
+
   const handleClose = () => {
-    dispatch(groupStatus(groups))
+    let str = groups.reduce((acc,nam)=>{
+     let s = groupNames.find((n)=>{
+        if ( n.name === nam) {
+        return n.id
+        }
+     })
+     acc.push(s)
+     return acc
+    },[]).map(s=>s.id)
+    dispatch(groupStatus(str))
     setOpen(false);
   };
 
@@ -61,10 +71,10 @@ export function SelectInput() {
           MenuProps={MenuProps}
         >
 
-          {names.map((name) => (
-            <MenuItem  key={name} value={name} >
-              <Checkbox checked={groups.indexOf(name) > -1} />
-              <ListItemText sx={{fontSize: '12px' }} primary={name} />
+          {groupNames.map((name) => (
+            <MenuItem  key={name.id} value={name.name} >
+              <Checkbox checked={groups.indexOf(name.name) > -1} />
+              <ListItemText sx={{fontSize: '12px' }} primary={name.name} />
             </MenuItem>
           ))}
         </Select>

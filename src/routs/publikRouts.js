@@ -4,8 +4,8 @@ import {Router} from './routs';
 
 
 export function PublicRoute({ component: C, }) {
-    // const isAuth = useSelector(state => state.auth.isAuth)
-    const isAuth = true
+    const isAuth = useSelector(state => state.auth.isAuth)
+    // const isAuth = true
     return <>
 
         {isAuth ? <Navigate to={'/trendcrm/order'} /> : <C />}

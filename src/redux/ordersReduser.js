@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
-import { getSitysFromNp, getAdressFromNp } from './asyncThunc';
-
+import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd, getAllOrders } from './asyncThunc';
+import { getSityNP, getAddressNP } from './novaPoshta';
 
 const initStatus =[
   {
-    name: '1111111111111',
-    statusId: '1',
+    name: 'Новий',
+    statusId: '4',
     style: '#b74343',
     group: [
       'Адміністратори',
@@ -23,7 +23,7 @@ const initStatus =[
   },
   {
     name: '222222222',
-    statusId: '1',
+    statusId: '9',
     style: '#b74343',
     group: [
       'Адміністратори',
@@ -39,7 +39,7 @@ const initStatus =[
   },
   {
     name: '3333333',
-    statusId: '1',
+    statusId: '77',
     style: '#b74343',
     group: [
       'Адміністратори',
@@ -51,167 +51,96 @@ const initStatus =[
     accepted: true,
     deliveryStatus: true,
     infoStatus: true,
-    checked: false
+    checked: true
   }
   
 ]
 
-// https://react.trendcrm.biz/api/order/2
-// {fio: "Петрович", phone: "38 (066) 255-90-69", email: "valentlov@gmail.com", ig_username: "",…}
-// additional_field: "",
-// backward_delivery_summ: "0.00",
-// comment: "ккккккккккк",
-// cost: "0.00",
-// delivery_payers:"Recipient",
-// delivery_payers_redelivery:"Recipient",
-// delivery_service_type: "1",
-// delivery_type: "12",
-// discount_total: "0",
-// doors_address: "",
-// doors_city: "",
-// doors_flat: "",
-// doors_house: "",
-// email: "valentlov@gmail.com",
-// fio: "Петрович",
-// ig_username: "",
-// list_script:"1",
-// novaposhta_comment: "",
-// payment_type:"15",
-// phone: "38 (066) 255-90-69",
-// responsible: "1",
-// responsible_group: "0",
-// responsible_packer: "0",
-// script_id: "1",
-// seats_amount: "1",
-// sent: "",
-// status: "4",
-// tnn: ""
-// type_discount_total: "0"
-// utm_campaign: ""
-// utm_content: ""
-// utm_medium: ""
-// utm_source: ""
-// utm_term: ""
-// volume_general: "0.0000"
-// warehouse_address: "Відділення №11 (до 30 кг): просп. Слобожанський (ран. Газети Правди), 6"
-// warehouse_city: "Дніпро"
-// weight: "0.00"
+
 
 const rows=  { 
- id: 0,
-client_id: 0,
-store_id: null,
-store_url: '',
-script_id: 1,
-responsible: 'Admin',
-responsible_group: 0,
-responsible_packer: 0,
-status: 0,
-delivery_type: '',
-delivery_price: 0.00,
-payment_type: 0,
-payment_status: 0,
-prepay_amount: 0.00,
-payment_received: 0,
-discount: 0,
-discount_type: 0,
-order_return: 0,
-total: 0.00,
-backward_delivery_summ: '0.00',
-total_weight:0.00,
-total_volume_general: 0.00,
-comment:'',
-client_comment:'',
-additional_field:'',
-utm_source:null,
-utm_medium:null,
-utm_term:null,
-utm_content:null,
-utm_campaign:null,
-datetime: '',
-update_at: '',
-view_id: 1,
-new_datetime: '',
-datetime_sent: null,
-DT_RowId: 0,
-delivery_type_id: 0,
-client: '',
-client_phone:'+38(0__)___-__-__',
-banned_phone: 0,
-ig_username: '',
-client_ip: '',
-count_calls: 0,
-sms_count: null,
-packer_name: null,
-group_name: null,
-status_name: '',
-status_style: '#a2c4c9',
-products_names: 'Услуги - 1 шт',
-product_amount: 1,
-system_action: '',
-storage_income_price_sum: 1.00,
-payment_name: '',
-j_number: null,
-justin_account: null,
-j_ttn_cost: null,
-j_status: '',
-j_name: null,
-ttn: '',
-ttn_cost: 0.00,
-ttn_status: null,
-ttn_status_code: null,
-ttn_update_at: null,
-novaposhta_account: null,
-counterparty: '',
-barcode: null,
-barcode_cost: null,
-barcode_status: null,
-ukrposhta_account: null,
-store_title: null,
-store_responsible: null,
-name_store_resp: null,
-supplier: null,
-client_groups: '',
-repeat_client: 1,
-doubl_client: 1,
-client_mail: '',
-instagram: '',
-warehouse_city: '',
-warehouse_address: '',
-weight: 0,
-volume_general: 0,
-novaposhta_comment: "",
-cost: 0,
-doors_address: "",
-doors_city: "",
-doors_flat: "",
-doors_house: "",
-delivery_payers:"",
-delivery_payers_redelivery:"",
+  fio: '',
+  id: '',
+  phone: '+38(0__)___-__-__',
+  email: '',
+  ig_username: '',
+  comment: '',
+  additional_field: '',
+  delivery_type: 0,
+  responsible_packer: 0,
+  payment_type:0,
+  backward_delivery_summ: '0.00',
+  backward_summ: '0.00',
+  datetime: '',
+  datetime_sent: '',
+  delivery_service_type: 0,
+  prepay_status: 0,
+  warehouse_city: '',
+  warehouse_address: '',
+  delivery_payers: 0,
+  delivery_payers_redelivery: 0,
+  weight: 0,
+  volume_general: "0.0000",
+  seats_amount: "1",
+  cost: "0.00",
+  novaposhta_comment: "",
+  tnn: '',
+  sent: "0",
+  status: "4",
+  doors_address: "",
+  doors_city: "",
+  responsible: 'Admin',
+  group_name: '',
+  store_url:'',
+  data_create: ''
 };
 
 const ordersReduser = createSlice({
   name: 'orders',
   initialState: {
+  columns: [],
+  tHeadColumn: [],
+  bodyTableRows: [],
  getStatuses: [...initStatus],
+ nextStatus: '',
  isLoading: false,
  order: [],
  isValid: false,
  error: '',
  isError: false,
  widthOfColumn:[],
- openCreator: false,
+ modalControl:{
+  openCreator: false,
+
+},
+ 
  createRows:{...rows},
  delivery_type: ['Нова пошта', 'justin', 'delivery', 'Курєр', 'УкрПошта', 'Самовивіз'],
- payment_type :['Оплачено', 'Наложений', 'Передплата'],
- delivery_type_id: ['Відділення','Адреса'],
+ payment_type :['Не вибрано','Оплачено', 'Наложений', 'Передплата'],
+ delivery_service_type: ['Відділення','Адреса'],
  sityNewPost:[],
  adressNewPost: [],
- delivery_payers: ['Відправник', 'Отримувач'],
- delivery_payers_redelivery: ['Відправник', 'Отримувач'],
+ delivery_payers: ['Отримувач', 'Відправник' ],
+ delivery_payers_redelivery: ['Отримувач', 'Відправник' ],
+ responsible_packer: ['Нічого не вибрано','admin'],
+ responsible: ['Admin'],
+ prepay_status: ['Ні','Так'],
+ doors_city: [],
+doors_address:[],
+doors_flat: [],
+doors_house: [],
+
   },
 
    reducers: {
+       bodyTableRowsUpdate: (state, action) => {  
+        return { ...state,
+          bodyTableRows: [...action.payload ] 
+      };},
+       tHeadColumnUpdate: (state, action) => {  
+          return { ...state,
+            tHeadColumn: [...action.payload ] 
+        };},
         getWidthUpdate: (state, action) => {  
           return { ...state,
             widthOfColumn: [...action.payload ] 
@@ -223,8 +152,8 @@ const ordersReduser = createSlice({
         };
         }, 
         getOpenTableCreate:  (state, action) => {  
-          return { ...state,
-            openCreator: action.payload
+          return { ...state  ,
+            modalControl:{openCreator: action.payload}
         };
         },  
         getClouseTableCreate:  (state, action) => {  
@@ -235,15 +164,43 @@ const ordersReduser = createSlice({
         getFormTable: (state, action) => { 
           console.log(action.payload);
           switch (action.payload.id) {
-            case ('client'):
+            case ('fio'):
                return { ...state,
-                createRows:{ ...state.createRows, client: action.payload.str}
+                createRows:{ ...state.createRows, fio: action.payload.str}
             };
-            case ('client_phone'):              
+            case ('phone'):              
               return { ...state,
-                createRows:{ ...state.createRows, client_phone: action.payload.str}
+                createRows:{ ...state.createRows, phone: action.payload.str}
             };
-            case ('backward_delivery_summ'):              
+            case ('delivery_type'):       
+            return { ...state,
+              createRows:{ ...state.createRows,delivery_type :action.payload.ind}
+          };
+          case ('responsible_packer'):                    
+          return { ...state,
+            createRows:{ ...state.createRows, responsible_packer:action.payload.ind}
+        };
+            case ('payment_type'):            
+            return { ...state,
+              createRows:{ ...state.createRows, payment_type:action.payload.ind, backward_delivery_summ: '0.00'}
+          };
+          case ('delivery_service_type'):                    
+          return { ...state,
+            createRows:{ ...state.createRows, delivery_service_type:action.payload.ind}
+        };
+        case ('delivery_payers'):                    
+        return { ...state,
+          createRows:{ ...state.createRows, delivery_payers:action.payload.ind}
+          };
+          case ('prepay_status'):                    
+          return { ...state,
+            createRows:{ ...state.createRows, prepay_status:action.payload.ind}
+            };
+          case ('delivery_payers_redelivery'):                    
+          return { ...state,
+            createRows:{ ...state.createRows, delivery_payers_redelivery:action.payload.ind}
+        };
+            case ('backward_delivery_summ'):          
             return { ...state,
               createRows:{ ...state.createRows, backward_delivery_summ:action.payload.str}
           };
@@ -252,7 +209,7 @@ const ordersReduser = createSlice({
             createRows:{ ...state.createRows, datetime:action.payload.str}
         };
         case ('warehouse_city'): 
-        console.log('dddddddddd');             
+        // console.log('dddddddddd');             
         return { ...state,
           createRows:{ ...state.createRows, warehouse_city:action.payload.str,warehouse_address: '' }
       };
@@ -268,23 +225,49 @@ const ordersReduser = createSlice({
 
 
       extraReducers: {
+
+        [getAllOrders.pending](state, action) {
+          return {
+            ...state,
+            isLoading: true,
+            isError: false,
+ 
+          }; 
+        },
+        [getAllOrders.fulfilled](state, action) {
+    
+          return{
+           ...state,
+           columns: [...action.payload],
+            isLoading: false,
+            isError: false,
+ 
+          }
+        },
+        [getAllOrders.rejected](state, action) {
+          return {
+            ...state,
+            isLoading: false,
+            error: action.payload,
+            isError: true,
+ 
+          };},
     
         [orderStatusThunk.pending](state, action) {
           return {
             ...state,
             isLoading: true,
             isError: false,
-            isValid: false,
           }; 
         },
         [orderStatusThunk.fulfilled](state, action) {
-    
+    console.log(action.payload);
           return{
            ...state,
-            getStatuses: [...state.getStatuses,action.payload],
+            nextStatus: action.payload,
             isLoading: false,
             isError: false,
-            isValid: false,
+            isValid: true,
           }
         },
         [orderStatusThunk.rejected](state, action) {
@@ -293,8 +276,7 @@ const ordersReduser = createSlice({
             isLoading: false,
             error: action.payload,
             isError: true,
-            isValid: false,
-          };},
+            };},
 
           [getValidationForm.pending](state, action) {
             return {
@@ -320,29 +302,29 @@ const ordersReduser = createSlice({
               isValid: false,
             };      
           },
-          [orderStatusUpdate.pending](state, action) {
-            return {
-              ...state,
-              isLoading: true,
+          // [orderStatusUpdate.pending](state, action) {
+          //   return {
+          //     ...state,
+          //     isLoading: true,
           
-                }; 
-          },
-          [orderStatusUpdate.fulfilled](state, action) {    
-              return{
-             ...state,
-             getStatuses: [...action.payload],
+          //       }; 
+          // },
+          // [orderStatusUpdate.fulfilled](state, action) {    
+          //     return{
+          //    ...state,
+          //    getStatuses: [...action.payload],
 
-            }
-          },
-          [orderStatusUpdate.rejected](state, action) {
-            return {
-              ...state,
-              isLoading: false,
-              error: action.payload,
-              isError: true,
+          //   }
+          // },
+          // [orderStatusUpdate.rejected](state, action) {
+          //   return {
+          //     ...state,
+          //     isLoading: false,
+          //     error: action.payload,
+          //     isError: true,
              
-            };      
-          },
+          //   };      
+          // },
           [getSitysFromNp.pending](state, action) {
             return {
               ...state,
@@ -376,7 +358,7 @@ const ordersReduser = createSlice({
                 }; 
           },
           [getAdressFromNp.fulfilled](state, action) {    
-            console.log(action.payload);
+            // console.log(action.payload);
               return{
              ...state,
              adressNewPost: [...action.payload],
@@ -392,13 +374,119 @@ const ordersReduser = createSlice({
               isError: true,
             };      
           },
+
+          [getSityNP.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+              isError: false,
+              error: ''
+                }; 
+          },
+          [getSityNP.fulfilled](state, action) {    
+            // console.log(action.payload);
+              return{
+             ...state,
+             doors_city: [...action.payload],
+             isError: false,
+             isLoading: false,
+            }
+          },
+          [getSityNP.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+            };      
+          },
           
-     
-      
+          [getAddressNP.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+              isError: false,
+              error: ''
+                }; 
+          },
+          [getAddressNP.fulfilled](state, action) {    
+            // console.log(action.payload);
+              return{
+             ...state,
+             doors_address: [...action.payload],
+             isError: false,
+             isLoading: false,
+            }
+          },
+          [getAddressNP.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+            };      
+          },
+          
+          [postRowsFromForm.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+              isError: false,
+              error: '',
+              id: ''
+                }; 
+          },
+          [postRowsFromForm.fulfilled](state, action) {    
+            // console.log(action.payload);
+              return{
+             ...state,
+             createRows: { ...state.createRows, id: action.payload.order_id},
+             isError: false,
+             isLoading: false,
+
+            }
+          },
+          [postRowsFromForm.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+            };      
+          },
+          
+          [getRowsAfterAdd.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+              isError: false,
+              error: '',
+              id: ''
+                }; 
+          },
+          [getRowsAfterAdd.fulfilled](state, action) {    
+            // console.log(action.payload);
+              return{
+             ...state,
+             columns: { ...state.columns,...action.payload.order},
+             isError: false,
+             isLoading: false,
+
+            }
+          },
+          [getRowsAfterAdd.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+            };      
+          },
 
         }}
 );
 
-export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, getFormTable, getClouseTableCreate} = ordersReduser.actions;
+export const { getWidthUpdate, setWidthColumn, getOpenTableCreate,
+   getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate} = ordersReduser.actions;
 export default ordersReduser.reducer;
 

@@ -1,13 +1,19 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-
+const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
+// const REBASE_URL= 'http://localhost:5000/api';
+const postStatus = '/select_list/3/select_item/add'
 
 
 export const getValidationForm = createAsyncThunk(
   'orders/valid',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
+    const statuses = state.ordersAll.getStatuses
+    let isInclusesStatus = statuses.find(str=>str.statusId === state.addStatus.statusId.trim())
+  
+
          const error = {message: 'Потрібно заповнити обовязкові поля'}
       try {
         if (state.addStatus.name.trim().length === 0) {
@@ -15,6 +21,9 @@ export const getValidationForm = createAsyncThunk(
         }  
         if (state.addStatus.statusId.trim().length === 0) {
           throw error.message= 'Number is required'
+         } 
+         if (isInclusesStatus) {
+          throw error.message= 'Такий статус вже існує'
          } 
          if (state.addStatus.group.length === 0) {
              throw error.message= 'Groups is required'
@@ -35,55 +44,60 @@ export const orderStatusThunk = createAsyncThunk(
   'orders/status',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
-  
-    try {
-      const data = await {
-        name: state.addStatus.name,
-        statusId: state.addStatus.statusId,
-        style: state.addStatus.style,
-        group:state.addStatus.group,
-        runInStore: state.addStatus.runInStore,
-        accepted: state.addStatus.accepted,
-        deliveryStatus:state.addStatus.deliveryStatus,
-        infoStatus: state.addStatus.infoStatus,
-        checked:  state.addStatus.checked,
-      }
-        return data;
-    }catch (error) {
-       return rejectWithValue({        
-        error
-      });
+    const status = {
+      name: state.addStatus.name,
+      sort: state.addStatus.statusId,
+      style: state.addStatus.style,
+      groups:state.addStatus.group,
+      storage_edit: state.addStatus.runInStore,
+      is_accepted: state.addStatus.accepted,
+      delivery_edit:state.addStatus.deliveryStatus,
+      order_edit: state.addStatus.infoStatus,
+      status_ids:  state.addStatus.checked,
     }
+     try {
+      const { data } = await axios({
+        method: "post",
+         url:  REBASE_URL+postStatus,
+         data: status
+        })
+        console.log(data);
+       return data
+      } catch (error) {
+        return rejectWithValue({
+         error: error.message
+        });
+      }
   },
 );
 
-export const orderStatusUpdate = createAsyncThunk(
-  'update/status',
-  async ({name, check}, { rejectWithValue, getState }) => {
-    const state = getState();
-    let ind = state.ordersAll.getStatuses.findIndex(str=>str.name === name)
-    let el = state.ordersAll.getStatuses[ind]
+// export const orderStatusUpdate = createAsyncThunk(
+//   'update/status',
+//   async ({name, check}, { rejectWithValue, getState }) => {
+//     const state = getState();
+//     let ind = state.ordersAll.getStatuses.findIndex(str=>str.name === name)
+//     let el = state.ordersAll.getStatuses[ind]
  
-    try {
-      const data = await { 
-        name: el.name,
-        statusId: el.statusId,
-        style: el.style,
-        group:el.group,
-        runInStore: el.runInStore,
-        accepted: el.accepted,
-        deliveryStatus:el.deliveryStatus,
-        infoStatus: el.infoStatus,
-        checked:  check,
-      }
-      const copyStatus = [...state.ordersAll.getStatuses]
-      copyStatus.splice(ind,1, data)
-      const result = copyStatus
-        return result
-    }catch (error) {
-       return rejectWithValue({        
-        error
-      });
-    }
-  },
-);
+//     try {
+//       const data = await { 
+//         name: el.name,
+//         statusId: el.statusId,
+//         style: el.style,
+//         group:el.group,
+//         runInStore: el.runInStore,
+//         accepted: el.accepted,
+//         deliveryStatus:el.deliveryStatus,
+//         infoStatus: el.infoStatus,
+//         checked:  check,
+//       }
+//       const copyStatus = [...state.ordersAll.getStatuses]
+//       copyStatus.splice(ind,1, data)
+//       const result = copyStatus
+//         return result
+//       } catch (error) {
+//         return rejectWithValue({
+//           error: error.message,
+//         });
+//       }
+//   },
+// );

@@ -19,7 +19,7 @@ import { ColorPicker } from '../../../inputs/colorInput';
 import {SelectInput} from '../../../inputs/select';
 import {IsAcceptedInput} from '../../../inputs/isAccepted';
 import { CustomizedCheckboxInfo, CustomizedCheckboxDelivery } from '../../../inputs/checkBox'; 
-import {orderStatusThunk, getValidationForm} from '../../../../redux/asyncOrders';
+import {orderStatusThunk, getValidationForm, getAllStatuses} from '../../../../redux/asyncOrders';
 import { StyledNumInput} from '../../../inputs/number';
 import { StyledInput } from '../../../inputs/textfield';
 import {clearStatusState, modalOpenUpdate} from '../../../../redux/statusReduser';
@@ -39,8 +39,9 @@ export function AddStatusForm() {
 
   useEffect(()=>{
 if (isValid) {
-
+console.log('is valid');
   dispatch(orderStatusThunk())
+
   handleClose()
 } 
   },[isValid])

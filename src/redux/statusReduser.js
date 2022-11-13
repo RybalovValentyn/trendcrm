@@ -1,5 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const initGroups=[  
+  {id: "4", name: "Администраторы", disabled: "0"},
+  {id: "5", name: "Менеджер КЦ", disabled: "0"},
+  {id: "6", name: "Маркетологи", disabled: "0"},
+  {id: "7", name: "Курьер", disabled: "0"}
+  ]
+
+
 const statusReduser = createSlice({
   name: 'status',
   initialState: {
@@ -15,12 +23,7 @@ const statusReduser = createSlice({
     isValid: false,
     checked: true,
     modalOpen: false,
-    groupsName:[
-      'Адміністратори',
-      'Менеджери',
-      'Маркетологи',
-      'Курєри',
-    ],
+    groups:[...initGroups],
     storeRuns: [
       'Нічого не робити',
       'Бронювати',
@@ -46,7 +49,7 @@ const statusReduser = createSlice({
             infoStatus: true,
             allStatuses: [],  
             isValid: false,  
-         
+            
       }},
         idStatus: (state, action) => {
         return { ...state, statusId: action.payload };

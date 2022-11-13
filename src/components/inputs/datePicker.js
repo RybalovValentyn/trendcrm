@@ -30,11 +30,10 @@ dispatch(getFormTable({id: name, str }))
     <LocalizationProvider   dateAdapter={AdapterDayjs}>
       <DatePicker
       id={name}
-      sx={{backgroundColor: '#9a9a9a'}}
       inputFormat="YYYY-MM-DD"
        value={client[name]}
         onChange={daateChange}
-        renderInput={(params) => <ValidationTextField align='left' {...params} />}
+        renderInput={(params) => <ValidationTextField  align='left' {...params} />}
         />
     </LocalizationProvider>
     <AddIcon onClick={onDataUpdate} sx={{border: '1px solid', marginRight: '3px', borderRadius: '50%', marginLeft: '3px'}} fontSize='small' />

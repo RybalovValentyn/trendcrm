@@ -29,6 +29,8 @@ export function StatusesSelectInput() {
   const statuses = useSelector((state) => state.ordersAll.getStatuses);
 
   let totalChecked = statuses.filter(str=>str.checked === true);
+  // console.log(totalChecked);
+
   const stringSelectInput =() =>{
     if (statuses.length === totalChecked.length) {
       return `Всі:  ${totalChecked.length}`
@@ -71,9 +73,9 @@ const handleClose = () => {
           value={groups}
           onChange={handleChange}
           open={open}
-          onClose={handleClose}
+           onClose={handleClose}
           onOpen={handleOpen}
-          input={<OutlinedInput sx={selectStylesCheck}/>}
+          input={<OutlinedInput  sx={selectStylesCheck}/>}
           renderValue={(selected) =>selected.join(', ')}
           MenuProps={MenuProps}
         >

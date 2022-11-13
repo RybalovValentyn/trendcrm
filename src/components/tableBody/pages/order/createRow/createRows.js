@@ -16,7 +16,7 @@ import { SaveButton } from '../../../../buttons/saveButton';
 export function CreateRows(){
     const dispatch = useDispatch();
 
-    const isOpen = useSelector((state) => state.ordersAll.openCreator);
+    const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
 
     // const isOpen = true;
 
@@ -28,9 +28,10 @@ let index = -1;
 let boxHeight = 0;
 
 if (isOpen) {
-    index = 3;
+     index = 3;
     positionTop = '100%';
-    boxHeight = '130vh';
+    boxHeight = '160vh';
+
 }
     const boxStyle ={
         width: '99%',
@@ -42,6 +43,7 @@ if (isOpen) {
         left:positionLeft,
         zIndex: index,
         padding: '20px',
+        overflow: 'hidden',
 
     }
     const typographyStyle={fontSize: '16px',
@@ -56,28 +58,30 @@ if (isOpen) {
         padding: 0
       `,
       );
-
+const isPay = useSelector((state) => state.ordersAll.createRows.payment_type)
+const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
 return(
     <Box  sx={boxStyle}>
+
         <Paper component="form" sx={{ width: '35%',boxShadow: 'none' }}>
         <Typography sx={ typographyStyle} variant="h2" component="h3">
          КЛІЄНТ:
         </Typography >
 <List>
     <StyledList>
-    <MultiInput label='ПІБ:' name='client' type='text'/>
+    <MultiInput label='ПІБ:' name='fio' type='text'/>
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Телефон:' name='client_phone' type='text'/>
+    <MultiInput label='Телефон:' name='phone' type='text'/>
     </StyledList>
 
     <StyledList>
-    <MultiInput label='E-mail:' name='client_mail' type='e-mail' />
+    <MultiInput label='E-mail:' name='email' type='e-mail' />
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Instagram:' name='instagram' type='text' />
+    <MultiInput label='Instagram:' name='ig_username' type='text' />
     </StyledList>
 
     <StyledList>
@@ -97,36 +101,64 @@ return(
         </Typography >
 <List>
     <StyledList>
-    <MultiInput label='Доставка:' name='delivery_type' type='select'/>
+    <MultiInput label='Спосіб доставки:' name='delivery_type' type='select'/>
+    </StyledList>
+
+    <StyledList>
+    <MultiInput label='Пакувальник:' name='responsible_packer' type='select'/>
     </StyledList>
     
     <StyledList>
     <MultiInput label='Спосіб оплати:' name='payment_type' type='select'/>
     </StyledList>
- 
+
+  {(isPay === 3) &&  <StyledList>
+    <MultiInput label='Cума передплати:' name='backward_summ' type='num'/>
+    </StyledList>}
+
+ { (isPay === 3) &&   <StyledList>
+    <MultiInput label='Передплата оплачена?' name='prepay_status' type='select'/>    
+    </StyledList> }
+
     <StyledList>
     <MultiInput label='Cума наложеного платежу:' name='backward_delivery_summ' type='num'/>
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Дата відправки:' name='datetime' type='data'/>
+    <MultiInput label='Дата відправки:' name='datetime_sent' type='data'/>
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Час відправки:' name='datetime' type='time'/>
+    <MultiInput label='Час відправки:' name='datetime_sent' type='time'/>
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Доставка:' name='delivery_type_id' type='select'/>
+    <MultiInput label='Доставка:' name='delivery_service_type' type='select'/>
     </StyledList>
 
-    <StyledList>
+    {(deliveryType === 0) &&<StyledList>
     <MultiInput label='Місто відділення:' name='warehouse_city' type='autocomplete'/>
-    </StyledList>
+    </StyledList>}
 
-    <StyledList>
+    {(deliveryType === 0) &&<StyledList>
     <MultiInput label='Адреса відділення:' name='warehouse_address' type='autocomplete'/>
-    </StyledList>
+    </StyledList>}
+
+    {(deliveryType === 1) &&<StyledList>
+    <MultiInput label='Місто:' name='doors_city' type='autocomplete'/>
+    </StyledList>}
+
+    {(deliveryType === 1) &&<StyledList>
+    <MultiInput label='Адреса:' name='doors_address' type='autocomplete'/>
+    </StyledList>}
+
+    {(deliveryType === 1) &&<StyledList>
+    <MultiInput label='Дім:' name='doors_house' type='text'/>
+    </StyledList>}
+
+    {(deliveryType === 1) &&<StyledList>
+    <MultiInput label='Квартира:' name='doors_flat' type='text'/>
+    </StyledList>}
 
     <StyledList>
     <MultiInput label='Платник за доставку:' name='delivery_payers'  type='select'/>
@@ -145,19 +177,19 @@ return(
     </StyledList>
     
     <StyledList>
-    <MultiInput label='Кількість місць:' name='count_calls' type='num'/>
+    <MultiInput label='Кількість місць:' name='seats_amount' type='num'/>
     </StyledList>
     
     <StyledList>
-    <MultiInput label='ТТН:' name='ttn' type='readOnly'/>
+    <MultiInput label='ТТН:' name='tnn' type='readOnly'/>
     </StyledList>
     
     <StyledList>
-    <MultiInput label='Номер повернення:' name='order_return' type='readOnly'/>
+    <MultiInput label='Номер повернення:' name='sent' type='readOnly'/>
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Статус:' name='order_return' type='readOnly'/>
+    <MultiInput label='Статус:' name='status' type='readOnly'/>
     </StyledList>
 
     <StyledList>

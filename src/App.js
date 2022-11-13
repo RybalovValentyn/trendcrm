@@ -42,7 +42,7 @@ function App() {
            <Route
             path={Router.CRM}
             element={<PrivateRoute component={Crm} />}> 
-            <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home} />} />
+            <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
             <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
             <Route path={Router.ORDER} element={<PrivateRoute component={Order} />} />
             <Route path={Router.PRODUCTS} element={<PrivateRoute component={Products} />} />

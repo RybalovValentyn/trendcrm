@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import {styled } from '@mui/material/styles';
+
 import { colorsRef } from '../../../../../consts/colorConstants';
 import {getFormTable} from '../../../../../redux/ordersReduser';
 import { useDispatch, useSelector,  } from 'react-redux';
@@ -9,67 +9,10 @@ import { BasicDateTimePicker } from '../../../../inputs/datePicker';
 import { BasicTimePicker } from '../../../../inputs/timePicker';
 import { getSitysFromNp, getAdressFromNp } from '../.../../../../../../redux/asyncThunc';
 import { DotMenu } from '../../../../inputs/dotMenu';
+import {getSityNP, getAddressNP} from '../../../../../redux/novaPoshta';
+import {BootstrapInput, autocompliteInputStyle,
+   textFieldStyles, Label, inputStyle, boxStyle} from './styles';
 
-const BootstrapInput = styled('input')(({ theme }) => 
-    `border: 1px solid ${colorsRef.modalInputBorderColor};
-    padding: 6px;
-    border-radius: 4px;
-    box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
-    font-size: 12px;
-    max-width: 250px;
-    width: 100%;
-    
-    `
- );
- const autocompliteInputStyle={
-  '& .MuiAutocomplete-input':{   
-    fontSize: '12px'   
-  },      
-  width: '100%',
-  maxWidth: '250px',
-
-};
-const textFieldStyles={
-'& .MuiOutlinedInput-root':{
-padding: 0,
-borderRadius: '4px',
-},
-};
-  const Label = styled('label')(
-    ({ theme }) => `
-    font-family: IBM Plex Sans, sans-serif;
-    font-size: 0.85rem;
-    display: block;
-    font-weight: 400;
-    color: ${colorsRef.labelTextColor};
-    min-width: 180px;
-    `,
-  );
-  const inputStyle ={
-    '& .MuiInputBase-input': {
-        maxHeight: '32px',
-        lineHeight: 1.5,
-     color: colorsRef.inputTextColor,
-      position: 'relative',
-      backgrounColor: '#fff',
-      fontSize: 12,
-      padding: '7px 32px 7px 12px',
-      width:'100%',
-      maxWidth: '250px', 
-      
-      },
-
-  }
-const boxStyle={
-    '& > :not(style)': 
-    { margin:' 0 0 5px',  },
-     width: '100%',
-     display: 'flex',
-     justifyContent: 'space-between',
-     alignItems: 'center',
-     
-     
-};
 
 export function MultiInput({label, name, func, val, type}) {
     const dispatch = useDispatch();
@@ -77,6 +20,11 @@ export function MultiInput({label, name, func, val, type}) {
     const dataForSelect = useSelector((state) => state.ordersAll[name]);
     const deliveryCity = useSelector((state) => state.ordersAll.sityNewPost);
     const deliveryAddress = useSelector((state) => state.ordersAll.adressNewPost);
+    // const dataAutocomplite = useSelector((state) => state.ordersAll.sityFromNovaPoshta);
+    const ordersAll = useSelector((state) => state.ordersAll);
+
+
+    const getSitysNovaPoshta = ordersAll[name]?.flatMap(sity=> sity.Present)?.filter((sity, index, array) => array.indexOf(sity) === index);
 
 
 const getSitys =(e) =>{
@@ -126,7 +74,7 @@ const setStreetDelivery=(e)=>{
 
 const inputFocus =(e)=>{
   let id = e.target.id;
-  if (id === 'client_phone'){
+  if (id === 'phone'){
     let str = '+38(0'
    return dispatch(getFormTable({id, str}));
   }
@@ -136,7 +84,7 @@ const inputFocus =(e)=>{
 }
 const keyCodeInput = (e) =>{ 
   let id = e.target.id; 
-  if (id === 'client_phone' && e.key === 'Backspace') {
+  if (id === 'phone' && e.key === 'Backspace') {
     let str = '+38(0'
     dispatch(getFormTable({id, str}))
   } else if (e.key === 'Backspace') {
@@ -149,19 +97,50 @@ const keyCodeInput = (e) =>{
         let id = e.target.id;
         let str = e.target.value
         let name = e.target.name
-      if (id === 'client_phone') {
+        console.log(str);
+      if (id === 'phone') {
         telNumberMask(e);
-     }else if (id === 'backward_delivery_summ' || id === 'weight' || id ==='volume_general' || id === 'count_calls') {
-        if (Number(str) ) {dispatch(getFormTable({id, str})) }
+     }else if (id === 'backward_delivery_summ' || id === 'weight' || id ==='volume_general' || id === 'seats_amount' || id ==='backward_summ') {
+          if (Number(str) ) {dispatch(getFormTable({id, str})) }
              
-   }else if (name === 'delivery_type'|| name === 'payment_type' || name === 'delivery_type_id' ) {
-        dispatch(getFormTable({id:name, str})) 
+   }else if (type === 'select') {
+    let ind = dataForSelect.indexOf(str)
+        dispatch(getFormTable({id:name, ind})) 
 
-  }else if (name === 'delivery_payers' || name ==='delivery_payers_redelivery' ) {
-      dispatch(getFormTable({id:name, str})) 
-} else dispatch(getFormTable({id, str}))       
+  } else dispatch(getFormTable({id, str}))       
           
     }
+
+let raadOnly = false
+let corsor = () =>{
+if (name === 'backward_delivery_summ' && (client['payment_type'] === 0 || client['payment_type'] === 1)) {
+  raadOnly = true
+  return 'not-allowed'
+} 
+}
+
+const searchSityFromNP =(e) =>{
+  switch (e.target.id) {
+    case 'doors_city':
+      dispatch(getSityNP(e.target.value))
+      break;
+      case 'doors_address':
+      dispatch(getAddressNP(e.target.value))
+      break;
+    default:
+      console.log(';sddddddd');
+      break;
+  }
+};
+const onChangeSitysNovaPoshta = (e) =>{
+  let id = e.target.id.split('-')[0]
+if (id ) {
+  let ind = e.target.id.split('-')[2]
+  let str = ordersAll[id][ind]
+  console.log(id, ind, str);
+    dispatch(getFormTable({id, str})) 
+}
+}
 
 if (type === 'text' || type === 'num' || type === 'e-mail') {
      return (
@@ -171,6 +150,8 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
         </Label>}
     <BootstrapInput
     autoComplete="off"
+    sx={{cursor: corsor()}}
+    readOnly={raadOnly}
     type={type}
     value={client[name]}
     id={name}
@@ -213,7 +194,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
        name={name}
         type={type}
         id="multiple-checkbox"
-        value={client[name]}        
+        value ={dataForSelect[Number(client[name])]}      
          sx={inputStyle}
       >
         {dataForSelect.map((nam, ind) => (
@@ -232,7 +213,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
         {label && <Label htmlFor="named-select">
         {label}
         </Label>}
-      <BasicDateTimePicker name='datetime' type='data'/>
+      <BasicDateTimePicker name='datetime_sent' type='data'/>
       </Box>
       )
      } else if(type === 'time'){
@@ -241,7 +222,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
         {label && <Label htmlFor="named-select">
         {label}
         </Label>}
-      <BasicTimePicker name='datetime' type='time'/>
+      <BasicTimePicker name='datetime_sent' type='time'/>
       </Box>
       )} else if (type === 'autocomplete' && name === 'warehouse_city')      
       {return(
@@ -277,6 +258,22 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
                 renderInput={(params) => <TextField sx={textFieldStyles}  {...params}/>}
               />
           </Box>
+          )}else if (type === 'autocomplete')      
+        {return(
+            <Box sx={boxStyle} autoComplete="off" >
+            {label && <Label htmlFor="named-select">
+            {label}
+            </Label>}
+            <Autocomplete
+                freeSolo  
+                id={name}
+                name={name}
+                onChange={onChangeSitysNovaPoshta}
+                options={getSitysNovaPoshta}                
+                sx={autocompliteInputStyle}
+                renderInput={(params) => <TextField onChange={searchSityFromNP} sx={textFieldStyles}  {...params}/>}
+              />
+          </Box>
           )}else if (type === 'readOnly') {
             return (
            <Box sx={boxStyle} autoComplete="off" >
@@ -291,7 +288,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
            id={name}
            readOnly
            variant="outlined" />
-          {name === 'ttn' && <DotMenu/>}
+          {name === 'tnn' && <DotMenu/>}
           </Box>
         </Box>
          )};

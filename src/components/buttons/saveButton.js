@@ -1,10 +1,28 @@
 import SaveAsOutlinedIcon from '@mui/icons-material/SaveAsOutlined';
 import IconButton from '@mui/material/IconButton';
 import { colorsRef } from '../../consts/colorConstants';
+import { useDispatch, useSelector,  } from 'react-redux';
+import { postRowsFromForm, getRowsAfterAdd, getAllOrders } from '../../redux/asyncThunc';
+import { useEffect } from 'react';
+import { getClouseTableCreate, getOpenTableCreate } from '../../redux/ordersReduser';
 
 export const SaveButton = () =>{
+    const dispatch = useDispatch();
+    const id = useSelector((state) => state.ordersAll.createRows.id);
+
+    useEffect(() => {
+     if (id !== '') {
+        console.log(id);
+        // dispatch(getRowsAfterAdd())
+        dispatch(getAllOrders());
+        dispatch(getClouseTableCreate());
+        dispatch(getOpenTableCreate(false));
+     }
+   }, [id]);
+
 
     const btnChangeSave =()=>{
+        dispatch(postRowsFromForm())
         console.log('hi');
     }
 

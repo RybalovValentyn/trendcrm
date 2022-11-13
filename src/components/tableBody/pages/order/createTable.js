@@ -11,9 +11,7 @@ import {getOpenTableCreate} from '../../../../redux/ordersReduser';
 export function CreateTable() {
 const open = useSelector((state) => state.ordersAll.openCreator);
 const dispatch = useDispatch();
-//   const handleClickOpen = () => {
-//     setOpen(true);
-//   };
+
 
   const handleClose = () => {
     dispatch(getOpenTableCreate(false))

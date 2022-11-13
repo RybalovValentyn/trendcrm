@@ -34,7 +34,8 @@ export function StoreInput() {
     setgroups(
        typeof value === 'string' ? value.split(',') : value,
     );
-    dispatch(runStatus(event))
+    let ind = groupsStore.findIndex(s=>s === event )
+    dispatch(runStatus(ind))
   };
 
 
