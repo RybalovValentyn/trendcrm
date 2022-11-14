@@ -10,9 +10,9 @@ import axios from 'axios';
 const login = "/login";
 const auth = '/authenticate'
 
-// const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
+const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
 
-const REBASE_URL= 'http://localhost:5000/api';
+// const REBASE_URL= 'http://localhost:5000/api';
 
 const novaposhta = '/novaposhta/cities/list';
 const adress = '/novaposhta/warehouses/list';

@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
-const REBASE_URL= 'http://localhost:5000/api';
+const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
+// const REBASE_URL= 'http://localhost:5000/api';
 const postStatus = '/select_list/3/select_item/add'
 
 
