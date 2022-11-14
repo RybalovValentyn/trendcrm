@@ -19,13 +19,14 @@ import { ColorPicker } from '../../../inputs/colorInput';
 import {SelectInput} from '../../../inputs/select';
 import {IsAcceptedInput} from '../../../inputs/isAccepted';
 import { CustomizedCheckboxInfo, CustomizedCheckboxDelivery } from '../../../inputs/checkBox'; 
-import {orderStatusThunk, getValidationForm, getAllStatuses} from '../../../../redux/asyncOrders';
+import {orderStatusThunk, getValidationForm} from '../../../../redux/asyncOrders';
 import { StyledNumInput} from '../../../inputs/number';
 import { StyledInput } from '../../../inputs/textfield';
 import {clearStatusState, modalOpenUpdate} from '../../../../redux/statusReduser';
 import {SimpleSnackbar} from '../../../alerts/alertStatus';
 import {StatusesSelectInput} from '../../../inputs/statusses';
 import { ColorButton, buttonStyle, textStyle, inputGroupStyle } from './styles';
+import { getAllStatuses } from '../../../../redux/asyncThunc';
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -35,16 +36,23 @@ const Transition = forwardRef(function Transition(props, ref) {
 export function AddStatusForm() {
   const isValid = useSelector((state) => state.ordersAll.isValid);
   const modalOpen = useSelector((state) => state.addStatus.modalOpen);
+  const nextStatus = useSelector((state) => state.ordersAll.nextStatus);
   const dispatch = useDispatch();
 
   useEffect(()=>{
 if (isValid) {
 console.log('is valid');
-  dispatch(orderStatusThunk())
-
-  handleClose()
+  dispatch(orderStatusThunk());
+  handleClose();
 } 
   },[isValid])
+
+  useEffect(()=>{
+    if (nextStatus) {
+    console.log('is status');
+    dispatch(getAllStatuses());   
+    } 
+      },[nextStatus])
   
     function BootstrapDialogTitle(props) {
         const { children, onClose, ...other } = props;      

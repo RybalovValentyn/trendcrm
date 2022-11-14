@@ -10,9 +10,9 @@ import axios from 'axios';
 const login = "/login";
 const auth = '/authenticate'
 
-const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
+// const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
 
-// const REBASE_URL= 'http://localhost:5000/api';
+const REBASE_URL= 'http://localhost:5000/api';
 
 const novaposhta = '/novaposhta/cities/list';
 const adress = '/novaposhta/warehouses/list';
@@ -51,7 +51,7 @@ export const currentThunk = createAsyncThunk(
   'users/current',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();   
-    console.log(state.auth.id);
+
           try {
         const response = await axios({
           method: "get",
@@ -78,13 +78,14 @@ export const currentThunk = createAsyncThunk(
 export const getSitysFromNp = createAsyncThunk(
   'order/DeliveryCity',
   async (_, { rejectWithValue, getState }) => {
+
           try {
         const { data } = await axios({
           method: "get",
            url:  REBASE_URL+novaposhta,
           })
-        return data.suggestions.flatMap(sity=> sity.value).filter((sity, index, array) => array.indexOf(sity) === index)
-        ;
+
+        return data.suggestions.flatMap(sity=> sity.value).filter((sity, index, array) => array.indexOf(sity) === index);
       } catch (error) {
         return rejectWithValue({
           error: error.message,
@@ -99,8 +100,7 @@ export const getAdressFromNp = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     const state = getState();   
     let sity = state.ordersAll.createRows.warehouse_city
-    // console.log(sity);
-       try {
+        try {
         const { data } = await axios({
           method: "post",
            url:  REBASE_URL+adress,
@@ -118,15 +118,18 @@ export const getAdressFromNp = createAsyncThunk(
 
 export const getAllStatuses = createAsyncThunk(
   'statuses/all',
-  async (_, { rejectWithValue}) => { 
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState(); 
+    const cookie = state.auth.id
 
         try {
         const { data } = await axios({
           method: "get",
            url:  REBASE_URL+getStatus,
+           params:{ cookie: 'user_id=1'}
           })
-          console.log(data);
-        //  return data.data
+         
+         return data.orders_status_count
       } catch (error) {
         return rejectWithValue({
          error: error.message
@@ -204,36 +207,41 @@ export const getRowsAfterAdd = createAsyncThunk(
 export const postRowsFromForm = createAsyncThunk(
   'rows/create',
   async (_, { rejectWithValue, getState }) => {    
+    console.log('postRowsFromForm');
     const state = getState();
 const rows = state.ordersAll.createRows
-  const clientData = {
+const clientData = {
       fio: rows.fio,
       phone: rows.phone,
       email: rows.email,
       ig_username :rows.ig_username,
       comment: rows.comment,
-      additional_field: rows.additional_field
+      additional_field: rows.additional_field,
+      group_name: rows.group_name,
     }  
-    const deliveryData = {
-      delivery_type: 12,
-responsible_packer: rows.responsible_packer,
-payment_type: rows.payment_type,
-delivery_service_type: Number(rows.delivery_service_type)+1,
-warehouse_city: rows.warehouse_city,
-warehouse_address:rows.warehouse_address,
-doors_city: rows.doors_city.Present,
-doors_address:rows.doors_address.Present,
-doors_house:rows.doors_house,
-doors_flat: rows.doors_flat,
-delivery_payers: "Recipient",
-delivery_payers_redelivery:"Recipient",
-weight: rows.weight,
-volume_general: rows.volume_general,
-seats_amount: rows.seats_amount,
-tnn: rows.tnn,
-status: '',
-cost: rows.cost,
-novaposhta_comment: rows.novaposhta_comment
+const deliveryData = {
+    client_comment: rows.client_comment,
+    additional_field: rows.additional_field,
+    delivery_type: 12,
+    responsible_packer: rows.responsible_packer,
+    payment_type: rows.payment_type,
+    delivery_service_type: Number(rows.delivery_service_type)+1,
+    warehouse_city: rows.warehouse_city,
+    warehouse_address:rows.warehouse_address,
+    doors_city: rows.doors_city.Present,
+    doors_address:rows.doors_address.Present,
+    doors_house:rows.doors_house,
+    doors_flat: rows.doors_flat,
+    delivery_payers: "Recipient",
+    delivery_payers_redelivery:"Recipient",
+    weight: rows.weight,
+    volume_general: rows.volume_general,
+    seats_amount: rows.seats_amount,
+    tnn: rows.tnn,
+    status: '',
+    cost: rows.cost,
+    datetime_sent: rows.datetime_sent,
+    novaposhta_comment: rows.novaposhta_comment
     }
     const utm ={
       utm_source:"",
@@ -252,8 +260,9 @@ const dataSend ={client: {...clientData},
    responsible_group:"0",
   date_create: rows.datetime,
   status: rows.status,
-  store_url:""
+  store_url: rows.store_url,
   }
+  console.log(dataSend);
        try {
         const { data } = await axios({
           method: "post", 

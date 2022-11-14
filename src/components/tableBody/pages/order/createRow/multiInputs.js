@@ -21,6 +21,8 @@ export function MultiInput({label, name, func, val, type}) {
     const deliveryCity = useSelector((state) => state.ordersAll.sityNewPost);
     const deliveryAddress = useSelector((state) => state.ordersAll.adressNewPost);
     // const dataAutocomplite = useSelector((state) => state.ordersAll.sityFromNovaPoshta);
+    const sityValue = useSelector((state) => state.ordersAll.createRows.warehouse_city);
+   
     const ordersAll = useSelector((state) => state.ordersAll);
 
 
@@ -28,20 +30,25 @@ export function MultiInput({label, name, func, val, type}) {
 
 
 const getSitys =(e) =>{
-    if (e.target.id === 'warehouse_city' && deliveryCity.length ===0) {
+  
+    if (e.target.id === 'warehouse_city' && deliveryCity.length === 0) {
+      console.log(deliveryCity.length);
       dispatch(getSitysFromNp())
     }   
     }
 const getStreets = (e) =>{
+  
 if (e.target.id === 'warehouse_address') {
-    dispatch(getAdressFromNp())
+    
   } 
 }
-  const setSytyDelivery =(e) =>{    
+  const setSytyDelivery =(e) =>{  
+    console.log(sityValue);  
     let id = 'warehouse_city'
     let ind = e.target.id.split('-')[2]
     let str = deliveryCity[ind]
-      dispatch(getFormTable({id, str}))   
+      dispatch(getFormTable({id, str})) 
+      dispatch(getAdressFromNp())  
   }
 
 const setStreetDelivery=(e)=>{
@@ -234,6 +241,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
               freeSolo  
               id={name}
               name={name}
+              value = {sityValue}
               options={deliveryCity}
               onFocus={getSitys}
                onChange={setSytyDelivery}
@@ -251,6 +259,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
                 freeSolo  
                 id={name}
                 name={name}
+                
                 options={deliveryAddress}
                 onFocus={getStreets}
                  onChange={setStreetDelivery}

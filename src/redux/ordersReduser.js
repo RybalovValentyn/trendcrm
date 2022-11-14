@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
-import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd, getAllOrders } from './asyncThunc';
+import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd, getAllOrders, getAllStatuses } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 
 const initStatus =[
@@ -101,8 +101,8 @@ const ordersReduser = createSlice({
   columns: [],
   tHeadColumn: [],
   bodyTableRows: [],
- getStatuses: [...initStatus],
- nextStatus: '',
+ getStatuses: [],
+ nextStatus: 0,
  isLoading: false,
  order: [],
  isValid: false,
@@ -133,6 +133,10 @@ doors_house: [],
   },
 
    reducers: {
+    getStatusesUpdate: (state, action) => {  
+      return { ...state,
+        getStatuses: [...state.getStatuses,action.payload ] 
+    };},
        bodyTableRowsUpdate: (state, action) => {  
         return { ...state,
           bodyTableRows: [...action.payload ] 
@@ -225,6 +229,33 @@ doors_house: [],
 
 
       extraReducers: {
+
+          [getAllStatuses.pending](state, action) {
+          return {
+            ...state,
+            isLoading: true,
+            isError: false,
+ 
+          }; 
+        },
+        [getAllStatuses.fulfilled](state, action) {
+    
+          return{
+           ...state,
+           getStatuses: [...action.payload],
+            isLoading: false,
+            isError: false,
+ 
+          }
+        },
+        [getAllStatuses.rejected](state, action) {
+          return {
+            ...state,
+            isLoading: false,
+            error: action.payload,
+            isError: true,
+ 
+          };},
 
         [getAllOrders.pending](state, action) {
           return {

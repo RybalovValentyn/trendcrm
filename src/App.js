@@ -1,6 +1,5 @@
 import {SignIn} from './components/signIn/signIn';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Crm} from './components/tableBody/crm/crm';
 import {Router} from './routs/routs';
 import {PublicRoute} from './routs/publikRouts';
 import { Route, Routes} from 'react-router-dom';
@@ -20,6 +19,8 @@ import {Help} from './components/tableBody/pages/help/help';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { currentThunk } from './redux/asyncThunc';
+import {MiniDrawer} from './components/tableBody/navBar/navBar';
+
 
 function App() {
   const dispatch = useDispatch();
@@ -33,15 +34,12 @@ function App() {
 
   return (
     <div >
-      <CssBaseline />
+       <CssBaseline />
       <Routes >
-      <Route
-            path='/'
-            element={<PublicRoute component={SignIn} />}>
+      <Route path='/auth'  element={<PublicRoute component={SignIn} />}>
             </Route>
            <Route
-            path={Router.CRM}
-            element={<PrivateRoute component={Crm} />}> 
+            path={Router.HOME}element={<PrivateRoute component={MiniDrawer} />}> 
             <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
             <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
             <Route path={Router.ORDER} element={<PrivateRoute component={Order} />} />

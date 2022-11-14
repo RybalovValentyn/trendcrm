@@ -19,11 +19,12 @@ const statusReduser = createSlice({
     accepted: true,
     deliveryStatus: true,
     infoStatus: true,
-    allStatuses: [],
+    status_ids: [],
     isValid: false,
     checked: true,
     modalOpen: false,
     groups:[...initGroups],
+    status_ids: [],
     storeRuns: [
       'Нічого не робити',
       'Бронювати',
@@ -47,7 +48,7 @@ const statusReduser = createSlice({
             accepted: true,
             deliveryStatus: true,
             infoStatus: true,
-            allStatuses: [],  
+            status_ids: [],  
             isValid: false,  
             
       }},
@@ -76,7 +77,7 @@ const statusReduser = createSlice({
             return { ...state, infoStatus: action.payload };
           },
           allStatuses: (state, action) => {
-            return { ...state, allStatuses: action.payload };     
+            return { ...state, status_ids: action.payload };     
       },     
        validationForm: (state, action) => {
         return { ...state, isValid: action.payload};

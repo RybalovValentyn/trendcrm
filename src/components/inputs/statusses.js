@@ -7,7 +7,7 @@ import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import { colorsRef } from '../../consts/colorConstants';
 import { useDispatch, useSelector } from 'react-redux';
-import {groupStatus} from '../../redux/statusReduser';
+import {allStatuses} from '../../redux/statusReduser';
 import { selectStylesCheck } from './stylesInputs';
 import {orderStatusUpdate} from '../../redux/asyncOrders';
 
@@ -28,31 +28,33 @@ export function StatusesSelectInput() {
   const [open, setOpen] = useState(false);
   const statuses = useSelector((state) => state.ordersAll.getStatuses);
 
-  let totalChecked = statuses.filter(str=>str.checked === true);
-  // console.log(totalChecked);
-
   const stringSelectInput =() =>{
-    if (statuses.length === totalChecked.length) {
-      return `Всі:  ${totalChecked.length}`
-    } else return totalChecked.length
+      return `Всі:  ${statuses.length}`
+
   }
   const [groups, setgroups] = useState([stringSelectInput()]);
+  const [indexes, setIndexes] = useState([...statuses.map(s=>`${s.id}`)])
 
- 
-
-const setStatuses =(e)=>{
+  
+  const setStatuses =(e)=>{
   let check = e.target.checked;
   let name = e.target.id;
-// dispatch(orderStatusUpdate({name,check}))
+  if (!check) {
+    let ind = indexes.filter(s => s!==name)
+    setIndexes([...ind])
+  } else setIndexes([...indexes,`${name}`])
+
 }
 
 
 const handleClose = () => {
+  dispatch(allStatuses(indexes))
     setOpen(false);
   };
 
   const handleOpen = () => {
     setOpen(true);
+    dispatch(allStatuses([]))
     setgroups([])
   };
   const handleChange = (e) => {
@@ -82,10 +84,9 @@ const handleClose = () => {
 
           {statuses.map((str, ind) => (
             <MenuItem  key={ind} value={str.name} onChange={setStatuses} >
-              <Checkbox id={str.name} 
+              <Checkbox id={`${str.id}`} 
               defaultChecked
-              //  checked={str.checked}
-               />
+                />
               <ListItemText sx={{fontSize: '12px' }} primary={str.name} />
             </MenuItem>
           ))}

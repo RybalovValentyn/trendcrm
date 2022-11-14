@@ -9,15 +9,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {AddStatusForm} from './modalAddStatus';
 import { useDispatch, useSelector } from 'react-redux';
 
-export function ScrollTabsButton({item}) {
+export function ScrollTabsButton() {
   const [value, setValue] = useState(0);
-// console.log(item);
 const statuses = useSelector((state) => state.ordersAll.getStatuses);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const newStatus = [...statuses, ...item]
   const boxStyles={
     flexGrow: 1,
     maxWidth: '100%',
@@ -49,7 +48,7 @@ const statuses = useSelector((state) => state.ordersAll.getStatuses);
         sx={tabsStyles}
       >
           
-       {newStatus.map((tab, ind) =>(        
+       {statuses.map((tab, ind) =>(        
         <Tab
         sx={{ borderTop: `6px solid ${tab.style}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
         backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px', 
@@ -57,7 +56,7 @@ const statuses = useSelector((state) => state.ordersAll.getStatuses);
       '&.Mui-selected': {backgroundColor: '#fff',color: colorsRef.tabHeaderTextColor,
          }
       }}
-        key={ind} label= {`${tab.name}: 0`} />
+        key={ind} label= {`${tab.name}: ${tab.count}`} />
        
        ))}
        

@@ -16,7 +16,7 @@ import {ScrollTabsButton} from './tableInBody';
 
 import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
-import {getRowsAfterAdd, getAllOrders, getAllStatuses} from '../../../../redux/asyncThunc';
+import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp} from '../../../../redux/asyncThunc';
 import {HeaderContainer} from './header';
 import {getRowsComparator} from './getRowsComparator';
 import { descendingComparator, getComparator, stableSort} from './functionOrder';
@@ -26,20 +26,15 @@ import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn} from '../../../../r
 import {replaceRows} from './tHead';
 import {EnhancedTableHead} from './enhancedTableHead';
 import s from './styles.module.scss';
-
-const tableHead = dataParse.orders_status_count
-
-
-
-
-
-
+import { Preloader } from '../../../preloader/preloader';
 
 export  function Order() {
   const dispatch = useDispatch();
   const columns = useSelector((state) => state.ordersAll.columns);
   const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
   const bodyTableRows = useSelector((state) => state.ordersAll.bodyTableRows);
+  const isLoading = useSelector((state) => state.ordersAll.isLoading);
+
   let arrayRows = []
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -52,7 +47,8 @@ export  function Order() {
   useEffect(() => {
     console.log('getAllOrders');
     dispatch(getAllStatuses());
-      dispatch(getAllOrders());  
+      dispatch(getAllOrders()); 
+      dispatch(getSitysFromNp()) 
     
 }, []);
 
@@ -76,7 +72,8 @@ if (columns.length > 0) {
                )  },[])
         arrayRows.push(result)
   
-      })    
+      })   
+      console.log(arrayRows);
    }
    
     const handleRequestSort = (event, property) => {
@@ -135,9 +132,10 @@ return (
    < HeaderContainer/>
       <Paper sx={{position: "relative", width: '98%', marginLeft: 'auto', marginRight: 'auto',overflowY: 'auto',
         boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)' }}>
-      <ScrollTabsButton  item={tableHead } /> 
+      <ScrollTabsButton/> 
 
          <TableContainer sx={{ width: '100%', height: '700px',  backgroundColor: '#fff', paddingBottom: '80px', overflowY: 'scroll',overflowX: 'scroll', }} >
+         {isLoading && <Preloader/>}
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
             <EnhancedTableHead   props ={bodyTableRows}
                           numSelected={selected.length}
@@ -147,7 +145,7 @@ return (
                           onRequestSort={handleRequestSort}
                           rowCount={bodyTableRows?.length}/>
 
-        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}}>
+        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}} >
               {stableSort(bodyTableRows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((rows, index) => {
                   const isItemSelected = isSelected(rows.index);

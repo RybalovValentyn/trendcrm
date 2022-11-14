@@ -19,8 +19,17 @@ export const ListAutocompliteStatuses =()=>{
     const dispatch = useDispatch();
     const statuses = useSelector((state) => state.ordersAll.getStatuses);
     const statusCreate = {name: 'створити статус', statusId: '0'};
-    const renderStatuses = statuses.concat(statusCreate).reverse();
-    const defaultStatus = renderStatuses.find(str=> str.statusId === '4');
+    const renderStatuses = statuses.concat(statusCreate).reverse()
+    const defaultStatus = renderStatuses.find(str=> str.id === '4'); 
+
+    const renderFilteredStatus = renderStatuses.reduce((acc, status, index, array)=>{
+        let el = array.filter(option => option.name === status.name)
+        if (el.length > 1 ) {
+            array.splice(index, 1)
+        }
+       return array
+     },[])
+
     const responsibleList = useSelector((state) => state.ordersAll.responsible);
     const groups = useSelector((state)=> state.addStatus.groups);
     const newGroup = {id: "0", name: "Без групи", disabled: "0"};
@@ -28,14 +37,14 @@ export const ListAutocompliteStatuses =()=>{
     const defaultGroup = noGroups.find(str=> str.id === '0');
     const storeUrl = useSelector((state) => state.ordersAll.createRows.store_url);
     const clientDate = useSelector((state) => state.ordersAll.createRows.datetime);
-    console.log(noGroups);
+
 
 const onAutocompliteChange=(e)=>{
     let id = e.target.id.split('-')[0]
     let ind = e.target.id.split('-')[2]
-    let stat = renderStatuses[ind]
-    if (Number(stat?.statusId) !== 0) {
-        let str = stat?.statusId? stat.statusId: 0
+    let stat = renderFilteredStatus[ind]
+    if (Number(stat?.id) !== 0) {
+        let str = stat?.id? stat.id: 0
         
        dispatch( getFormTable({id, str }))
     } else if (Number(stat?.statusId) === 0) {
@@ -69,9 +78,11 @@ const daateChange =(newValue) =>{
 const listStyle={
     display: 'flex',
     padding: '7px 12px',
-    borderRadius: '8px'
+    borderRadius: '8px',
+    width: 'max-content'
    
 }
+
 const listItemStyles={
     margin: '0px 5px',
     padding: 0,
@@ -87,10 +98,10 @@ const listItemStyles={
                 id={'status'}
                  onChange={onAutocompliteChange}
                 defaultValue={defaultStatus}
-                options={renderStatuses}
+                options={renderFilteredStatus}
                 getOptionLabel={(option) => option.name}
                 renderOption={(props, option, { selected }) => (
-                  <li style={listStyle} {...props}>
+                  <li key={option.id} style={listStyle} {...props}>
                     {option.style && <span style={{display: 'block',width: '15px', height: '15px', 
                     borderRadius: '50%', backgroundColor: option.style, marginRight: '10px'}}></span>}
                     {option.name}
