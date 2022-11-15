@@ -34,8 +34,8 @@ function App() {
 
   return (
     <div >
-       <CssBaseline />
-      <Routes >
+       {/* <CssBaseline /> */}
+        <Routes >
       <Route path='/trendcrm/auth'  element={<PublicRoute component={SignIn} />}>
             </Route>
            <Route
@@ -52,6 +52,7 @@ function App() {
             <Route path={Router.FAQ} element={<PrivateRoute component={Faq} />} />
             <Route path={Router.PURCH} element={<PrivateRoute component={Purchasing} />} />
             <Route path={Router.HELP} element={<PrivateRoute component={Help} />} />
+            <Route path="*" element={<PublicRoute component={SignIn} />} />
             </Route> 
       </Routes>
 

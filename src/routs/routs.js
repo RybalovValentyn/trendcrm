@@ -1,9 +1,9 @@
 export const Router = {
-    HOME: '/trendcrm',
+    HOME: '/trendcrm/',
     REPORT: '/trendcrm/report',
     HOMEBAR: '/trendcrm/homebar',
     USERS: '/trendcrm/users',
-    ORDER: '/trendcrm/order',
+    ORDER: '/trendcrm/order/',
     PRODUCTS: '/trendcrm/products',
     DELIVERY: '/trendcrm/delivery',
     CALLS: '/trendcrm/calls',
