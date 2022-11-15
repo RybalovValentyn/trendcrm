@@ -72,7 +72,7 @@ export const translater = {
     // "store_responsible":null,
     // "name_store_resp":null,
     "supplier": "Постачальник",
-    "client_groups":"Група клієнта",
+    // "client_groups":"Група клієнта",
     // "repeat_client":"1",
     // "doubl_client":1
     }

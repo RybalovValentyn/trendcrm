@@ -34,7 +34,10 @@ export  function Order() {
   const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
   const bodyTableRows = useSelector((state) => state.ordersAll.bodyTableRows);
   const isLoading = useSelector((state) => state.ordersAll.isLoading);
+  const statuses = useSelector((state) => state.ordersAll.getStatuses);
+  const allOrders = useSelector((state) => state.ordersAll.columns);
 
+  
   let arrayRows = []
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -46,15 +49,20 @@ export  function Order() {
 
   useEffect(() => {
     console.log('getAllOrders');
-    dispatch(getAllStatuses());
-      dispatch(getAllOrders()); 
-      dispatch(getSitysFromNp()) 
-    
+if (statuses.length === 0) {
+  dispatch(getAllStatuses());
+}
+if (!allOrders[0]) {
+  console.log('no orders');
+  dispatch(getAllOrders());
+}
+  
+        
 }, []);
 
 
 useEffect(() => {
-if (columns.length > 0) {
+if (columns.length > 0 && dataForHeader.length > 0 ) {
   GetRenderRows(dataForHeader, columns)
  dispatch(bodyTableRowsUpdate([...arrayRows.reverse()]))
 }
@@ -73,7 +81,7 @@ if (columns.length > 0) {
         arrayRows.push(result)
   
       })   
-      console.log(arrayRows);
+      // console.log(arrayRows);
    }
    
     const handleRequestSort = (event, property) => {
@@ -131,7 +139,7 @@ return (
     <Box sx={{height: '100%', width: '100%', backgroundColor: colorsRef.boxTableColor, paddingBottom: '20px 0px'}} >     
    < HeaderContainer/>
       <Paper sx={{position: "relative", width: '98%', marginLeft: 'auto', marginRight: 'auto',overflowY: 'auto',
-        boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)' }}>
+        boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'}}>
       <ScrollTabsButton/> 
 
          <TableContainer sx={{ width: '100%', height: '700px',  backgroundColor: '#fff', paddingBottom: '80px', overflowY: 'scroll',overflowX: 'scroll', }} >
@@ -162,7 +170,9 @@ return (
                   >
             {rows.map((row,ind) => (
               
-            <TableCell  sx={{ backgroundColor: row.color, minWidth: '100px', whiteSpace: 'nowrap', padding: '2px 10px',borderRight: '1px solid #fff',maxWidth: '400px',  overflowX: 'auto', width: '200px'
+            <TableCell  sx={{ backgroundColor: row.color, minWidth: '100px',
+             fontSize: '12px', height: '21px', whiteSpace: 'nowrap', 
+             padding: '0px 10px',borderRight: '1px solid #fff',maxWidth: '400px',  overflowX: 'auto', width: '200px'
                       }}
             key={ind} align="center" >{getRowsComparator(row.value, row.id)} </TableCell>
             

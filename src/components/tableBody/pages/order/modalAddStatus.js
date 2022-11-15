@@ -27,6 +27,7 @@ import {SimpleSnackbar} from '../../../alerts/alertStatus';
 import {StatusesSelectInput} from '../../../inputs/statusses';
 import { ColorButton, buttonStyle, textStyle, inputGroupStyle } from './styles';
 import { getAllStatuses } from '../../../../redux/asyncThunc';
+import {StyledButton} from '../../../buttons/buttons';
 
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -154,8 +155,18 @@ dispatch(getValidationForm())
            </ListItem>
           </List>
         <DialogActions  sx={{alignSelf: 'center', dicplay: 'block', marginBottom: '20px'}}>
-          <Button sx={buttonStyle} onClick={handleStatusesUpdate}>Створити</Button>
-          <Button sx={buttonStyle} onClick={handleClose}>Відмінити</Button>
+        <StyledButton
+          text={'Створити'}
+          func= {handleStatusesUpdate}
+          border={colorsRef.buttonBorderInModal}
+          bgColor={colorsRef.btnAddBgColor}
+            />
+          <StyledButton
+          text={'Відмінити'}
+          func= {handleClose}
+          border={colorsRef.buttonBorderInModal}
+          bgColor={colorsRef.btnAddBgColor}
+            />
         </DialogActions>
       </BootstrapDialog>
       <SimpleSnackbar/>

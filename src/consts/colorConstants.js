@@ -1,4 +1,7 @@
 export const colorsRef = {
+    fillSvgColor: '#000000',
+    btnAddBgColor: '#ffffff',
+    btnAddBorderColor: '#0c4b91',
     formBgColor: '#ffffff',
     typografyColor: '#333333',
     inputBgColor: '#f7f7f7',

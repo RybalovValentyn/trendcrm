@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
 import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd, getAllOrders, getAllStatuses } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
+import { tableParse } from '../components/tableBody/pages/order/tableParse';
 
 const initStatus =[
   {
@@ -56,7 +57,7 @@ const initStatus =[
   
 ]
 
-
+const table = tableParse.data
 
 const rows=  { 
   fio: '',
@@ -98,6 +99,7 @@ const rows=  {
 const ordersReduser = createSlice({
   name: 'orders',
   initialState: {
+  // columns: [...table],
   columns: [],
   tHeadColumn: [],
   bodyTableRows: [],

@@ -13,19 +13,28 @@ export const dividerStyle = {
     borderRadius: '10px',
       '&:hover':{cursor: "ew-resize"}
     };
-    
+
+export const dividerSecondStyle = {
+      padding: '0.5px',
+       width: '100%', 
+      position: 'absolute',
+       backgroundColor: colorsRef.tableRowSecondColor,
+      border: 'none',
+  
+      };
  export const tHeadStyle = {
     minWidth: '100px',
      whiteSpace: 'nowrap',
      padding: '0px',
      maxWidth: '600px', 
-     marginTop: '-1px'
+     marginTop: '-1px',
+     position: 'relative',
      
    }
 export const rowPosition={
   position: '-webkit-sticky',
   position: 'sticky',
-  top: '-3px', zIndex: 2
+  zIndex: 2,
    }  
    
 export const ColorButton = styled(Button)(({ theme }) => ({

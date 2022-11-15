@@ -4,7 +4,7 @@ import TableRow from '@mui/material/TableRow';
 import {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import { colorsRef } from '../../../../consts/colorConstants';
 import TableCell from '@mui/material/TableCell';
-import {dividerStyle, rowPosition, tHeadStyle} from './styles';
+import {dividerStyle, dividerSecondStyle, rowPosition, tHeadStyle} from './styles';
 import {Divider,TableSortLabel, Box } from '@mui/material';
 import {tHeadColumnUpdate} from '../../../../redux/ordersReduser';
 import { visuallyHidden } from '@mui/utils';
@@ -28,7 +28,6 @@ useEffect(() => {
            return result.push({id:str, str:translater[str]})
         }    
     },[])
-    // console.log(result);
     dispatch(tHeadColumnUpdate(result))
 }}, [columns]);  
     
@@ -49,12 +48,22 @@ useEffect(() => {
   } else return dispatch(setWidthColumn({id,width}))
   }
   
-  
-  
-  
+  const containerStyle ={
+    // resize: 'horizontal',
+    // resizeColor: '#fff',
+   overflow: 'hidden',
+  maxWidth: '600px',
+   padding: '3px 10px',
+    alignItems: 'center',
+   // minWidth: width,
+    position: 'relative',
+    // "& :resize" : {
+    //   color: "#fff"
+    // }
+}
   
     return (    
-      <TableHead sx={{backgroundColor: colorsRef.formBgColor, position: '-webkit-sticky', position: 'sticky', top: '0', zIndex: 2}} >    
+      <TableHead sx={{ backgroundColor: colorsRef.formBgColor, position: '-webkit-sticky', position: 'sticky', top: '0', zIndex: 2}} >    
   
         <TableRow sx={rowPosition}>       
   
@@ -68,11 +77,7 @@ useEffect(() => {
               sx={tHeadStyle} 
               align= "center"        
               >  
-              <div  id={row.id} style={{resize: 'horizontal', overflow: 'hidden',
-               maxWidth: '600px', padding: '3px 10px', alignItems: 'center',
-                // minWidth: width,
-                 position: 'relative',
-            }} key={row.id}>
+              <div  id={row.id} style={containerStyle} key={row.id}>
   
               <TableSortLabel            
                 active={orderBy === row.id}
@@ -89,6 +94,7 @@ useEffect(() => {
               </TableSortLabel>
               <Divider  id={row.id} key={row.id} sx={dividerStyle} orientation="vertical" flexItem />
               </div>
+              <Divider sx={dividerSecondStyle} />
             </TableCell>  ))}
         </TableRow >
   

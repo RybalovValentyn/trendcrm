@@ -15,6 +15,7 @@ import {CreateTable} from './createTable';
 import {StyledButton} from '../../../buttons/buttons';
 import {CreateRows} from './createRow/createRows';
 import { ListAutocompliteStatuses } from './createRow/listStatuses';
+import { colorsRef } from '../../../../consts/colorConstants';
 export function HeaderContainer() {
 const dispatch = useDispatch();
 
@@ -46,7 +47,9 @@ const listItemStyle={
       <StyledButton
         text={isOpen?'Cloused': 'Створити'}
         func= {handleClick}
-        startIcon = { <AddIcon fontSize='large' />}
+        startIcon = { <AddIcon sx={{fill: colorsRef.fillSvgColor, width: '17px', marginTop: '-2px'}} />}
+        bgColor={colorsRef.btnAddBgColor}
+        border= {colorsRef.btnAddBorderColor}
            />
       {/* <CreateTable/> */}
       {isOpen && <ListAutocompliteStatuses/>}

@@ -17,14 +17,15 @@ import {Faq} from './components/tableBody/pages/faq/faq';
 import {Purchasing} from './components/tableBody/pages/purchasing/purchasing';
 import {Help} from './components/tableBody/pages/help/help';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { currentThunk } from './redux/asyncThunc';
+import { useEffect, Suspense } from 'react';
+import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp } from './redux/asyncThunc';
 import {MiniDrawer} from './components/tableBody/navBar/navBar';
-
+import { Preloader } from './components/preloader/preloader';
 
 function App() {
   const dispatch = useDispatch();
   const hashKey = useSelector(state => state.auth.hashKey);
+  const currentUser = useSelector(state => state.auth.id);
 
   useEffect(() => {
     if (hashKey) {
@@ -32,9 +33,19 @@ function App() {
     }
   }, [hashKey]);
 
+  useEffect(() => {
+      if (currentUser) {
+        console.log('current user ');
+        dispatch(getAllStatuses());
+        dispatch(getAllOrders()); 
+        dispatch(getSitysFromNp())     
+    }
+  }, [currentUser]);
+
   return (
     <div >
-       {/* <CssBaseline /> */}
+       <CssBaseline />
+       <Suspense fallback={<Preloader />}>
         <Routes >
       <Route path='/trendcrm/auth'  element={<PublicRoute component={SignIn} />}>
             </Route>
@@ -42,7 +53,7 @@ function App() {
             path={Router.HOME}element={<PrivateRoute component={MiniDrawer} />}> 
             <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
             <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
-            <Route path={Router.ORDER} element={<PrivateRoute component={Order} />} />
+            <Route path='/trendcrm/order' element={<PrivateRoute component={Order} errorElement= {<SignIn />}/>} />
             <Route path={Router.PRODUCTS} element={<PrivateRoute component={Products} />} />
             <Route path={Router.DELIVERY} element={<PrivateRoute component={Delivery} />} />
             <Route path={Router.CALLS} element={<PrivateRoute component={Calls} />} />
@@ -55,7 +66,7 @@ function App() {
             <Route path="*" element={<PublicRoute component={SignIn} />} />
             </Route> 
       </Routes>
-
+      </Suspense>
     </div>
   );
 }
