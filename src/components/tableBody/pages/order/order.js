@@ -40,7 +40,7 @@ export  function Order() {
     const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(15);
+    const [rowsPerPage, setRowsPerPage] = useState(100);
     const [rowsTable, useRowsTable] = useState([]);
 
 
@@ -115,7 +115,7 @@ if (columns.length > 0) {
     };
   
     const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
+      setRowsPerPage(parseInt(event.target.value));
       setPage(0);
     };
   
@@ -176,7 +176,7 @@ return (
         </TableContainer>  
         <TablePagination
          sx={{ maxWidth: '450px'}}
-          rowsPerPageOptions={[5, 10, 25, 50]}
+          rowsPerPageOptions={[50, 100, 250, 500]}
           component="div"
           count={columns.length}
           rowsPerPage={rowsPerPage}

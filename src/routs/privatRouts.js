@@ -7,7 +7,7 @@ export function PrivateRoute({ component: C, }) {
     // const isAuth=true
     return (<>
 
-        {isAuth ? <C /> : <Navigate to='/auth' />}
+        {isAuth ? <C /> : <Navigate to='/trendcrm/auth' />}
 
     </>)
 }

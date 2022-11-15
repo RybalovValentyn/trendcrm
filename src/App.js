@@ -36,7 +36,7 @@ function App() {
     <div >
        <CssBaseline />
       <Routes >
-      <Route path='/auth'  element={<PublicRoute component={SignIn} />}>
+      <Route path='/trendcrm/auth'  element={<PublicRoute component={SignIn} />}>
             </Route>
            <Route
             path={Router.HOME}element={<PrivateRoute component={MiniDrawer} />}> 
