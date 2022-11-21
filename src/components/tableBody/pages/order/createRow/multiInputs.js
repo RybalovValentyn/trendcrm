@@ -21,10 +21,10 @@ export function MultiInput({label, name, func, val, type}) {
     const deliveryCity = useSelector((state) => state.ordersAll.sityNewPost);
     const deliveryAddress = useSelector((state) => state.ordersAll.adressNewPost);
     // const dataAutocomplite = useSelector((state) => state.ordersAll.sityFromNovaPoshta);
-    const sityValue = useSelector((state) => state.ordersAll.createRows.warehouse_city);
-   
+    const sityValue = useSelector((state) => state.ordersAll.createRows.warehouse_city);    
+    const paymentType = useSelector((state)=> state.ordersAll.payment_name);
     const ordersAll = useSelector((state) => state.ordersAll);
-
+    const valuePaymentType = useSelector((state)=> state.ordersAll.createRows.payment_name);
 
     const getSitysNovaPoshta = ordersAll[name]?.flatMap(sity=> sity.Present)?.filter((sity, index, array) => array.indexOf(sity) === index);
 
@@ -81,7 +81,7 @@ const setStreetDelivery=(e)=>{
 
 const inputFocus =(e)=>{
   let id = e.target.id;
-  if (id === 'phone'){
+  if (id === 'client_phone'){
     let str = '+38(0'
    return dispatch(getFormTable({id, str}));
   }
@@ -91,7 +91,7 @@ const inputFocus =(e)=>{
 }
 const keyCodeInput = (e) =>{ 
   let id = e.target.id; 
-  if (id === 'phone' && e.key === 'Backspace') {
+  if (id === 'client_phone' && e.key === 'Backspace') {
     let str = '+38(0'
     dispatch(getFormTable({id, str}))
   } else if (e.key === 'Backspace') {
@@ -105,15 +105,19 @@ const keyCodeInput = (e) =>{
         let str = e.target.value
         let name = e.target.name
         console.log(str);
-      if (id === 'phone') {
+      if (id === 'client_phone') {
         telNumberMask(e);
      }else if (id === 'backward_delivery_summ' || id === 'weight' || id ==='volume_general' || id === 'seats_amount' || id ==='backward_summ') {
           if (Number(str) ) {dispatch(getFormTable({id, str})) }
              
-   }else if (type === 'select') {
+   }else if (type === 'select' && name !== 'payment_name') {
     let ind = dataForSelect.indexOf(str)
         dispatch(getFormTable({id:name, ind})) 
 
+  } else if (type === 'select' && name === 'payment_name') {
+    let type = paymentType.find(str=>str.name === e.target.value)
+    console.log(type);
+       dispatch(getFormTable({id:name, str: type}))
   } else dispatch(getFormTable({id, str}))       
           
     }
@@ -190,7 +194,32 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
          ></textarea>
      </Box>
 
-     )} else if (type === 'select') {return(
+     )} else if (type === 'select' && name === 'payment_name') 
+          {return(
+      <Box sx={boxStyle} autoComplete="off" >
+      {label && <Label htmlFor="named-select">
+      {label}
+      </Label>}
+      <FormControl sx={{ m: 1, width: '100%', maxWidth: '250px',}} size="small">
+      <Select
+      onChange={inputSwicher}
+     name={name}
+      type={type}
+      id="multiple-checkbox"
+      value ={valuePaymentType.name}     
+       sx={inputStyle}
+    >
+      {paymentType.map((nam, ind) => (
+       <MenuItem sx={{fontSize: '12px' }}  id={name.id} key ={ind} value={nam.name}>
+       {nam.name}
+        </MenuItem>
+       ))}
+
+    </Select>
+    </FormControl>
+    </Box>
+
+   )} if (type === 'select') {return(
         <Box sx={boxStyle} autoComplete="off" >
         {label && <Label htmlFor="named-select">
         {label}

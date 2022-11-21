@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
-import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import { styled } from '@mui/material/styles';
 import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
 import {BpCheckbox} from '../../../inputs/checkBox'
 import List from '@mui/material/List';
@@ -16,14 +16,33 @@ import {StyledButton} from '../../../buttons/buttons';
 import {CreateRows} from './createRow/createRows';
 import { ListAutocompliteStatuses } from './createRow/listStatuses';
 import { colorsRef } from '../../../../consts/colorConstants';
+import { useEffect } from 'react';
+import { searchCountUpdate, CountUpdate } from '../../../../redux/ordersReduser';
+import { getAllOrders, getAllStatuses } from '../../../../redux/asyncThunc';
+import { DownloadComponent } from './createHead/downloads'; 
+import { ModalMenu } from './createHead/modal'
+import { BootstrapTooltip } from './styles';
+import { ColumnSettings } from './createHead/columnSettings';
+
 export function HeaderContainer() {
 const dispatch = useDispatch();
-
+const params = useSelector((state) => state.ordersAll.searchParams);
+const copyParams = Object.values(params);
 const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
+const paramsCount = useSelector((state) => state.ordersAll.searchParamCount);
+const columns = useSelector((state) => state.ordersAll.tHeadColumn);
+
+useEffect(() => {
+  const searchCount = copyParams.reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
+  dispatch(searchCountUpdate(searchCount));
+  }, [params]);
+
 
 const handleClick = (e)=>{
-  dispatch(getOpenTableCreate(!isOpen))
-  console.log('shandleClicked');
+  let id = 'openCreator';
+  let str = !isOpen;  
+  dispatch(getOpenTableCreate({id, str}))
+  // console.log(!isOpen);
   dispatch(getClouseTableCreate())
 }
 
@@ -31,6 +50,11 @@ const onChangeCheckBox =() =>{
   console.log('sd');
 }
 
+const handleResetFilters=()=>{
+dispatch(CountUpdate())
+dispatch(getAllOrders())
+
+}
 
 const listStyle={
   display: 'flex',
@@ -39,11 +63,24 @@ padding: 0
 }
 
 const listItemStyle={
-  padding: '0px 10px'
+  // padding: '0px 10px'
+}
+const onHandleCheck=(e)=>{
+console.log(e.target.name);
+}
+const handleReload =()=>{
+  dispatch(getAllStatuses())
+  dispatch(getAllOrders())
+}
+const handleColumnSettings=()=>{
+  let id = 'columnSettings';
+  let str = true;
+  dispatch(getOpenTableCreate({id, str}))
 }
 
   return (
     <Box sx={clasListContainer}  component="section">
+
       <StyledButton
         text={isOpen?'Cloused': 'Створити'}
         func= {handleClick}
@@ -53,35 +90,62 @@ const listItemStyle={
            />
       {/* <CreateTable/> */}
       {isOpen && <ListAutocompliteStatuses/>}
+
+      {paramsCount>0 && <Box sx={{marginLeft: '20px', marginRight: 'auto'}}>      
+      <StyledButton            
+        text={`Скинути фільтри: ${paramsCount}`}
+        func= {handleResetFilters}
+        bgColor={colorsRef.btnAddBgColor}
+        border= {'#7bb31a'}        
+           />
+           </Box>}
+          
       <CreateRows/>
     <List  sx={listStyle}>
 
-      <ListItem sx={listItemStyle}>
+    <ListItem sx={{paddingLeft: '0px', paddingRight: '10px'}}>
+        <BpCheckbox name='product_list' onChange={onHandleCheck} tooltip ={'Повний список товарів'} placement="left" />    
+        </ListItem>
+
+      <ListItem sx={{paddingLeft: '10px', paddingRight: '20px', "& :hover": {cursor: 'pointer', }}}>
+      <BootstrapTooltip title="Вибрати все">
       <AddTaskIcon sx={svgStyle}/>
+      </BootstrapTooltip>
       </ListItem>
        
-        <ListItem sx={listItemStyle}>
-        <BuildOutlinedIcon sx={svgStyle}/>
+        <ListItem sx={{paddingLeft: '10px', paddingRight: '20px', "& :hover": {cursor: 'pointer', }}}>
+        <BootstrapTooltip title="Налаштувати колонки">
+          <BuildOutlinedIcon onClick = {handleColumnSettings} sx={svgStyle}/>          
+          </BootstrapTooltip>
+          {columns.length > 0 && <ColumnSettings/>}
         </ListItem>
        
-        <ListItem sx={listItemStyle}>
-        <LocalMallOutlinedIcon sx={svgStyle}/>
+        <ListItem sx={{padding: '0px 0px 0px 10px'}}>      
+        <DownloadComponent/>  
+        <ModalMenu/>
         </ListItem>
         
-        <ListItem sx={listItemStyle}> 
-        <SettingsIcon sx={svgStyle}/>
+        <ListItem sx={{padding: '0px 10px 0px 0px', "& :hover": {cursor: 'pointer', }}}> 
+        <SettingsIcon  sx={svgStyle}/>
+        
         </ListItem>
 
-        <ListItem sx={listItemStyle}>
-        <BpCheckbox />
-        </ListItem>
 
-        <ListItem sx={listItemStyle}>
-        <ReplayOutlinedIcon sx={svgStyle}/>
+
+        <ListItem sx={{paddingLeft: '10px', paddingRight: '10px', "& :hover": {cursor: 'pointer', }}}>
+           <BootstrapTooltip title="Оновити сторінку">
+        <ReplayOutlinedIcon onClick={handleReload} sx={svgStyle} />
+           </BootstrapTooltip>
         </ListItem>        
 
         <ListItem>
+        <BootstrapTooltip title="Частота автооновлення">
         <input style={{width: '50px', padding: '4px 5px', border: '1px solid #d0d0d0', borderRadius: '4px'}} type='text'></input>
+        </BootstrapTooltip>
+        </ListItem>
+
+        <ListItem sx={{paddingLeft: '10px', paddingRight: '10px'}}>
+        <BpCheckbox onChange={onHandleCheck} name='auto_reloading' tooltip ={'Увімкнути автооновлення'} placement="left" />
         </ListItem>
 
 

@@ -6,7 +6,6 @@ import { useDispatch, useSelector,  } from 'react-redux';
 import {getOpenTableCreate} from '../../../../../redux/ordersReduser';
 import { colorsRef } from '../../../../../consts/colorConstants';
 import { Paper, Typography } from '@mui/material';
-import {StyledSelect} from './select';
 import {MultiInput} from './multiInputs';
 import {styled } from '@mui/material/styles';
 import { useState } from 'react';
@@ -58,7 +57,7 @@ if (isOpen) {
         padding: 0
       `,
       );
-const isPay = useSelector((state) => state.ordersAll.createRows.payment_type)
+const isPay = useSelector((state) => state.ordersAll.createRows.payment_name.id)
 const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
 return(
     <Box  sx={boxStyle}>
@@ -73,7 +72,7 @@ return(
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Телефон:' name='phone' type='text'/>
+    <MultiInput label='Телефон:' name='client_phone' type='text'/>
     </StyledList>
 
     <StyledList>
@@ -105,24 +104,24 @@ return(
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Пакувальник:' name='responsible_packer' type='select'/>
+    <MultiInput label='Пакувальник:' name='packer_name' type='select'/>
     </StyledList>
     
     <StyledList>
-    <MultiInput label='Спосіб оплати:' name='payment_type' type='select'/>
+    <MultiInput label='Спосіб оплати:' name='payment_name' type='select'/>
     </StyledList>
 
-  {(isPay === 3) &&  <StyledList>
+  {(isPay === '16') &&  <StyledList>
     <MultiInput label='Cума передплати:' name='backward_summ' type='num'/>
     </StyledList>}
 
- { (isPay === 3) &&   <StyledList>
+ { (isPay === '16') &&   <StyledList>
     <MultiInput label='Передплата оплачена?' name='prepay_status' type='select'/>    
     </StyledList> }
 
-    <StyledList>
+{(isPay === '15') &&    <StyledList>
     <MultiInput label='Cума наложеного платежу:' name='backward_delivery_summ' type='num'/>
-    </StyledList>
+    </StyledList>}
 
     <StyledList>
     <MultiInput label='Дата відправки:' name='datetime_sent' type='data'/>

@@ -36,7 +36,7 @@ export  function Order() {
   const isLoading = useSelector((state) => state.ordersAll.isLoading);
   const statuses = useSelector((state) => state.ordersAll.getStatuses);
   const allOrders = useSelector((state) => state.ordersAll.columns);
-
+  const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   
   let arrayRows = []
     const [order, setOrder] = useState('asc');
@@ -62,14 +62,28 @@ if (!allOrders[0]) {
 
 
 useEffect(() => {
-if (columns.length > 0 && dataForHeader.length > 0 ) {
+if (columns.length > 0 && dataForHeader.length > 0 && filteredColumn.length === 0) {
   GetRenderRows(dataForHeader, columns)
+ dispatch(bodyTableRowsUpdate([...arrayRows.reverse()]))
+} else if (columns.length > 0 && filteredColumn.length > 0 ) {
+  console.log('filteredColumn', filteredColumn);
+  GetRenderFilteredRows(filteredColumn, columns)
  dispatch(bodyTableRowsUpdate([...arrayRows.reverse()]))
 }
 
-}, [columns]);
+}, [columns, dataForHeader, filteredColumn]);
 
-  
+const GetRenderFilteredRows =(dataForHeader, columns) =>{   
+  const arrayRow = columns.map((str, ind) =>{
+   let result = []
+    const rowSpan = filteredColumn.reduce((acc,val, ind) =>{
+        return result.push({id:val.data, value: str[val.data], color: str.status_style }
+            )  },[])
+     arrayRows.push(result)
+
+   })   
+
+}
 
   
  const GetRenderRows =(dataForHeader, columns) =>{   
@@ -81,7 +95,6 @@ if (columns.length > 0 && dataForHeader.length > 0 ) {
         arrayRows.push(result)
   
       })   
-      // console.log(arrayRows);
    }
    
     const handleRequestSort = (event, property) => {

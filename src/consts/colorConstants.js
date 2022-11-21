@@ -1,4 +1,7 @@
 export const colorsRef = {
+
+
+
     fillSvgColor: '#000000',
     btnAddBgColor: '#ffffff',
     btnAddBorderColor: '#0c4b91',
@@ -29,8 +32,13 @@ buttonBorderInModal: '#7bb31a',
 buttonTextColorInModal: '#4b4b4b',
 
 createBorderColorOFAll: '#e5e5e5',
-labelTextColor: '#232323'
+labelTextColor: '#232323',
 
+// tableHeader
+    inputHeadTextColor: '#777777',
+    inputHeadBorderColor: '#d0d0d0',
+    inputHoverBorderCOlor: "",
+    iconColor: '#d0d0d0'
 }
 
 // height: 30px;

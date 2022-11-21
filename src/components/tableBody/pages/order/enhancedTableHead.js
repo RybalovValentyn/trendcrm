@@ -11,25 +11,51 @@ import { visuallyHidden } from '@mui/utils';
 import {translater} from './translate';
 import {SearchInput} from './tableInBody';
 import { getWidthUpdate, setWidthColumn } from '../../../../redux/ordersReduser';
+import { InputSelector } from './createHead/inputselector';
 
 export function EnhancedTableHead({props}) {
      const columns = useSelector((state) => state.ordersAll.columns);
     const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
     const widthOfColumn = useSelector((state) => state.ordersAll.widthOfColumn);
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =  props;
+    const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
     const dispatch = useDispatch();
 
+// useEffect(() => {
+//     const result =[]
+//     if (columns.length > 0) {
+//     const headerValue = columns.flatMap(column => Object.keys(column))
+//     .filter((column, index, array) => array.indexOf(column) === index).reduce((acc,str, ind) =>{
+//         if (translater[str]) {
+//            return result.push({id:str, str:translater[str]})
+//         }    
+//     },[])
+//     dispatch(tHeadColumnUpdate(result))
+// }}, [columns]);  
+
 useEffect(() => {
-    const result =[]
-    if (columns.length > 0) {
-    const headerValue = columns.flatMap(column => Object.keys(column))
-    .filter((column, index, array) => array.indexOf(column) === index).reduce((acc,str, ind) =>{
-        if (translater[str]) {
-           return result.push({id:str, str:translater[str]})
-        }    
-    },[])
-    dispatch(tHeadColumnUpdate(result))
-}}, [columns]);  
+  const result =[]
+  if (columns.length > 0 && filteredColumn.length === 0) {
+  const headerValue = columns.flatMap(column => Object.keys(column))  
+  .filter((column, index, array) => array.indexOf(column) === index).reduce((acc,str, ind) =>{
+      if (translater[str]) {
+         return result.push({id:str, str:translater[str]})
+      }    
+  },[]); 
+  dispatch(tHeadColumnUpdate(result))
+}else  if (columns.length > 0 && filteredColumn.length > 0) {
+  const headerValue =  filteredColumn.reduce((acc,str, ind) =>{
+      if (translater[str.data]) {
+         return result.push({id:str.data, str:translater[str.data]})
+      }    
+  },[]);
+  dispatch(tHeadColumnUpdate(result))
+}
+
+
+
+
+}, [columns, filteredColumn]); 
     
  
       
@@ -103,9 +129,10 @@ useEffect(() => {
             <TableCell
             key={call.id}
             align='center'
-            sx={{ whiteSpace: 'nowrap', padding: '5px 0px'}}
+            sx={{ whiteSpace: 'nowrap', padding: '4px 20px'}}
             >
-               <SearchInput props={'wwwwwww'} options={props}/>             
+            <InputSelector name={call.id} />
+               {/* <SearchInput props={'wwwwwww'} options={props}/>              */}
             </TableCell>
             ))}
         </TableRow>

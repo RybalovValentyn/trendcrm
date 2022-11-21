@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
-// const REBASE_URL= 'http://localhost:5000/api';
+// const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
+const REBASE_URL= 'http://localhost:5000/api';
 const postStatus = '/select_list/3/select_item/add'
 
 
@@ -75,33 +75,3 @@ export const orderStatusThunk = createAsyncThunk(
   },
 );
 
-// export const orderStatusUpdate = createAsyncThunk(
-//   'update/status',
-//   async ({name, check}, { rejectWithValue, getState }) => {
-//     const state = getState();
-//     let ind = state.ordersAll.getStatuses.findIndex(str=>str.name === name)
-//     let el = state.ordersAll.getStatuses[ind]
- 
-//     try {
-//       const data = await { 
-//         name: el.name,
-//         statusId: el.statusId,
-//         style: el.style,
-//         group:el.group,
-//         runInStore: el.runInStore,
-//         accepted: el.accepted,
-//         deliveryStatus:el.deliveryStatus,
-//         infoStatus: el.infoStatus,
-//         checked:  check,
-//       }
-//       const copyStatus = [...state.ordersAll.getStatuses]
-//       copyStatus.splice(ind,1, data)
-//       const result = copyStatus
-//         return result
-//       } catch (error) {
-//         return rejectWithValue({
-//           error: error.message,
-//         });
-//       }
-//   },
-// );

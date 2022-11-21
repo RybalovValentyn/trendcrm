@@ -1,6 +1,8 @@
 import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+
 
 export const dividerStyle = {
     padding: '1px',
@@ -89,5 +91,20 @@ export const clasListContainer ={
   };
 
  export const svgStyle = {
-    fill: colorsRef.inputTextColor,
+    fill:  colorsRef.inputTextColor,
+    marginRight: '-10px',
+    
+
+
   }
+
+  export const BootstrapTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: theme.palette.common.black,
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.black,
+    },
+  }));

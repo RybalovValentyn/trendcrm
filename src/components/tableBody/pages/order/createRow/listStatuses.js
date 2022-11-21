@@ -145,7 +145,7 @@ const listItemStyles={
     <ListItem sx={listItemStyles} >
             <BootstrapInput   
             onChange={inputChange}
-            sx={{backgroundColor: colorsRef.formBgColor, maxWidth: '160px', width: '100%'}} 
+            sx={{backgroundColor: colorsRef.formBgColor,minWidth: '100px', maxWidth: '160px', width: '100%'}} 
             placeholder={'Сайт'}
              value={storeUrl}
               id="store_url"

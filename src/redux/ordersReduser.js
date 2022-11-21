@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
-import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd, getAllOrders, getAllStatuses } from './asyncThunc';
+import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd, getAllOrders, getAllStatuses, getFilteredOrders } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 
@@ -62,14 +62,16 @@ const table = tableParse.data
 const rows=  { 
   fio: '',
   id: '',
-  phone: '+38(0__)___-__-__',
+  client_phone: '+38(0__)___-__-__',
   email: '',
   ig_username: '',
   comment: '',
   additional_field: '',
   delivery_type: 0,
   responsible_packer: 0,
-  payment_type:0,
+  packer_name: '',
+  // payment_type:0,
+  payment_name: {name: 'Наложений', id: '15', prepay_status: '' },
   backward_delivery_summ: '0.00',
   backward_summ: '0.00',
   datetime: '',
@@ -93,15 +95,58 @@ const rows=  {
   responsible: 'Admin',
   group_name: '',
   store_url:'',
-  data_create: ''
+  data_create: '',
+  // ttn_cost: '',
+
 };
+
+const searchRefParams = {
+
+  create_date_from: '',
+  create_date_to: '',
+  update_date_from: '',
+  update_date_to: '' ,
+  datetime_sent_from: '',
+  datetime_sent_to: '',
+
+  id: '',
+  client: '',
+  client_phone: '', 
+  ig_username: '',
+  comment: '',
+  supplier: '',
+  storage_income_price_sum: '',
+  client_ip: '',
+  ttn_cost: '',
+  store_url: '',
+  utm_source: '',
+  utm_medium: '',
+  utm_term: '',
+  utm_content: '',
+  utm_campaign: '',
+  marketing: '',
+  client_comment: '',
+  responsible: '',
+  ttn: '',
+  store_id: '',
+
+status_name: '',
+group_name: '',
+packer_name: '',
+payment_name: '',
+ttn_status: '',
+}
 
 const ordersReduser = createSlice({
   name: 'orders',
   initialState: {
+
   // columns: [...table],
   columns: [],
+
+  searchParamCount : 0,
   tHeadColumn: [],
+  tHeadColumnFiltered: [],
   bodyTableRows: [],
  getStatuses: [],
  nextStatus: 0,
@@ -112,19 +157,27 @@ const ordersReduser = createSlice({
  isError: false,
  widthOfColumn:[],
  modalControl:{
-  openCreator: false,
-
+    openCreator: false,
+    opendownload: false,
+    columnSettings: false,
 },
  
+ttn_status: {},
  createRows:{...rows},
+ searchParams: {...searchRefParams},
  delivery_type: ['Нова пошта', 'justin', 'delivery', 'Курєр', 'УкрПошта', 'Самовивіз'],
- payment_type :['Не вибрано','Оплачено', 'Наложений', 'Передплата'],
+//  payment_type :['Не вибрано','Оплачено', 'Наложений', 'Передплата'],
+ payment_name: [{name: 'Не Вибрано', id: '0', prepay_status: '' },
+                {name: 'Оплачено', id: '86', prepay_status: '' },
+                 {name: 'Наложений', id: '15', prepay_status: '' }, 
+                {name: 'Передплата (оплачено)', id: '16', prepay_status: '1' } ,
+                 {name: 'Передплата (не оплачено)', id: '16',  prepay_status: '0'}],
  delivery_service_type: ['Відділення','Адреса'],
  sityNewPost:[],
  adressNewPost: [],
  delivery_payers: ['Отримувач', 'Відправник' ],
  delivery_payers_redelivery: ['Отримувач', 'Відправник' ],
- responsible_packer: ['Нічого не вибрано','admin'],
+ packer_name: ['Нічого не вибрано','admin'],
  responsible: ['Admin'],
  prepay_status: ['Ні','Так'],
  doors_city: [],
@@ -135,6 +188,35 @@ doors_house: [],
   },
 
    reducers: {
+           tHeadFilteredColumnUpdate: (state, action) => {  
+          return { ...state,
+            tHeadColumnFiltered: [...action.payload ] 
+        };},
+    CountUpdate: (state, action)=>{
+      return { ...state,
+        searchParams:{...searchRefParams}
+      }},
+    searchCountUpdate: (state, action)=>{
+      return { ...state,
+        searchParamCount: action.payload
+      }},
+    getSortDate: (state, action) => { 
+    console.log(action.payload);
+      switch (action.id) {
+        case ('create_date_from'):
+          return { ...state,
+            searchParams:{ ...state.searchParams, create_date_from: action.payload.str}
+        }
+        case ('create_date_to'):
+          return { ...state,
+            searchParams:{ ...state.searchParams, create_date_to: action.payload.str}
+        }
+        default:
+          return { ...state,
+            searchParams:{ ...state.searchParams, [action.payload.id]: action.payload.str}
+        }
+      }
+;},
     getStatusesUpdate: (state, action) => {  
       return { ...state,
         getStatuses: [...state.getStatuses,action.payload ] 
@@ -157,9 +239,14 @@ doors_house: [],
             widthOfColumn: [...state.widthOfColumn, action.payload]
         };
         }, 
-        getOpenTableCreate:  (state, action) => {  
+        getOpenTDownloadExel:  (state, action) => {  
           return { ...state  ,
-            modalControl:{openCreator: action.payload}
+            modalControl:{...state.modalControl, opendownload: action.payload}
+        }},
+        getOpenTableCreate:  (state, action) => {  
+          console.log(action.payload);
+          return { ...state  ,
+            modalControl:{...state.modalControl, [action.payload.id]: action.payload.str}
         };
         },  
         getClouseTableCreate:  (state, action) => {  
@@ -186,9 +273,13 @@ doors_house: [],
           return { ...state,
             createRows:{ ...state.createRows, responsible_packer:action.payload.ind}
         };
-            case ('payment_type'):            
+        case ('packer_name'):                    
+        return { ...state,
+          createRows:{ ...state.createRows, packer_name:action.payload.ind}
+      };
+            case ('payment_name'):            
             return { ...state,
-              createRows:{ ...state.createRows, payment_type:action.payload.ind, backward_delivery_summ: '0.00'}
+              createRows:{ ...state.createRows, payment_name:action.payload.str, backward_delivery_summ: '0.00'}
           };
           case ('delivery_service_type'):                    
           return { ...state,
@@ -214,8 +305,7 @@ doors_house: [],
           return { ...state,
             createRows:{ ...state.createRows, datetime:action.payload.str}
         };
-        case ('warehouse_city'): 
-        // console.log('dddddddddd');             
+        case ('warehouse_city'):               
         return { ...state,
           createRows:{ ...state.createRows, warehouse_city:action.payload.str,warehouse_address: '' }
       };
@@ -259,6 +349,32 @@ doors_house: [],
  
           };},
 
+          [getFilteredOrders.pending](state, action) {
+            return {
+              ...state,
+              isLoading: true,
+              isError: false,
+   
+            }; 
+          },
+          [getFilteredOrders.fulfilled](state, action) {
+              return{
+             ...state,
+             columns: [...action.payload],
+              isLoading: false,
+              isError: false,
+   
+            }
+          },
+          [getFilteredOrders.rejected](state, action) {
+            return {
+              ...state,
+              isLoading: false,
+              error: action.payload,
+              isError: true,
+   
+            };},
+
         [getAllOrders.pending](state, action) {
           return {
             ...state,
@@ -268,8 +384,7 @@ doors_house: [],
           }; 
         },
         [getAllOrders.fulfilled](state, action) {
-    
-          return{
+            return{
            ...state,
            columns: [...action.payload],
             isLoading: false,
@@ -519,7 +634,7 @@ doors_house: [],
         }}
 );
 
-export const { getWidthUpdate, setWidthColumn, getOpenTableCreate,
-   getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate} = ordersReduser.actions;
+export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, searchCountUpdate,CountUpdate,tHeadFilteredColumnUpdate, 
+   getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel} = ordersReduser.actions;
 export default ordersReduser.reducer;
 

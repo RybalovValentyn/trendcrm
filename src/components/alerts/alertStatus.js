@@ -54,7 +54,7 @@ export  function SimpleSnackbar() {
 
   return (
     <div>
-      <Button onClick={handleClick}>Open simple snackbar</Button>
+      {/* <Button onClick={handleClick}>Open simple snackbar</Button> */}
 
 
       <Snackbar anchorOrigin={{ vertical, horizontal }} open={open} autoHideDuration={3000} onClose={handleClose}>

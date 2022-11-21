@@ -8,10 +8,13 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {AddStatusForm} from './modalAddStatus';
 import { useDispatch, useSelector } from 'react-redux';
+import { getSortDate } from '../../../../redux/ordersReduser';
+import { getAllOrders } from '../../../../redux/asyncThunc';
 
 export function ScrollTabsButton() {
   const [value, setValue] = useState(0);
 const statuses = useSelector((state) => state.ordersAll.getStatuses);
+const dispatch = useDispatch();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -37,6 +40,16 @@ const statuses = useSelector((state) => state.ordersAll.getStatuses);
     },
    }
 
+const handleClick =(e)=>{
+  let str = e.target.id;
+  let id = 'status_name'
+  if (str === 0 || str === '0') {
+    str = ''
+  }
+  dispatch(getSortDate({id, str}));
+  dispatch(getAllOrders());
+}
+
   return (
     <Box sx={boxStyles} >
       <Tabs
@@ -49,7 +62,7 @@ const statuses = useSelector((state) => state.ordersAll.getStatuses);
       >
           
        {statuses.map((tab, ind) =>(        
-        <Tab
+        <Tab onClick={handleClick} id={tab.id}
         sx={{ borderTop: `6px solid ${tab.style}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
         backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px', 
         margin: '0px 1px 0px 1px', textTransform: 'none',

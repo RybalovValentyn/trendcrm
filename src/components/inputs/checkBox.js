@@ -3,6 +3,7 @@ import Checkbox from '@mui/material/Checkbox';
 import CheckIcon from '@mui/icons-material/Check';
 import { useDispatch, useSelector } from 'react-redux';
 import {deliverypStatus, infoStatus} from '../../redux/statusReduser';
+import { BootstrapTooltip } from '../tableBody/pages/order/styles';
 
 const BpIcon = styled('span')(({ theme }) => ({
   borderRadius: '50%',
@@ -14,7 +15,10 @@ const BpIcon = styled('span')(({ theme }) => ({
 
 
 export function BpCheckbox(props) {
+ const  {tooltip, placement, func} = props
   return (
+
+     <BootstrapTooltip title={tooltip} placement ={placement}>
     <Checkbox
       sx={{padding: 0,
         borderRadius: '50%',
@@ -30,6 +34,7 @@ export function BpCheckbox(props) {
       inputProps={{ 'aria-label': 'Checkbox demo' }}
       {...props}
     />
+    </BootstrapTooltip>
   );
 }
 

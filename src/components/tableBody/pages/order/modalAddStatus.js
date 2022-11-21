@@ -158,7 +158,7 @@ dispatch(getValidationForm())
         <StyledButton
           text={'Створити'}
           func= {handleStatusesUpdate}
-          border={colorsRef.buttonBorderInModal}
+          border={colorsRef.btnAddBorderColor}
           bgColor={colorsRef.btnAddBgColor}
             />
           <StyledButton

@@ -21,7 +21,7 @@ const orders = '/orders';
 const getStatus = '/count_status_orders';
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
-
+// throw new Error('Неможливо викликати обробник події під час рендерингу.');
 // https://react.trendcrm.biz/api/menu/list
 // https://react.trendcrm.biz/api/tariff/0
 // https://react.trendcrm.biz/api/select_items/access
@@ -138,29 +138,100 @@ export const getAllStatuses = createAsyncThunk(
     
   },
 );
-
-export const getAllOrders = createAsyncThunk(
-  'orders/all',
+export const getFilteredOrders = createAsyncThunk(
+  'filtered/all',
   async (_, { rejectWithValue, getState }) => { 
+    const state = getState();  
+    const patrams =  state.ordersAll.searchParams;
+    const column = state.ordersAll.tHeadColumnFiltered;
+console.log('getFilteredOrders',column);
           let columns ={ draw: '1',
           start:0,
           length: 100,
           // status: 4,
-          create_date_from: '',
-          create_date_to: '',
-          update_date_from: '',
-          update_date_to: '' ,
-          datetime_sent_from: '',
-          datetime_sent_to: '',
-          columns:[{data: 'id'}, {data: 'status_name'}, {data: 'client'}, {data: 'client_phone'},
-           {data: 'client_groups'}, {data: 'ig_username'}, {data: 'comment'}, {data: 'supplier'},
-           {data: 'total'},{data: 'storage_income_price_sum'},{data: 'products_names'},{data: 'responsible'},
-           {data: 'group_name'},{data: 'packer_name'},{data: 'counterparty'},{data: 'delivery_type'},
-           {data: 'ttn'},{data: 'backward_delivery_summ'},{data: 'ttn_cost'},{data: 'payment_name'},
-           {data: 'ttn_status'},{data: 'ttn_update_at'},{data: 'datetime'},{data: 'update_at'},
-           {data: 'datetime_sent'},{data: 'store_url'},{data: 'name_store_resp'},{data: 'store_title'},
-           {data: 'utm_source'},{data: 'utm_medium'},{data: 'utm_term'},{data: 'utm_content'},
-           {data: 'utm_campaign'},{data: 'marketing'},{data: 'client_ip'}
+          create_date_from: state.ordersAll.searchParams.create_date_from,
+          create_date_to: state.ordersAll.searchParams.create_date_to,
+          update_date_from: state.ordersAll.searchParams.update_date_from,
+          update_date_to: state.ordersAll.searchParams.update_date_to ,
+          datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
+          datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
+          status: state.ordersAll.searchParams.status_name,
+          order:[{data:{dir:'desc'}}],
+          columns:[...column] ,
+           }
+
+        try {
+        const { data } = await axios({
+          method: "post",
+           url:  REBASE_URL+orders,
+           data: columns
+          })
+          console.log(data.data);
+         return data.data
+      } catch (error) {
+        return rejectWithValue({
+         error: error.message
+        });
+      }
+    
+  },
+);
+
+export const getAllOrders = createAsyncThunk(
+  'orders/all',
+  async (_, { rejectWithValue, getState }) => { 
+    const state = getState();  
+    const patrams =  state.ordersAll.searchParams
+
+          let columns ={ draw: '1',
+          start:0,
+          length: 100,
+          // status: 4,
+          create_date_from: state.ordersAll.searchParams.create_date_from,
+          create_date_to: state.ordersAll.searchParams.create_date_to,
+          update_date_from: state.ordersAll.searchParams.update_date_from,
+          update_date_to: state.ordersAll.searchParams.update_date_to ,
+          datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
+          datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
+          status: state.ordersAll.searchParams.status_name,
+          order:[{data:{dir:'desc'}}],
+          columns:[
+            {data: 'id', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.id} },
+             {data: 'status_name', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.status_name}}, 
+             {data: 'client', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.client} }, 
+             {data: 'client_phone' , searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.client_phone} },
+           {data: 'client_groups', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.client_groups}}, 
+           {data: 'ig_username', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.ig_username} }, 
+           {data: 'comment', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.comment} },
+            {data: 'supplier', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.supplier}},
+           {data: 'total', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.total}},
+           {data: 'storage_income_price_sum', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.storage_income_price_sum}},
+           {data: 'products_names', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.products_names}},
+           {data: 'responsible', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.responsible}},
+           {data: 'group_name', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.group_name}},
+           {data: 'packer_name', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.packer_name}},
+           {data: 'counterparty', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.counterparty}},
+           {data: 'delivery_type', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.delivery_type}},
+           {data: 'ttn', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.ttn}},
+           {data: 'backward_delivery_summ', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.backward_delivery_summ}},
+           {data: 'ttn_cost', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.ttn_cost}},
+           {data: 'payment_name', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.payment_name}},
+           {data: 'ttn_status', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.ttn_status}},
+           {data: 'ttn_update_at', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.ttn_update_at}},
+           {data: 'datetime', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.datetime}},
+           {data: 'update_at', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.update_at}},
+           {data: 'datetime_sent', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.datetime_sent}},
+           {data: 'store_url', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.store_url}},
+           {data: 'name_store_resp', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.name_store_resp}},
+           {data: 'store_title', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.store_title}},
+           {data: 'utm_source', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.utm_source}},
+           {data: 'utm_medium', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.utm_medium}},
+           {data: 'utm_term', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.utm_term}},
+           {data: 'utm_content', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.utm_content}},
+           {data: 'utm_campaign', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.utm_campaign}},
+           {data: 'marketing', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.marketing}},
+           {data: 'client_ip', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.client_ip}},
+           
           ] ,
            }
 
@@ -170,7 +241,7 @@ export const getAllOrders = createAsyncThunk(
            url:  REBASE_URL+orders,
            data: columns
           })
-          // console.log(data.data);
+          console.log(data.data);
          return data.data
       } catch (error) {
         return rejectWithValue({
@@ -204,27 +275,31 @@ export const getRowsAfterAdd = createAsyncThunk(
     
   },
 );
+
 export const postRowsFromForm = createAsyncThunk(
   'rows/create',
   async (_, { rejectWithValue, getState }) => {    
-    console.log('postRowsFromForm');
+
     const state = getState();
+    
 const rows = state.ordersAll.createRows
+console.log('postRowsFromForm', rows.payment_name);
+
 const clientData = {
       fio: rows.fio,
-      phone: rows.phone,
+      phone: rows.client_phone,
       email: rows.email,
       ig_username :rows.ig_username,
-      comment: rows.comment,
+      comment: rows.client_comment,
       additional_field: rows.additional_field,
       group_name: rows.group_name,
     }  
 const deliveryData = {
     client_comment: rows.client_comment,
-    additional_field: rows.additional_field,
-    delivery_type: 12,
-    responsible_packer: rows.responsible_packer,
-    payment_type: rows.payment_type,
+    // additional_field: rows.additional_field,
+    delivery_type: '12',
+    packer_name: rows.packer_name,
+    payment_name: rows.payment_name.id,
     delivery_service_type: Number(rows.delivery_service_type)+1,
     warehouse_city: rows.warehouse_city,
     warehouse_address:rows.warehouse_address,
@@ -241,23 +316,26 @@ const deliveryData = {
     status: '',
     cost: rows.cost,
     datetime_sent: rows.datetime_sent,
-    novaposhta_comment: rows.novaposhta_comment
+    // novaposhta_comment: rows.novaposhta_comment,
+    comment: rows.novaposhta_comment,
     }
     const utm ={
       utm_source:"",
       utm_medium:"",
       utm_term:"",
       utm_content:"",
-    utm_campaign:""
+      utm_campaign:""
       }
-const dataSend ={client: {...clientData},
+const dataSend ={
+  client: {...clientData},
   delivery: {...deliveryData},
   utm: {...utm},
    discount:"",
    discount_type:"0",
    order_products:[],
-   responsible:"1",
-   responsible_group:"0",
+   responsible: "1",
+  //  responsible_group:"0",
+   group_name: rows.group_name,
   date_create: rows.datetime,
   status: rows.status,
   store_url: rows.store_url,
