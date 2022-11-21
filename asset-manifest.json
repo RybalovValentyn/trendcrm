@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/trendcrm/static/css/main.53d05491.css",
-    "main.js": "/trendcrm/static/js/main.32e9b903.js",
+    "main.js": "/trendcrm/static/js/main.efbf105d.js",
     "index.html": "/trendcrm/index.html",
     "main.53d05491.css.map": "/trendcrm/static/css/main.53d05491.css.map",
-    "main.32e9b903.js.map": "/trendcrm/static/js/main.32e9b903.js.map"
+    "main.efbf105d.js.map": "/trendcrm/static/js/main.efbf105d.js.map"
   },
   "entrypoints": [
     "static/css/main.53d05491.css",
-    "static/js/main.32e9b903.js"
+    "static/js/main.efbf105d.js"
   ]
 }
