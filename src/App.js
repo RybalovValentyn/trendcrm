@@ -47,24 +47,23 @@ function App() {
        <CssBaseline />
        <Suspense fallback={<Preloader />}>
         <Routes >
-      <Route path='/trendcrm/auth'  element={<PublicRoute component={SignIn} />}>
-            </Route>
-           <Route
-            path={Router.HOME}element={<PrivateRoute component={MiniDrawer} />}> 
-            <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
-            <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
-            <Route path='/trendcrm/order' element={<PrivateRoute component={Order} errorElement= {<SignIn />}/>} />
-            <Route path={Router.PRODUCTS} element={<PrivateRoute component={Products} />} />
-            <Route path={Router.DELIVERY} element={<PrivateRoute component={Delivery} />} />
-            <Route path={Router.CALLS} element={<PrivateRoute component={Calls} />} />
-            <Route path={Router.MESSAGE} element={<PrivateRoute component={Messages} />} />
-            <Route path={Router.ANALITICS} element={<PrivateRoute component={Analytics} />} />
-            <Route path={Router.SETTINGS} element={<PrivateRoute component={Settings} />} />
-            <Route path={Router.FAQ} element={<PrivateRoute component={Faq} />} />
-            <Route path={Router.PURCH} element={<PrivateRoute component={Purchasing} />} />
-            <Route path={Router.HELP} element={<PrivateRoute component={Help} />} />
-            <Route path="*" element={<PublicRoute component={SignIn} />} />
-            </Route> 
+               <Route path='/'  element={<PublicRoute component={SignIn} />}/>
+            
+                  <Route path={Router.HOME} element={<PrivateRoute component={MiniDrawer} />}> 
+                          <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
+                          <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
+                          <Route path={Router.ORDER} element={<PrivateRoute component={Order} errorElement= {<SignIn />}/>} />
+                          <Route path={Router.PRODUCTS} element={<PrivateRoute component={Products} />} />
+                          <Route path={Router.DELIVERY} element={<PrivateRoute component={Delivery} />} />
+                          <Route path={Router.CALLS} element={<PrivateRoute component={Calls} />} />
+                          <Route path={Router.MESSAGE} element={<PrivateRoute component={Messages} />} />
+                          <Route path={Router.ANALITICS} element={<PrivateRoute component={Analytics} />} />
+                          <Route path={Router.SETTINGS} element={<PrivateRoute component={Settings} />} />
+                          <Route path={Router.FAQ} element={<PrivateRoute component={Faq} />} />
+                          <Route path={Router.PURCH} element={<PrivateRoute component={Purchasing} />} />
+                          <Route path={Router.HELP} element={<PrivateRoute component={Help} />} />
+                          <Route path="*" element={<PublicRoute component={SignIn} />} />
+                    </Route> 
       </Routes>
       </Suspense>
     </div>

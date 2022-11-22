@@ -184,11 +184,15 @@ ttn_status: {},
 doors_address:[],
 doors_flat: [],
 doors_house: [],
-
+autoupdate: 0,
+isAutoUpdate: false,
   },
 
    reducers: {
-           tHeadFilteredColumnUpdate: (state, action) => {  
+    autoUpdate: (state, action) => {  
+         return { ...state, [action.payload.id]: action.payload.str}
+    },
+        tHeadFilteredColumnUpdate: (state, action) => {  
           return { ...state,
             tHeadColumnFiltered: [...action.payload ] 
         };},
@@ -634,7 +638,7 @@ doors_house: [],
         }}
 );
 
-export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, searchCountUpdate,CountUpdate,tHeadFilteredColumnUpdate, 
+export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, searchCountUpdate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
    getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel} = ordersReduser.actions;
 export default ordersReduser.reducer;
 

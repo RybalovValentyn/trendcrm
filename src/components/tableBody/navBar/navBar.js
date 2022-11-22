@@ -1,4 +1,4 @@
-import {Children, useState, useEffect} from 'react';
+import {Children, useState, useEffect, Suspense} from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -18,6 +18,7 @@ import ListItemText from '@mui/material/ListItemText';
 import {mainNavBarItem} from './navBarItems';
 import {useNavigate, useParams, Outlet} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
+import { AppBarComponent } from './appBar';
 
 const drawerWidth = 200;
 
@@ -45,14 +46,6 @@ const closedMixin = (theme) => ({
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -63,8 +56,6 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -95,7 +86,7 @@ export function MiniDrawer() {
   const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setOpen(!open);
   };
 
   const handleDrawerClose = () => {
@@ -103,34 +94,33 @@ export function MiniDrawer() {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex','& .MuiAppBar-root': {boxShadow: 'none !important'} }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar >
+      <AppBar sx={{maxHeight: '47px',left:0, '& .MuiToolbar-root':{
+      minHeight: '47px', borderBottom: '1px solid #d0d0d0'} }} position="fixed" open={open}>
+        <Toolbar sx={{backgroundColor: '#fff', }} >
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
             sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
+              marginRight: 1,
+              // ...(open && { display: 'none' }),
             }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{fill: '#555555'}}/>
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-          </Typography>
+
+          <AppBarComponent/>
         </Toolbar>
+
+
       </AppBar>
 
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-         <List>
+      <Drawer  variant="permanent" open={open}>
+
+         <List sx={{paddingTop: '50px'}} >
           {mainNavBarItem.map((text, index) => (
             <ListItem onClick={() => navigate(text.route)} key={text.id} disablePadding sx={{ display: 'block' }}>
               <ListItemButton >
@@ -144,12 +134,15 @@ export function MiniDrawer() {
         </List>
 
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, paddingTop: '63px',
+      <Box component="main" sx={{ flexGrow: 1, paddingTop: '47px',
 
        height: '100vh', backgroundColor: colorsRef.tableHeaderBgColor,
         maxidth: '100%', overflowX: 'hidden' }}>
-      <Outlet/>
+        <Suspense fallback={null}>
+        <Outlet />
+      </Suspense>
       </Box>
+
     </Box>
   )
 }

@@ -13,7 +13,7 @@ import { selectStyles } from './input';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import { getFilteredOrders } from '../../../../../redux/asyncThunc';
+import { getFilteredOrders, getAllOrders } from '../../../../../redux/asyncThunc';
 import { colorsRef } from '../../../../../consts/colorConstants';
 import { StyledButton } from '../../../../buttons/buttons';
 import CloseIcon from '@mui/icons-material/Close';
@@ -98,6 +98,12 @@ export const ColumnSettings=()=>{
       dispatch(getFilteredOrders());
       handleClose();
         }
+
+const handleFResetFilters =()=>{
+    dispatch(tHeadFilteredColumnUpdate([]));
+    dispatch(getAllOrders())
+    handleClose();
+}
     return(
         <Dialog
         open={isOpenColumnSettings}
@@ -154,12 +160,18 @@ export const ColumnSettings=()=>{
         <StyledButton
           text={'Застосувати'}
           func= {handleCloseApply}
-          border={colorsRef.buttonBorderInModal}
+          border='#0c4b91'
           bgColor={colorsRef.btnAddBgColor}
             />
           <StyledButton
           text={'Відмінити'}
           func= {handleClose}
+          border={colorsRef.buttonBorderInModal}
+          bgColor={colorsRef.btnAddBgColor}
+            />
+          <StyledButton
+          text={'Скинути фільтри'}
+          func= {handleFResetFilters}
           border={colorsRef.buttonBorderInModal}
           bgColor={colorsRef.btnAddBgColor}
             />

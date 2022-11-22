@@ -66,7 +66,6 @@ if (columns.length > 0 && dataForHeader.length > 0 && filteredColumn.length === 
   GetRenderRows(dataForHeader, columns)
  dispatch(bodyTableRowsUpdate([...arrayRows.reverse()]))
 } else if (columns.length > 0 && filteredColumn.length > 0 ) {
-  console.log('filteredColumn', filteredColumn);
   GetRenderFilteredRows(filteredColumn, columns)
  dispatch(bodyTableRowsUpdate([...arrayRows.reverse()]))
 }

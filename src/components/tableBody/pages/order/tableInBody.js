@@ -10,11 +10,25 @@ import {AddStatusForm} from './modalAddStatus';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSortDate } from '../../../../redux/ordersReduser';
 import { getAllOrders } from '../../../../redux/asyncThunc';
+import { useParams, useSearchParams } from "react-router-dom";
 
 export function ScrollTabsButton() {
   const [value, setValue] = useState(0);
+  
+const [searchParams, setSearchParams] = useSearchParams();
+const statusName = searchParams.get('id');
+
+// const visibleProducts = products.filter((product) =>
+//   product.name.toLowerCase().includes(productName.toLowerCase())
+// );
+
 const statuses = useSelector((state) => state.ordersAll.getStatuses);
 const dispatch = useDispatch();
+
+useEffect(() => {
+  if (statusName === "") return;
+  console.log(statusName);
+}, [statusName]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -43,6 +57,7 @@ const dispatch = useDispatch();
 const handleClick =(e)=>{
   let str = e.target.id;
   let id = 'status_name'
+  setSearchParams({ id: str });
   if (str === 0 || str === '0') {
     str = ''
   }

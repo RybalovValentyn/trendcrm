@@ -16,13 +16,14 @@ import {StyledButton} from '../../../buttons/buttons';
 import {CreateRows} from './createRow/createRows';
 import { ListAutocompliteStatuses } from './createRow/listStatuses';
 import { colorsRef } from '../../../../consts/colorConstants';
-import { useEffect } from 'react';
-import { searchCountUpdate, CountUpdate } from '../../../../redux/ordersReduser';
+import { useEffect, useState } from 'react';
+import { searchCountUpdate, CountUpdate, autoUpdate } from '../../../../redux/ordersReduser';
 import { getAllOrders, getAllStatuses } from '../../../../redux/asyncThunc';
 import { DownloadComponent } from './createHead/downloads'; 
 import { ModalMenu } from './createHead/modal'
 import { BootstrapTooltip } from './styles';
 import { ColumnSettings } from './createHead/columnSettings';
+
 
 export function HeaderContainer() {
 const dispatch = useDispatch();
@@ -31,6 +32,8 @@ const copyParams = Object.values(params);
 const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
 const paramsCount = useSelector((state) => state.ordersAll.searchParamCount);
 const columns = useSelector((state) => state.ordersAll.tHeadColumn);
+const [number, setNumber] = useState('');
+const autoUdates = useSelector((state) => state.ordersAll.autoUdate);
 
 useEffect(() => {
   const searchCount = copyParams.reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
@@ -66,7 +69,8 @@ const listItemStyle={
   // padding: '0px 10px'
 }
 const onHandleCheck=(e)=>{
-console.log(e.target.name);
+  let check = e.target.check
+  dispatch(autoUpdate({id: 'isAutoUpdate', str: check}))
 }
 const handleReload =()=>{
   dispatch(getAllStatuses())
@@ -76,6 +80,23 @@ const handleColumnSettings=()=>{
   let id = 'columnSettings';
   let str = true;
   dispatch(getOpenTableCreate({id, str}))
+}
+
+const numberChange = (e)=>{
+  if (Number(e.target.value)) {
+    setNumber(e.target.value)
+  }
+}
+const handleKeyDown=(e)=>{
+  if (e.key === 'Backspace') {
+    setNumber('')
+  } else if (e.key === "Enter" && e.target.value >= 60) {
+    dispatch(autoUpdate({id: 'autoupdate', str: number}))
+  }else if (e.key === "Enter" && e.target.value < 60) {
+    setNumber(60)
+    dispatch(autoUpdate({id: 'autoupdate', str: 60}))
+  }
+
 }
 
   return (
@@ -140,7 +161,8 @@ const handleColumnSettings=()=>{
 
         <ListItem>
         <BootstrapTooltip title="Частота автооновлення">
-        <input style={{width: '50px', padding: '4px 5px', border: '1px solid #d0d0d0', borderRadius: '4px'}} type='text'></input>
+        <input onKeyDown={handleKeyDown} value={number} style={{width: '50px', padding: '4px 5px', border: '1px solid #d0d0d0', borderRadius: '4px'}} type='text'  onChange={numberChange}
+         ></input>
         </BootstrapTooltip>
         </ListItem>
 

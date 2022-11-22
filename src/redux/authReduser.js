@@ -22,7 +22,7 @@ const authSlice = createSlice({
    hashKey: '',
    login: '',
    role: null,
-   name: null,
+   name: 'Admin',
    sip_login: null,
     isLoading: false,
     isAuth: false,
@@ -42,13 +42,19 @@ const authSlice = createSlice({
     vers: null,
     lang: null,
     tour: null,
-    group: null
+    group: null,
+    taryf: 'SILVER',
+    daysToEnd: '0'
   },
 
   reducers: {
     initUser: (state, action) => {
       hashKey.set(action.payload.user.hashKey);
       return { ...state, ...action.payload.user, isAuth: true };
+    },
+    ExitUser: (state, action) => {
+      hashKey.set('');
+      return { ...state, ...action.payload, isAuth: false, name: '', login: '' };
     },
   },
   extraReducers: {
@@ -126,5 +132,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { initUser } = authSlice.actions;
+export const { initUser, ExitUser } = authSlice.actions;
 export default authSlice.reducer;
