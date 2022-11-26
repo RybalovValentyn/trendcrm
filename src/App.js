@@ -21,6 +21,7 @@ import { useEffect, Suspense } from 'react';
 import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp } from './redux/asyncThunc';
 import {MiniDrawer} from './components/tableBody/navBar/navBar';
 import { Preloader } from './components/preloader/preloader';
+import SimpleBackdrop from './components/preloader/globalPreloader';
 
 function App() {
   const dispatch = useDispatch();

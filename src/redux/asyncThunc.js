@@ -148,7 +148,6 @@ console.log('getFilteredOrders',column);
           let columns ={ draw: '1',
           start:0,
           length: 100,
-          // status: 4,
           create_date_from: state.ordersAll.searchParams.create_date_from,
           create_date_to: state.ordersAll.searchParams.create_date_to,
           update_date_from: state.ordersAll.searchParams.update_date_from,
@@ -157,7 +156,7 @@ console.log('getFilteredOrders',column);
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name,
           order:[{data:{dir:'desc'}}],
-          columns:[...column] ,
+          columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: ''}},] ,
            }
 
         try {
@@ -168,6 +167,7 @@ console.log('getFilteredOrders',column);
           })
           console.log(data.data);
          return data.data
+        // return columns
       } catch (error) {
         return rejectWithValue({
          error: error.message
@@ -241,7 +241,7 @@ export const getAllOrders = createAsyncThunk(
            url:  REBASE_URL+orders,
            data: columns
           })
-          console.log(data.data);
+          // console.log(data.data);
          return data.data
       } catch (error) {
         return rejectWithValue({

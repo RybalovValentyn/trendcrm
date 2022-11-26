@@ -17,6 +17,7 @@ import { getFilteredOrders, getAllOrders } from '../../../../../redux/asyncThunc
 import { colorsRef } from '../../../../../consts/colorConstants';
 import { StyledButton } from '../../../../buttons/buttons';
 import CloseIcon from '@mui/icons-material/Close';
+import {translater} from '../translate';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -37,27 +38,35 @@ const Transition = forwardRef(function Transition(props, ref) {
 export const ColumnSettings=()=>{
     const dispatch = useDispatch();
     const isOpenColumnSettings = useSelector((state) => state.ordersAll.modalControl.columnSettings);
-    const columns = useSelector((state) => state.ordersAll.tHeadColumn)
+    const tHeadColumn = useSelector((state) => state.ordersAll.tHeadColumn)
     const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-    const [group, setGroup] = useState('')
+
     const [columnsCopy, setColumnsCopy] = useState([]);
-
-
+    const copyTranslster = Object.entries(translater).map((str, i)=>({id: str[0], str: str[1], num: i}))
+    const [selectData, setSelectData] = useState([]);
 
     useEffect(() => {        
-        if (columns.length > 0 && filteredColumn.length === 0) {            
-            let columnCopy = columns.map((col, i)=>({num:`${i}`, str: col.str, id: col.id, checked: true}))
+        if (tHeadColumn.length > 0 && filteredColumn.length === 0) {            
+            let columnCopy = copyTranslster.map((col, i)=>({num:`${i}`, str: col.str, id: col.id, checked: false}))
+            setSelectData([...columnCopy])
             setColumnsCopy([...columnCopy])
-        } else if (columns.length > 0 && filteredColumn.length > 0) {
-            let columnCopyFiltered = columns.map((col, i)=>{
+        } else if (tHeadColumn.length > 0 && filteredColumn.length > 0) {
+
+          let secondColumn = [];
+      let firstColumn = filteredColumn.map((col, i)=>{
+           let filt =  copyTranslster.find(n=>n.id === col.data)
+           if (filt) {
+           return {num: col.num, str: filt.str, id: filt.id, checked: true}
+           } 
+          })
+       copyTranslster.map((col, i)=>{
                 let filtered = filteredColumn.find(n=>n.data === col.id)
-                if (filtered) {
-                   return  {num:`${i}`, str: col.str, id: col.id, checked: true}
-                } else return {num:`${i}`, str: col.str, id: col.id, checked: false}
-            })     
-            setColumnsCopy([...columnCopyFiltered])  
-        }
-        
+                if (!filtered) {
+                     secondColumn.push({num:`${i}`, str: col.str, id: col.id, checked: false}) 
+                }})  
+            setSelectData([...secondColumn])
+            setColumnsCopy([...firstColumn.concat(secondColumn)])  ;
+        }        
         }, [isOpenColumnSettings]);
         
 
@@ -72,26 +81,52 @@ export const ColumnSettings=()=>{
         let ind = e.target.id
         let check = e.target.checked;
         let str = columnsCopy.find(n=>n.id === e.target.name)        
-        let column = {num: str.num, str: str.str, id: str.id, checked: check }
-        let filter = columnsCopy.splice(ind,1,column)
-        setColumnsCopy([...columnsCopy])
+        let column = {num: str.num, str: str.str, id: str.id, checked: check } 
+        let doubleColumn = dubleColumnCheck(columnsCopy, e.target.name)
+               if (doubleColumn.length === 0) {               
+                columnsCopy.splice(ind,1,column);
+                setColumnsCopy([...columnsCopy]);              
+                getDataFromSelects()
+               } else if (doubleColumn.length > 0) {
+console.log('ddddddddddddddddddddddddddddd');
+console.log(columnsCopy);
+deletedDouble(doubleColumn);
+               }
+               getDataFromSelects()
       };
+      const dubleColumnCheck =(column, name)=>{
+      let double =  column.flatMap(col => col.id).filter((str, index, array) => array.indexOf(str) !== index)
+return double
+      }
 
 
     const handleSelectChange =(e)=>{
         let value = e.target.value;
-        console.log(e.target.name);
-        let strSelect = columnsCopy.find(n=>n.str === value);  
-        let indEvent = columnsCopy.find(n=>n.num === e.target.name);      
-        let columnSelect = {num: indEvent.num, str: indEvent.str, id: indEvent.id, checked: false}
-        let columnEvent = {num: strSelect.num, str: strSelect.str, id: strSelect.id, checked: true}
-            columnsCopy.splice(indEvent.num,1,columnEvent)
-            columnsCopy.splice(columnEvent.num,1,columnSelect)
-        setColumnsCopy([...columnsCopy])
-        setGroup(e.target.value)
-      }
 
-      const handleCloseApply =()=>{
+        let strSelect = columnsCopy.find(n=>n.str === value);  
+        let indEvent = columnsCopy.find(n=>n.num === e.target.name);  
+  
+     let columnEvent = {num: strSelect.num, str: strSelect.str, id: strSelect.id, checked: true}
+    let doubleColumn = filteredUniqElement(columnsCopy)
+
+  if (doubleColumn.length === 0) {
+     let element =  columnsCopy.splice(e.target.name,1,columnEvent);
+     console.log(element[0]);  
+     let deletedEl = {num: element[0].num, id: element[0].id, str: element[0].str, checked: false} 
+    //  columnsCopy.splice(e.target.name+1,0,deletedEl);
+      setColumnsCopy([...columnsCopy, deletedEl]);
+      getDataFromSelects()
+  } else if (doubleColumn.length > 0) {
+      console.log('sssssssssssssssssssssssssssssssssssss');
+      deletedDouble(doubleColumn);
+      getDataFromSelects();
+    }}
+  const getDataFromSelects =()=>{
+    let fiilterFromSelect = columnsCopy.filter(n=>n.checked === false);
+    setSelectData([...fiilterFromSelect]);
+  }
+
+ const handleCloseApply =()=>{
         let filter = columnsCopy.filter(n=>n.checked === true).map((col, i)=>({num:`${i}`,
                      data: col.id, searchable: true, orderable: true, search:{value: ''}}));
       dispatch(tHeadFilteredColumnUpdate(filter));
@@ -104,6 +139,25 @@ const handleFResetFilters =()=>{
     dispatch(getAllOrders())
     handleClose();
 }
+const filteredUniqElement = (column)=>{
+ return column.flatMap(col => col.id)
+  .filter((str, index, array) => array.indexOf(str) !== index)
+}
+const deletedDouble =(doubleColumn)=>{
+  let double = columnsCopy.reverse().find(n=>n.id === doubleColumn[0]);
+  let index = columnsCopy.reverse().indexOf(double)
+  // console.log('deletedDouble', columnsCopy[index]);
+  columnsCopy.splice(index, 1)
+  setColumnsCopy([...columnsCopy]);
+}
+const handleOpenSelect=(e)=>{
+ let double = filteredUniqElement(columnsCopy)
+if (double.length > 0) {
+  // console.log('deletedDouble(double)', double);
+ deletedDouble(double)
+  // console.log('e.target.id', double);
+}
+}
     return(
         <Dialog
         open={isOpenColumnSettings}
@@ -111,7 +165,7 @@ const handleFResetFilters =()=>{
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
-        sx={{overflow: 'hidden', '& .MuiPaper-root': {width: '820px', }}}
+        sx={{overflow: 'hidden', '& .MuiPaper-root': {width: '520px', }}}
       >
         <DialogTitle sx={{display: 'flex',justifyContent: 'space-between'}}>{"Відображення на сторінці замовлень"}
         <IconButton onClick={handleClose} aria-label="delete">
@@ -130,21 +184,24 @@ const handleFResetFilters =()=>{
                   edge="start"
                   onChange={handleToggle}
                   name={name.id}
+                  
                   id={`${ind}`}
                   tabIndex={-1}
                 checked = {name.checked}
                   disableRipple
                 /> 
-            <ListItemText primary={name.str}/>
+            {/* <ListItemText primary={name.str}/> */}
             <Select name = {`${ind}`}
                     id={`${name.num}`}
                     value={name.str}
+                    onFocus = {handleOpenSelect} 
                     defaultValue={name.str}
-                    onChange={handleSelectChange}
+                     onChange={handleSelectChange}
                     input={<OutlinedInput  sx={selectStyles}/>}
                     MenuProps={MenuProps}
+                    renderValue={(value) => `${value}`}
                     >          
-                    {columnsCopy.map((name, ind)=>(
+                    {selectData.map((name, ind)=>(
                 <MenuItem sx={{fontSize: '14px' }} id={name.id} key ={ind} value={name.str} >      
                     {name.str}
                 </MenuItem>))}

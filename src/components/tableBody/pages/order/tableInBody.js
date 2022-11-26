@@ -27,7 +27,7 @@ const dispatch = useDispatch();
 
 useEffect(() => {
   if (statusName === "") return;
-  console.log(statusName);
+  // console.log(statusName);
 }, [statusName]);
 
   const handleChange = (event, newValue) => {

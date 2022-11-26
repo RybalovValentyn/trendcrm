@@ -48,12 +48,12 @@ export  function Order() {
 
 
   useEffect(() => {
-    console.log('getAllOrders');
+    // console.log('getAllOrders');
 if (statuses.length === 0) {
   dispatch(getAllStatuses());
 }
 if (!allOrders[0]) {
-  console.log('no orders');
+  // console.log('no orders');
   dispatch(getAllOrders());
 }
   

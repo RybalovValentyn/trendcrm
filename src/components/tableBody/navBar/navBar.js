@@ -20,6 +20,7 @@ import {useNavigate, useParams, Outlet} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
 import { AppBarComponent } from './appBar';
 
+
 const drawerWidth = 200;
 
 

@@ -48,7 +48,11 @@ export const inputStyle = {
     boxShadow: 'inset 0 1px 1px rgb(0 0 0 / 8%)',
     borderRadius: '8px',
     marginTop: '10px',
-    padding: '5px 8px',
+    // padding: '5px 8px',
+    '& .MuiInputBase-input':{
+        padding: '5px 10px',
+        width: '100%'
+    }
     
 }
 export const formStyle ={

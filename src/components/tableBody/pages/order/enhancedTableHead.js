@@ -42,7 +42,8 @@ useEffect(() => {
          return result.push({id:str, str:translater[str]})
       }    
   },[]); 
-  dispatch(tHeadColumnUpdate(result))
+  dispatch(tHeadColumnUpdate(result));
+  
 }else  if (columns.length > 0 && filteredColumn.length > 0) {
   const headerValue =  filteredColumn.reduce((acc,str, ind) =>{
       if (translater[str.data]) {
