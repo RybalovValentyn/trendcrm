@@ -1,20 +1,18 @@
 import { Select, MenuItem, ListItemText, InputBase, InputAdornment } from '@mui/material';
-import { colorsRef } from '../../../../../consts/colorConstants';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { useState, forwardRef } from 'react';
-
 import { getOpenTDownloadExel } from '../../../../../redux/ordersReduser';
-
+import { selectStyles, svgStyle, listStyle } from './style';
+import { calculateNewValue } from '@testing-library/user-event/dist/utils';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
 const MenuProps = {
   PaperProps: {
     style: {
-    fontSize: '13px',
     maxHeight: ITEM_HEIGHT * 5 + ITEM_PADDING_TOP,
-    width: 200,
+    width: 180,
     },
   },
 };
@@ -26,60 +24,26 @@ const dispatch = useDispatch();
 const [open, setOpen] = useState(false);
 
 const handleClickOpen = () => {
-    console.log('open');
-  setOpen(true);
-};
-
-const handleClose = () => {
-    console.log('close');
-  setOpen(false);
-};
-
- const svgStyle = {
-        fill: colorsRef.inputTextColor,
-        marginRight: '-10px'
-    
-      };
- const selectStyles ={
-        '& .MuiInputBase-input': {
-          // maxHeight: '32px',
-          lineHeight: 1.5,
-        borderRadius: '8px',
-        color: colorsRef.inputTextColor,
-        position: 'relative',
-        fontSize: 13,
-        padding: '5px 0px',
-      
-      },
-      '& .MuiOutlinedInput-root':{
-        padding: '0px !important',
-        paddingLeft: '14px',
-        color: '#fff'
-    },
-      
+  setOpen(!open);
 };
 
 const handleClickExel = ()=>{    
     dispatch(getOpenTDownloadExel(true))
-    console.log('asd');
 };
 
 
 
-const handleChange = ()=>{
-    handleClose()
-    
-console.log('change');
-}
+const handleChange = ()=>{    
+setOpen(!open);
+};
+
 
 return(
-
     <Select 
-    id="demo"
+    id="download_exel"
     value={''}
+    open={open}
     onChange={handleChange}
-    onClose={handleClickOpen}
-    onOpen={handleClose}
     input={<InputBase onClick={handleClickOpen} startAdornment={
 
    <InputAdornment   position="start">
@@ -88,21 +52,20 @@ return(
     }  sx={selectStyles}/>}
     MenuProps={MenuProps}
   >   
-      <MenuItem value={'exel'} >
-        <ListItemText onClick={handleClickExel} sx={{fontSize: '12px' }} primary={'Завантажити Exel'} /> 
+      <MenuItem value={'exel'} sx={listStyle} >
+        <ListItemText onClick={handleClickExel} primary={'Завантажити Exel'} /> 
      
       </MenuItem>
-      <MenuItem value={'back'} >
-        <ListItemText sx={{fontSize: '12px' }} primary={'Повернення товару'} />
+      <MenuItem value={'back'} sx={listStyle} >
+        <ListItemText primary={'Повернення товару'} />
       </MenuItem>
-      <MenuItem value={'cost'} >
-        <ListItemText sx={{fontSize: '12px' }} primary={'Кошти отримано'} />
+      <MenuItem value={'cost'} sx={listStyle} >
+        <ListItemText primary={'Кошти отримано'} />
       </MenuItem>
-      <MenuItem value={'cancel'} >
-        <ListItemText sx={{fontSize: '12px' }} primary={'Відміна'} />
+      <MenuItem value={'cancel'} sx={listStyle} >
+        <ListItemText primary={'Відміна'} />
       </MenuItem>
 
   </Select>
-
 )
 }

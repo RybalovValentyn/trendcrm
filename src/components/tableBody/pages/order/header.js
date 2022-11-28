@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import {clasListContainer, svgStyle} from './styles';
 import AddIcon from '@mui/icons-material/Add';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import SettingsIcon from '@mui/icons-material/Settings';
+
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import { styled } from '@mui/material/styles';
 import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
@@ -23,6 +23,8 @@ import { DownloadComponent } from './createHead/downloads';
 import { ModalMenu } from './createHead/modal'
 import { BootstrapTooltip } from './styles';
 import { ColumnSettings } from './createHead/columnSettings';
+import {OtherMenuComponent} from './createHead/menuother';
+import { CustomizedCheckboxAll } from '../../../inputs/checkBox';
 
 
 export function HeaderContainer() {
@@ -34,6 +36,7 @@ const paramsCount = useSelector((state) => state.ordersAll.searchParamCount);
 const columns = useSelector((state) => state.ordersAll.tHeadColumn);
 const [number, setNumber] = useState('');
 const autoUdates = useSelector((state) => state.ordersAll.autoUdate);
+const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
 
 useEffect(() => {
   const searchCount = copyParams.reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
@@ -65,9 +68,6 @@ const listStyle={
 padding: 0
 }
 
-const listItemStyle={
-  // padding: '0px 10px'
-}
 const onHandleCheck=(e)=>{
   let check = e.target.check
   dispatch(autoUpdate({id: 'isAutoUpdate', str: check}))
@@ -95,8 +95,12 @@ const handleKeyDown=(e)=>{
   }else if (e.key === "Enter" && e.target.value < 60) {
     setNumber(60)
     dispatch(autoUpdate({id: 'autoupdate', str: 60}))
-  }
+  };
+}
 
+const onchangeAll=(e)=>{
+  let s = !isGrabAll
+  dispatch(autoUpdate({id: 'isGrabAll', str: s}))
 }
 
   return (
@@ -128,10 +132,8 @@ const handleKeyDown=(e)=>{
         <BpCheckbox name='product_list' onChange={onHandleCheck} tooltip ={'Повний список товарів'} placement="left" />    
         </ListItem>
 
-      <ListItem sx={{paddingLeft: '10px', paddingRight: '20px', "& :hover": {cursor: 'pointer', }}}>
-      <BootstrapTooltip title="Вибрати все">
-      <AddTaskIcon sx={svgStyle}/>
-      </BootstrapTooltip>
+      <ListItem sx={{paddingLeft: '10px', paddingRight: '10px', "& :hover": {cursor: 'pointer', }}}>
+        <CustomizedCheckboxAll name='product_list' onChange={onchangeAll} tooltip ={'Вибрати все'} />
       </ListItem>
        
         <ListItem sx={{paddingLeft: '10px', paddingRight: '20px', "& :hover": {cursor: 'pointer', }}}>
@@ -141,19 +143,17 @@ const handleKeyDown=(e)=>{
           {columns.length > 0 && <ColumnSettings/>}
         </ListItem>
        
-        <ListItem sx={{padding: '0px 0px 0px 10px'}}>      
+        <ListItem sx={{padding: '0px 0px 0px 10px', "& :hover": {cursor: 'pointer',}}}>      
         <DownloadComponent/>  
         <ModalMenu/>
         </ListItem>
         
-        <ListItem sx={{padding: '0px 10px 0px 0px', "& :hover": {cursor: 'pointer', }}}> 
-        <SettingsIcon  sx={svgStyle}/>
+        <ListItem sx={{padding: '0px 0px 0px 0px', "& :hover": {cursor: 'pointer', }}}> 
+        <OtherMenuComponent/>        
         
         </ListItem>
 
-
-
-        <ListItem sx={{paddingLeft: '10px', paddingRight: '10px', "& :hover": {cursor: 'pointer', }}}>
+        <ListItem sx={{paddingLeft: '5px', paddingRight: '10px', "& :hover": {cursor: 'pointer', }}}>
            <BootstrapTooltip title="Оновити сторінку">
         <ReplayOutlinedIcon onClick={handleReload} sx={svgStyle} />
            </BootstrapTooltip>

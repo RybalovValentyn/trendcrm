@@ -12,6 +12,8 @@ import userImg from '../../../images/admin.jpg';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useState } from "react";
 import { ExitUser } from "../../../redux/authReduser";
+import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -130,11 +132,11 @@ dispatch(ExitUser())
                     MenuProps={MenuProps}
                 >   
                     <MenuItem value={'settings'} >
-                        <InfoOutlinedIcon sx={{fill: '#777', marginRight: '10px'}} />
+                        <AccountBoxOutlinedIcon sx={{fill: '#777', marginRight: '10px'}} />
                         <ListItemText onClick={handleUserSettings} sx={{fontSize: '12px' }} primary={'Профіль'} />                     
                     </MenuItem>
                     <MenuItem value={'back'} onClick={handleOut} >
-                         <InfoOutlinedIcon sx={{fill: '#777', marginRight: '10px'}} />
+                         <LogoutOutlinedIcon sx={{fill: '#777', marginRight: '10px'}} />
                         <ListItemText sx={{fontSize: '12px' }} primary={'Вихід'} />
                     </MenuItem>
 

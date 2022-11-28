@@ -18,6 +18,7 @@ import {getSortDate} from '../../../../../redux/ordersReduser';
 import { getAllOrders } from '../../../../../redux/asyncThunc';
 import { StyledInput } from './input';
 import { OutlinedInput, InputBase } from '@mui/material';
+import { listStyle } from './style';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -25,7 +26,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 200,
       overflowX: 'hidden',
     },
   },
@@ -48,10 +49,12 @@ export const  InputSelector =({name}) => {
     const [openUpdateTo, setOpenUdateTo] = useState(false);
     const [openSentFor, setOpenSentFor] = useState(false);
     const [openSentTo, setOpenSentTo] = useState(false);
-    const [status, setStatus] = useState(['Всі']);
-    const [group, setGroup] = useState(['Всі']);
-    const [packer, setPacker] = useState(['Всі']);
-    const [payType, setPaytype] = useState(['Всі']);
+    const [status, setStatus] = useState();
+    const [group, setGroup] = useState();
+    const [packer, setPacker] = useState();
+    const [payType, setPaytype] = useState();
+
+// console.log(statuses[0].name);
 
 const handleChangeFor = (newValue) => {  
         let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
@@ -59,8 +62,7 @@ const handleChangeFor = (newValue) => {
         dispatch(getSortDate({id, str}))  
         dispatch(getAllOrders())    
       setOpenFor(false)
-    };
-    
+    };    
 
 const handleChangeTo=(newValue)=>{
     let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
@@ -165,12 +167,12 @@ if (name === 'payment_name') {
     value={payType}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    renderValue={(selected) =>selected.join(', ')}
+    // renderValue={(selected) =>selected.join(', ')}
     MenuProps={MenuProps}
   >
 
     {paymentType.map((name, ind) => (
-      <MenuItem  key={ind} value={name.name} >      
+      <MenuItem  key={ind} value={name.name} sx={listStyle}>      
         <ListItemText sx={{fontSize: '12px' }} primary={name.name} />
       </MenuItem>
     ))}
@@ -184,12 +186,12 @@ if (name === 'payment_name') {
     value={packer}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    renderValue={(selected) =>selected.join(', ')}
+    // renderValue={(selected) =>selected.join(', ')}
     MenuProps={MenuProps}
   >
 
     {packerName.map((name, ind) => (
-      <MenuItem  key={ind} value={name} >      
+      <MenuItem  key={ind} value={name} sx={listStyle} >      
         <ListItemText sx={{fontSize: '12px' }} primary={name} />
       </MenuItem>
     ))}
@@ -203,12 +205,12 @@ if (name === 'payment_name') {
     value={group}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    renderValue={(selected) =>selected.join(', ')}
+    // renderValue={(selected) =>selected.join(', ')}
     MenuProps={MenuProps}
   >
 
     {noGroups.map((name) => (
-      <MenuItem  key={name.id} value={name.name} >      
+      <MenuItem  key={name.id} value={name.name} sx={listStyle} >      
         <ListItemText sx={{fontSize: '12px' }} primary={name.name} />
       </MenuItem>
     ))}
@@ -222,12 +224,12 @@ if (name === 'payment_name') {
     value={status}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    renderValue={(selected) =>selected.join(', ')}
+    // renderValue={(selected) =>selected.join(', ')}
     MenuProps={MenuProps}
   >
 
     {statuses.map((name) => (
-      <MenuItem  key={name.id} value={name.name} >
+      <MenuItem  key={name.id} value={name.name} sx={listStyle} >
       
         <span style ={{display: 'block', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: name.style, marginRight: '10px'}}></span>
         <ListItemText sx={{fontSize: '12px' }} primary={name.name} />

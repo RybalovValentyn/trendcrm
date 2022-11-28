@@ -82,8 +82,6 @@ export const clasListContainer ={
   display: 'flex',
   justifyContent: 'space-between',
   fontSize: '13px',
-  paddingTop: '5px',
-  paddingBottom: '5px',
   paddingLeft: '15px',
   paddingRight: '10px',
   alignItems: 'center',

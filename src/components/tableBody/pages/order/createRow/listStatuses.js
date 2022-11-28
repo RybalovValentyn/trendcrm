@@ -60,7 +60,7 @@ const onAutocompliteResponsible=(e)=>{
 const onAutocompliteGrop =(e)=>{
     let id = e.target.id.split('-')[0]
     let ind = e.target.id.split('-')[2]
-    let str = noGroups[ind].id
+    let str = noGroups[ind]?noGroups[ind].id: ''
     dispatch( getFormTable({id, str }))
 }
 const inputChange=(e)=>{

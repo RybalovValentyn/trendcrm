@@ -4,6 +4,9 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useDispatch, useSelector } from 'react-redux';
 import {deliverypStatus, infoStatus} from '../../redux/statusReduser';
 import { BootstrapTooltip } from '../tableBody/pages/order/styles';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import { useState } from 'react';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 const BpIcon = styled('span')(({ theme }) => ({
   borderRadius: '50%',
@@ -79,26 +82,27 @@ const onCheck=(e)=>{
 
 }
 
-export function CustomizedCheckboxAutoSaved() {    
-  const dispatch = useDispatch();
+export function CustomizedCheckboxAll(props) {    
+  const  {tooltip, placement, func} = props
 
-  // const delyvery = useSelector((state) => state.addStatus.deliveryStatus);
-  
-const onCheck=(e)=>{
-  const check = e.target.checked
-  console.log(check);
-  // dispatch(deliverypStatus(check))
-
-}
+  const style = {padding: 0,
+        borderRadius: '50%',
+        width: 22,
+        height: 22,
+        '&:hover': { bgcolor: 'transparent' },
+      }
 
   return (
-      <div style={{width: '50%', alignItems: 'left', padding: '2px 10px'}}>
-  
-        <BpCheckbox onChange={onCheck}
-        //  checked={delyvery}
-          />
-  
-      </div>
-    );
-
+     <BootstrapTooltip title={tooltip} placement ={placement}>
+    <Checkbox
+      sx={style}
+      disableRipple
+      color="default"
+      checkedIcon={<TaskAltIcon sx={{color: '#2f2c2d',}}  />}
+      icon={<AddTaskIcon sx={{color: '#2f2c2d' }} />}
+      inputProps={{ 'aria-label': 'Checkbox demo' }}
+      {...props}
+    />
+    </BootstrapTooltip>
+  );
 }

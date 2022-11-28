@@ -94,7 +94,7 @@ export const StyledInput = styled(InputBase)(({ theme }) => ({
     color: colorsRef.inputTextColor,
     position: 'relative',
     backgrounColor: '#fff',
-    fontSize: 13,
+    fontSize: '12px',
     padding: '2px 32px 2px 12px',
     minWidth: '65px',
     maxWidth: '86px',  
@@ -112,7 +112,7 @@ export const StyledInput = styled(InputBase)(({ theme }) => ({
     color: colorsRef.inputTextColor,
     position: 'relative',
     backgrounColor: '#fff',
-    fontSize: '14px',
+    fontSize: '12px',
     padding: '7px 32px 7px 12px',
     minWidth: '135px',
    

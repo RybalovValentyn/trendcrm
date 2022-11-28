@@ -21,6 +21,7 @@ tabsBgColor: '#ffffff',
 tableInputTextColor: '#777777',
 tableRowBgFirstColor: '#f1f3f4',
 tableRowSecondColor: '#d5d5d5',
+tableSelectedBgColor: '#B0C4FF',
 
 buttonStatusBgColor: '#CCCCCC',
 
