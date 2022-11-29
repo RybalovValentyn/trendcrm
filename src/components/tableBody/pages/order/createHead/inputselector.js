@@ -38,8 +38,6 @@ export const  InputSelector =({name}) => {
     const value = useSelector((state) => state.ordersAll.searchParams);
     const statuses = useSelector((state)=> state.ordersAll.getStatuses);
     const groups = useSelector((state)=> state.addStatus.groups);
-    const newGroup = {id: "0", name: "Без групи", disabled: "0"};
-    const noGroups = groups.concat(newGroup).reverse();
     const packerName = useSelector((state)=> state.ordersAll.packer_name);
     const paymentType =  useSelector((state)=> state.ordersAll.payment_name);
 
@@ -49,10 +47,10 @@ export const  InputSelector =({name}) => {
     const [openUpdateTo, setOpenUdateTo] = useState(false);
     const [openSentFor, setOpenSentFor] = useState(false);
     const [openSentTo, setOpenSentTo] = useState(false);
-    const [status, setStatus] = useState();
-    const [group, setGroup] = useState();
-    const [packer, setPacker] = useState();
-    const [payType, setPaytype] = useState();
+    const [status, setStatus] = useState('');
+    const [group, setGroup] = useState('');
+    const [packer, setPacker] = useState('');
+    const [payType, setPaytype] = useState('');
 
 // console.log(statuses[0].name);
 
@@ -131,32 +129,30 @@ if (e.key === 'Enter') {
 
 const handleSelectChange = (e) => {
   let id = e.target.name
-  console.log(e.target.value);
+  // console.log(e.target.value);
   let str = ''
   const { target: { value },} = e;
   if (id === 'status_name') {
-    setStatus(
-      typeof value === 'string' ? value.split(',') : value,
+      setStatus(typeof value === 'string' ? value.split(',') : value,
    );
-   str = statuses.find(str=>str.name === e.target.value)?.id
+   str = statuses.find(str=>str.name === e.target.value)?.id   
   }else if (id === 'group_name' ) {
   setGroup(typeof value === 'string' ? value.split(',') : value,)
-  str = noGroups.find(str=>str.name === e.target.value)?.id
+  str = groups.find(str=>str.name === e.target.value)?.id
   }else if (id === 'packer_name' ) {
     setPacker(typeof value === 'string' ? value.split(',') : value,)
     str = packerName.indexOf(e.target.value)
     }else if (id === 'payment_name' ) {
-      setPaytype(typeof value === 'string' ? value.split(',') : value,);
+      setPaytype(typeof value === 'string' ? value.split(',') : '0',);
       let type = paymentType.find(str=>str.name === e.target.value)
-      str= type.id+`,${type.prepay_status}`
+      str= type?.id+`,${type?.prepay_status}`
     }
-if (str === 0) {
+if (str === 0 || str === undefined || e.target.value === '') {
   str = ''
 }
   dispatch(getSortDate({id, str}))
   dispatch(getAllOrders())
 };
-
 
 
 if (name === 'payment_name') {
@@ -167,13 +163,15 @@ if (name === 'payment_name') {
     value={payType}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    // renderValue={(selected) =>selected.join(', ')}
     MenuProps={MenuProps}
+    displayEmpty
   >
-
+      <MenuItem  value='' sx={listStyle}>      
+      {'Всі'}
+      </MenuItem>
     {paymentType.map((name, ind) => (
       <MenuItem  key={ind} value={name.name} sx={listStyle}>      
-        <ListItemText sx={{fontSize: '12px' }} primary={name.name} />
+        {name.name}
       </MenuItem>
     ))}
   </Select>
@@ -186,13 +184,15 @@ if (name === 'payment_name') {
     value={packer}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    // renderValue={(selected) =>selected.join(', ')}
+    displayEmpty
     MenuProps={MenuProps}
   >
-
+      <MenuItem  value='' sx={listStyle}>      
+      {'Всі'}
+      </MenuItem>
     {packerName.map((name, ind) => (
       <MenuItem  key={ind} value={name} sx={listStyle} >      
-        <ListItemText sx={{fontSize: '12px' }} primary={name} />
+        {name}
       </MenuItem>
     ))}
   </Select>
@@ -205,13 +205,15 @@ if (name === 'payment_name') {
     value={group}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    // renderValue={(selected) =>selected.join(', ')}
     MenuProps={MenuProps}
+    displayEmpty
   >
-
-    {noGroups.map((name) => (
+      <MenuItem  value='' sx={listStyle} >      
+        {'Всі'}
+      </MenuItem>
+    {groups.map((name) => (
       <MenuItem  key={name.id} value={name.name} sx={listStyle} >      
-        <ListItemText sx={{fontSize: '12px' }} primary={name.name} />
+      {name.name}
       </MenuItem>
     ))}
   </Select>
@@ -224,15 +226,17 @@ if (name === 'payment_name') {
     value={status}
     onChange={handleSelectChange}
     input={<InputBase  sx={selectStylesCheck}/>}
-    // renderValue={(selected) =>selected.join(', ')}
+    displayEmpty
     MenuProps={MenuProps}
-  >
 
+  >
+      <MenuItem  value='' sx={listStyle}>      
+      {'Всі'}
+      </MenuItem>
     {statuses.map((name) => (
-      <MenuItem  key={name.id} value={name.name} sx={listStyle} >
-      
-        <span style ={{display: 'block', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: name.style, marginRight: '10px'}}></span>
-        <ListItemText sx={{fontSize: '12px' }} primary={name.name} />
+      <MenuItem  key={name.id} value={name.name} sx={listStyle} >      
+      {status[0]!==name.name && <span style ={{display: 'block', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: name.style, marginRight: '10px'}}></span>}
+        {name.name} 
       </MenuItem>
     ))}
   </Select>

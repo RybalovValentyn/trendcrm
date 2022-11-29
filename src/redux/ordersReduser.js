@@ -141,8 +141,8 @@ const ordersReduser = createSlice({
     name: 'orders',
     initialState: {
 
-    columns: [...table],
-    // columns: [],
+    // columns: [...table],
+    columns: [],
 
     searchParamCount : 0,
     tHeadColumn: [],
@@ -191,6 +191,7 @@ ttn_status: {},
 
    reducers: {
     autoUpdate: (state, action) => {  
+      console.log(action.payload);
          return { ...state, [action.payload.id]: action.payload.str}
     },
         tHeadFilteredColumnUpdate: (state, action) => {  

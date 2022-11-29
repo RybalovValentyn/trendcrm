@@ -241,7 +241,7 @@ export const getAllOrders = createAsyncThunk(
            url:  REBASE_URL+orders,
            data: columns
           })
-          // console.log(data.data);
+          console.log(data.data);
          return data.data
       } catch (error) {
         return rejectWithValue({

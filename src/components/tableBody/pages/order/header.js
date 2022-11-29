@@ -18,7 +18,7 @@ import { ListAutocompliteStatuses } from './createRow/listStatuses';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { useEffect, useState } from 'react';
 import { searchCountUpdate, CountUpdate, autoUpdate } from '../../../../redux/ordersReduser';
-import { getAllOrders, getAllStatuses } from '../../../../redux/asyncThunc';
+import { getAllOrders, getAllStatuses, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { DownloadComponent } from './createHead/downloads'; 
 import { ModalMenu } from './createHead/modal'
 import { BootstrapTooltip } from './styles';
@@ -35,20 +35,52 @@ const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
 const paramsCount = useSelector((state) => state.ordersAll.searchParamCount);
 const columns = useSelector((state) => state.ordersAll.tHeadColumn);
 const [number, setNumber] = useState('');
-const autoUdates = useSelector((state) => state.ordersAll.autoUdate);
+const autoUdatesTime = useSelector((state) => state.ordersAll.autoupdate);
+const isAutoUdate = useSelector((state) => state.ordersAll.isAutoUpdate);
 const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
+const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+let [timer, setTimer] = useState(null);
+
 
 useEffect(() => {
   const searchCount = copyParams.reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
   dispatch(searchCountUpdate(searchCount));
   }, [params]);
 
+  useEffect(() => {
+if (isAutoUdate && Number(autoUdatesTime) > 29) {
+let time = Number(autoUdatesTime)*1000
+setTimer(setInterval(() => {
+  handleReload()
+
+}, time))  
+} else if (!isAutoUdate) {
+  clearInterval(timer);
+  setTimer(null)
+} 
+}, [isAutoUdate, autoUdatesTime]);
+
+useEffect(() => {
+  clearInterval(timer);
+  setTimer(null)
+  if (filteredRows.length > 0 && isAutoUdate && Number(autoUdatesTime) > 29) {
+    let time = Number(autoUdatesTime)*1000
+    setTimer(setInterval(() => {
+      handleReload()
+    
+    }, time)) 
+  } else if (filteredRows.length === 0 && isAutoUdate && Number(autoUdatesTime) > 29) {
+    let time = Number(autoUdatesTime)*1000
+    setTimer(setInterval(() => {
+      handleReload()    
+    }, time))}
+  }, [filteredRows]);
+
 
 const handleClick = (e)=>{
   let id = 'openCreator';
   let str = !isOpen;  
   dispatch(getOpenTableCreate({id, str}))
-  // console.log(!isOpen);
   dispatch(getClouseTableCreate())
 }
 
@@ -67,14 +99,15 @@ const listStyle={
   alignItems: 'center',
 padding: 0
 }
-
 const onHandleCheck=(e)=>{
-  let check = e.target.check
+  let check = e.target.checked
   dispatch(autoUpdate({id: 'isAutoUpdate', str: check}))
 }
 const handleReload =()=>{
   dispatch(getAllStatuses())
-  dispatch(getAllOrders())
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
 }
 const handleColumnSettings=()=>{
   let id = 'columnSettings';
@@ -90,11 +123,11 @@ const numberChange = (e)=>{
 const handleKeyDown=(e)=>{
   if (e.key === 'Backspace') {
     setNumber('')
-  } else if (e.key === "Enter" && e.target.value >= 60) {
+  } else if (e.key === "Enter" && e.target.value >= 30) {
     dispatch(autoUpdate({id: 'autoupdate', str: number}))
-  }else if (e.key === "Enter" && e.target.value < 60) {
-    setNumber(60)
-    dispatch(autoUpdate({id: 'autoupdate', str: 60}))
+  }else if (e.key === "Enter" && e.target.value < 30) {
+    setNumber(30)
+    dispatch(autoUpdate({id: 'autoupdate', str: 30}))
   };
 }
 

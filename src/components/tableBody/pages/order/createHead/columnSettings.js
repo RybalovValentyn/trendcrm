@@ -1,14 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { useState, forwardRef, useEffect } from 'react';
 import { getOpenTableCreate, tHeadFilteredColumnUpdate } from '../../../../../redux/ordersReduser';
-import { MenuItem, Select, OutlinedInput, Checkbox, IconButton } from '@mui/material';
+import {Checkbox, IconButton } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -25,26 +23,15 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
   });
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 4;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 5 + ITEM_PADDING_TOP,
-        width: 250,
-        overflowX: 'hidden',
-      },
-    },
-  };
 
 export const ColumnSettings=()=>{
     const dispatch = useDispatch();
     const isOpenColumnSettings = useSelector((state) => state.ordersAll.modalControl.columnSettings);
     const tHeadColumn = useSelector((state) => state.ordersAll.tHeadColumn)
     const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-
     const [columnsCopy, setColumnsCopy] = useState([]);
-    const copyTranslster = Object.entries(translater).map((str, i)=>({id: str[0], str: str[1], num: i}))
+    const copyTranslster = Object.entries(translater).map((str, i)=>({id: str[0], str: str[1], num: i}));
+    const [search, setSearch] = useState('')
 
     useEffect(() => {        
         if (tHeadColumn.length > 0 && filteredColumn.length === 0) {            
@@ -85,30 +72,30 @@ export const ColumnSettings=()=>{
         let str = columnsCopy.find(n=>n.id === e.target.name)        
         let column = {num: str.num, str: str.str, id: str.id, checked: check } 
                 columnsCopy.splice(ind,1,column);
-                setColumnsCopy([...columnsCopy]);              
-   
-      };
-
-
+                setColumnsCopy([...columnsCopy]);  
+                };
 
     const handleSelectChange =(e,ind)=>{
-      let currentColumn = e.target.id.split('-')[0]
-      let newColumn = e.target.id.split('-')[2]
+      let currentColumn = e.target.id.split('-')[0];
+      let newColumn = e.target.id.split('-')[2];
+      let newSelectData = {};
       if (!currentColumn || !newColumn ) {
-        console.log(e.target.id.split('-')[0]);
         return
       }
-   
+      if (search !== '') {
+        newColumn = columnsCopy.findIndex(n=>n.str === e.target.innerText)
+        newSelectData = columnsCopy.find(n=>n.str === e.target.innerText)
+      } else if (search === '') {
+        newSelectData = columnsCopy[newColumn];
+      }
     let currentSelectColumn = columnsCopy[currentColumn];
-    let newSelectData = columnsCopy[newColumn];
-    console.log(e.target.id, ind);
     let currentDataColumn = {num: currentColumn.num, str: currentSelectColumn.str, id: currentSelectColumn.id, checked: false}
     let newDataColumn = {num: ind, str: newSelectData.str, id: newSelectData.id, checked: true }
 
      columnsCopy.splice(ind,1,newDataColumn);
-     columnsCopy.splice(newColumn,1,currentDataColumn)
-
+     columnsCopy.splice(newColumn,1,currentDataColumn);
       setColumnsCopy([...columnsCopy]);
+      setSearch('')
     }
 
  const handleCloseApply =()=>{
@@ -124,7 +111,6 @@ const handleFResetFilters =()=>{
     dispatch(getAllOrders())
     handleClose();
 }
-
 
     return(
         <Dialog
@@ -159,7 +145,6 @@ const handleFResetFilters =()=>{
                   disableRipple
                 /> 
             <Autocomplete
-                // freeSolo  
                 name={`${ind}`}
                 id={`${ind}`}                
                 options={columnsCopy}
@@ -169,7 +154,7 @@ const handleFResetFilters =()=>{
                 }
                 value={name}
                 getOptionLabel={(option) => option.str}
-                renderInput={(params) => <TextField disabled={name.checked}
+                renderInput={(params) => <TextField onChange={(e)=>setSearch(e.target.value)} disabled={name.checked}
                    sx={textFieldStyles} 
                     {...params}/>}
               />

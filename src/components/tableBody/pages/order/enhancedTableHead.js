@@ -19,19 +19,12 @@ export function EnhancedTableHead({props}) {
     const widthOfColumn = useSelector((state) => state.ordersAll.widthOfColumn);
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =  props;
     const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+    const [width, setWidth] = useState(null);
+    const [deltaWidth, setDeltaWidth] = useState(null);
+    const [isResize, setIsResize] = useState(null);
+    const [firstWidth, setFirstWidth] = useState(null)
     const dispatch = useDispatch();
 
-// useEffect(() => {
-//     const result =[]
-//     if (columns.length > 0) {
-//     const headerValue = columns.flatMap(column => Object.keys(column))
-//     .filter((column, index, array) => array.indexOf(column) === index).reduce((acc,str, ind) =>{
-//         if (translater[str]) {
-//            return result.push({id:str, str:translater[str]})
-//         }    
-//     },[])
-//     dispatch(tHeadColumnUpdate(result))
-// }}, [columns]);  
 
 useEffect(() => {
   const result =[]
@@ -52,10 +45,6 @@ useEffect(() => {
   },[]);
   dispatch(tHeadColumnUpdate(result))
 }
-
-
-
-
 }, [columns, filteredColumn]); 
     
  
@@ -65,6 +54,7 @@ useEffect(() => {
     };
    
   const getWidthColumnUpdate =(e)=>{
+    setIsResize(false);
     let id = e.target.id;
     let width = e.target.clientWidth;
     const duplicateColumn = [...widthOfColumn];
@@ -82,13 +72,35 @@ useEffect(() => {
   maxWidth: '600px',
    padding: '3px 10px',
     alignItems: 'center',
-   // minWidth: width,
+   minWidth: width,
     position: 'relative',
     // "& :resize" : {
     //   color: "#fff"
     // }
 }
+
+const handleDownResize=(e)=>{
+  console.log(e.target.id);
+  let id = e.target.id
+  setIsResize(true);
+  setDeltaWidth(e.clientX);
+  setWidth({id: id, width: e.target.parentNode.clientWidth})
+  setFirstWidth(e.target.parentNode.clientWidth)
+
+}
+const mouseWheel =(e)=>{
+
+if (isResize) {
+  console.log(deltaWidth, firstWidth);
+  setWidth({id: width.id, width: firstWidth+(e.clientX - deltaWidth)} )
+
+}
   
+}
+const handleMouseUp =(e)=>{
+setIsResize(false)
+setFirstWidth(null)
+}
     return (    
       <TableHead sx={{ backgroundColor: colorsRef.formBgColor, position: '-webkit-sticky', position: 'sticky', top: '0', zIndex: 2}} >    
   
@@ -96,15 +108,20 @@ useEffect(() => {
   
           {dataForHeader.map((row) => (          
             <TableCell
+            
             //  onMouseDown={(e) =>replaceRows(e)} 
-              onMouseUp={getWidthColumnUpdate} 
+            onMouseUp={getWidthColumnUpdate}            
+            onMouseMove={mouseWheel}
               colSpan={1}
               key={row.id}
               id={row.id}
               sx={tHeadStyle} 
               align= "center"        
               >  
-              <div  id={row.id} style={containerStyle} key={row.id}>
+              <div  id={row.id} style={{   overflow: 'hidden', maxWidth: '600px', padding: '3px 10px', alignItems: 'center',
+              minWidth: width?.id === row.id?width?.width : '130px',
+                // minWidth:{ width},
+                  position: 'relative',}} key={row.id}>
   
               <TableSortLabel            
                 active={orderBy === row.id}
@@ -119,7 +136,9 @@ useEffect(() => {
                 ) : null}
                
               </TableSortLabel>
-              <Divider  id={row.id} key={row.id} sx={dividerStyle} orientation="vertical" flexItem />
+              <Divider onMouseDown={handleDownResize} 
+              onMouseUp = {handleMouseUp}  
+              id={row.id} key={row.id} sx={dividerStyle} orientation="vertical" flexItem />
               </div>
               <Divider sx={dividerSecondStyle} />
             </TableCell>  ))}
