@@ -143,12 +143,13 @@ const ordersReduser = createSlice({
 
     // columns: [...table],
     columns: [],
-
+    getStatuses: [],
+    // getStatuses: [...initStatus],
     searchParamCount : 0,
     tHeadColumn: [],
     tHeadColumnFiltered: [],
     bodyTableRows: [],
-    getStatuses: [],
+
     nextStatus: 0,
     isLoading: false,
     order: [],

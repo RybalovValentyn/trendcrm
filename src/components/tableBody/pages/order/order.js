@@ -3,15 +3,15 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import {dataParse} from './dataParse';
+// import TableHead from '@mui/material/TableHead';
+// import {dataParse} from './dataParse';
 import TableRow from '@mui/material/TableRow';
 import {Paper,TableSortLabel, Stack, Tab, Checkbox,Divider, 
     TablePagination, FormControlLabel, Switch, Hidden} from '@mui/material';
 import {useState, useEffect, useLayoutEffect, useRef} from 'react';
-import {HeaderTable} from './tHead';
-import {tableParse} from './tableParse';
-import {translater} from './translate';
+// import {HeaderTable} from './tHead';
+// import {tableParse} from './tableParse';
+// import {translater} from './translate';
 import {ScrollTabsButton} from './tableInBody';
 
 import { colorsRef } from '../../../../consts/colorConstants';
@@ -112,6 +112,9 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
       setSelected([]);
     };
     const handleClick = (event, name) => {
+         if (event.detail === 2) {
+          handleDoubleClick(event, name)
+      }
       const selectedIndex = selected.indexOf(name);
       let newSelected = [];  
       if (selectedIndex === -1) {
@@ -126,7 +129,9 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
           selected.slice(selectedIndex + 1),
         );
       }
+
       setSelected(newSelected);
+
     };
   
  
@@ -147,18 +152,25 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
       // },
 
     }));
-const handleDoubleClick=(e)=>{
-  console.log('hhdhd');
+const handleDoubleClick=(event, name)=>{
+  console.log('event.target.id',event.target, 'name', name);
 }
 
 return (
-    <Box sx={{height: '100%', width: '100%', backgroundColor: colorsRef.boxTableColor, paddingBottom: '20px 0px'}} >     
-   < HeaderContainer/>
-      <Paper sx={{position: "relative", width: '98%', marginLeft: 'auto', marginRight: 'auto',overflowY: 'auto',
-        boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'}}>
-      <ScrollTabsButton/> 
 
-         <TableContainer sx={{ width: '100%', height: '700px',  backgroundColor: '#fff', paddingBottom: '80px', overflowY: 'scroll',overflowX: 'scroll', }} >
+    <Box sx={{flexGrow: 1, paddingTop: '47px', maxWidth: '100%',overflowX: 'hidden', overflowY: 'hidden',
+               maxHeight: '100%', height: '100%',
+               backgroundColor: colorsRef.boxTableColor, paddingBottom: '10px'}} >    
+ {/* HEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHT */} 
+   < HeaderContainer/>
+      <Paper sx={{position: "relative", width: '98%', 
+                   height: 'calc(90% - 20px)', marginLeft: 'auto', 
+                  marginRight: 'auto',overflowY: 'hidden',
+                   boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'}}>
+      <ScrollTabsButton/> 
+{/* HEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHT */}
+         <TableContainer sx={{ width: '100%', maxHeight: 'calc(95% - 70px)',  backgroundColor: '#fff', minHeight: '100px',
+                           paddingBottom: '10px', overflowY: 'scroll',overflowX: 'scroll', }} >
          {isLoading && <Preloader/>}
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
             <EnhancedTableHead   props ={bodyTableRows}
@@ -174,7 +186,6 @@ return (
                   return (
                     <StyledTableRow 
                     // hover
-                    onDoubleClick={handleDoubleClick}
                     onClick={(event) => handleClick(event, index)}
                     tabIndex={-1}
                     key={index}
@@ -187,7 +198,7 @@ return (
                   >
             {rows.map((row,ind) => (
               
-            <TableCell  sx={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
+            <TableCell sx={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
             //  borderRight: '1px solid #fff',
              maxWidth: '400px',  overflowX: 'auto', width: '200px',
              color: 'inherit'
@@ -203,7 +214,9 @@ return (
           </Table>
         </TableContainer>  
         <TablePagination
-         sx={{ maxWidth: '450px'}}
+        
+         sx={{ maxWidth: '450px', height: '50px', maxHeight: '50px', 
+              overflowY: 'hidden', marginTop: 'auto', marginBottom: 'auto'}}
           rowsPerPageOptions={[50, 100, 250, 500]}
           component="div"
           count={columns.length}

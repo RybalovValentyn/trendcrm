@@ -37,7 +37,7 @@ export const loginThunk = createAsyncThunk(
         url: REBASE_URL+login,
         data: user});      
       const data = await response
-      console.log(data.data);
+      // console.log('loginThunk', data.data);
       return data.data;
     } catch (error) {
       return rejectWithValue({
@@ -63,8 +63,8 @@ export const currentThunk = createAsyncThunk(
           },
           })
           const data = await response
-        console.log(data);
-        return data.data;
+        // console.log('currentThunk',data.status);
+        return data.status;
       } catch (error) {
         return rejectWithValue({
           error: error.message,
@@ -165,7 +165,7 @@ console.log('getFilteredOrders',column);
            url:  REBASE_URL+orders,
            data: columns
           })
-          console.log(data.data);
+          console.log('getFilteredOrders', Object.keys(data?.data[0])?.length);
          return data.data
         // return columns
       } catch (error) {
@@ -241,7 +241,8 @@ export const getAllOrders = createAsyncThunk(
            url:  REBASE_URL+orders,
            data: columns
           })
-          console.log(data.data);
+          // console.log(data.data);
+          console.log('getAllOrders', Object.keys(data?.data[0])?.length);
          return data.data
       } catch (error) {
         return rejectWithValue({

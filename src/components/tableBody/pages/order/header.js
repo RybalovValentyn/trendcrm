@@ -49,20 +49,19 @@ useEffect(() => {
 
   useEffect(() => {
 if (isAutoUdate && Number(autoUdatesTime) > 29) {
+  console.log('start timer');
 let time = Number(autoUdatesTime)*1000
 setTimer(setInterval(() => {
   handleReload()
 
 }, time))  
 } else if (!isAutoUdate) {
-  clearInterval(timer);
-  setTimer(null)
+  stopTimer()
 } 
 }, [isAutoUdate, autoUdatesTime]);
 
 useEffect(() => {
-  clearInterval(timer);
-  setTimer(null)
+  stopTimer()
   if (filteredRows.length > 0 && isAutoUdate && Number(autoUdatesTime) > 29) {
     let time = Number(autoUdatesTime)*1000
     setTimer(setInterval(() => {
@@ -76,6 +75,11 @@ useEffect(() => {
     }, time))}
   }, [filteredRows]);
 
+const stopTimer = ()=>{
+  console.log('stop Timer');
+  clearInterval(timer);
+  setTimer(null)
+}
 
 const handleClick = (e)=>{
   let id = 'openCreator';
@@ -101,7 +105,17 @@ padding: 0
 }
 const onHandleCheck=(e)=>{
   let check = e.target.checked
-  dispatch(autoUpdate({id: 'isAutoUpdate', str: check}))
+  if (number === '' && check) {
+    console.log(check);
+    setNumber(30)
+    dispatch(autoUpdate({id: 'autoupdate', str: 30}))
+    dispatch(autoUpdate({id: 'isAutoUpdate', str: check}));
+  } else if (!check) {
+    setNumber('');
+    dispatch(autoUpdate({id: 'isAutoUpdate', str: check}));
+    stopTimer()
+  } 
+  
 }
 const handleReload =()=>{
   dispatch(getAllStatuses())
@@ -122,10 +136,13 @@ const numberChange = (e)=>{
 }
 const handleKeyDown=(e)=>{
   if (e.key === 'Backspace') {
+    stopTimer()
     setNumber('')
   } else if (e.key === "Enter" && e.target.value >= 30) {
+    stopTimer()
     dispatch(autoUpdate({id: 'autoupdate', str: number}))
   }else if (e.key === "Enter" && e.target.value < 30) {
+    stopTimer()
     setNumber(30)
     dispatch(autoUpdate({id: 'autoupdate', str: 30}))
   };
@@ -200,7 +217,7 @@ const onchangeAll=(e)=>{
         </ListItem>
 
         <ListItem sx={{paddingLeft: '10px', paddingRight: '10px'}}>
-        <BpCheckbox onChange={onHandleCheck} name='auto_reloading' tooltip ={'Увімкнути автооновлення'} placement="left" />
+        <BpCheckbox onChange={onHandleCheck} name='auto_reloading' tooltip ={'Увімкнути автооновлення'} />
         </ListItem>
 
 

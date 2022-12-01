@@ -23,10 +23,10 @@ export const mainNavBarItem = [
         label: 'Користувачі',
         route: 'users'
     },    {
-        id: 'order',
+        id: 'orders',
         item: <BookmarksOutlinedIcon/>,
         label: 'Замовлення',
-        route: 'order'
+        route: 'orders'
     },    {
         id: 'products',
         item:  <UnarchiveOutlinedIcon/>,

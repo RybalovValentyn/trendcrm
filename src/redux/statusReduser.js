@@ -24,7 +24,6 @@ const statusReduser = createSlice({
     checked: true,
     modalOpen: false,
     groups:[...initGroups],
-    status_ids: [],
     storeRuns: [
       'Нічого не робити',
       'Бронювати',
@@ -38,7 +37,9 @@ const statusReduser = createSlice({
   },
 
     reducers: {
+      
       clearStatusState: (state, action) => {
+        
         return { ...state, 
              name: '',
             statusId:'',
@@ -83,6 +84,7 @@ const statusReduser = createSlice({
         return { ...state, isValid: action.payload};
       },
       modalOpenUpdate: (state, action) => {
+        console.log(action.payload);
         return { ...state, modalOpen: action.payload};
       }, 
 

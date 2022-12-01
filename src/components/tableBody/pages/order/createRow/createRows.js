@@ -22,7 +22,7 @@ export function CreateRows(){
 
 
 let positionTop = '-100%';
-let positionLeft = '11px';
+let positionLeft = '10px';
 let index = -1;
 let boxHeight = 0;
 

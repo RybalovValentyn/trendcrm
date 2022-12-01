@@ -8,17 +8,19 @@ import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import {Preloader} from './components/preloader/preloader';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store} loading={<Preloader/>}>
-    {/* <PersistGate persistor={persistor} loading={Preloader}> */}
-    <BrowserRouter>
-          <App />
-    </BrowserRouter>
-    {/* </PersistGate> */}
+       {/* <PersistGate persistor={persistor} loading={Preloader}> */}
+       <BrowserRouter>
+         <App />
+       </BrowserRouter>
+       {/* </PersistGate> */}
     </Provider>
   </React.StrictMode>
 );
+
 
 

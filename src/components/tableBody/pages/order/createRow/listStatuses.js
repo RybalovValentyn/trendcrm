@@ -39,16 +39,16 @@ export const ListAutocompliteStatuses =()=>{
     const clientDate = useSelector((state) => state.ordersAll.createRows.datetime);
 
 
-const onAutocompliteChange=(e)=>{
+const onAutocompliteChange=(e)=>{    
     let id = e.target.id.split('-')[0]
     let ind = e.target.id.split('-')[2]
     let stat = renderFilteredStatus[ind]
-    if (Number(stat?.id) !== 0) {
-        let str = stat?.id? stat.id: 0
-        
+    console.log(Number(stat?.statusId) === 0);
+    if (Number(stat?.id)) {
+        let str = stat?.id? stat.id: 0;        
        dispatch( getFormTable({id, str }))
     } else if (Number(stat?.statusId) === 0) {
-       dispatch(modalOpenUpdate(true))
+             dispatch(modalOpenUpdate(true))
     }};
 
 const onAutocompliteResponsible=(e)=>{
@@ -93,23 +93,24 @@ const listItemStyles={
         <Paper sx={{width: '100%', backgroundColor: colorsRef.boxTableColor, boxShadow: 'none'}}>
         <List sx={{padding: '0px',  display: 'flex'}}>
             <ListItem sx={listItemStyles}>
+
             <Autocomplete
-            disablePortal
                 id={'status'}
-                 onChange={onAutocompliteChange}
-                defaultValue={defaultStatus}
+                onChange={onAutocompliteChange}
+                value={defaultStatus}                
                 options={renderFilteredStatus}
                 getOptionLabel={(option) => option.name}
                 renderOption={(props, option, { selected }) => (
-                  <li key={option.id} style={listStyle} {...props}>
-                    {option.style && <span style={{display: 'block',width: '15px', height: '15px', 
-                    borderRadius: '50%', backgroundColor: option.style, marginRight: '10px'}}></span>}
-                    {option.name}
-                  </li>
-                )}              
-                sx={autocompliteInputStyle}
-                renderInput={(params) => <TextField sx={textFieldStyles}  {...params} />}
-                 />
+                    <li key={option.id} style={listStyle} {...props}>
+                      {option.style && <span style={{display: 'block',width: '15px', height: '15px', 
+                      borderRadius: '50%', backgroundColor: option.style, marginRight: '10px'}}></span>}
+                      {option.name}
+                    </li>
+                  )}              
+                  sx={autocompliteInputStyle}
+                  renderInput={(params) => <TextField sx={textFieldStyles}  {...params} />}
+              />
+
     </ListItem>
     <ListItem sx={listItemStyles}>
         <Autocomplete
@@ -127,7 +128,7 @@ const listItemStyles={
             disablePortal
                 id={'group_name'}
                  onChange={onAutocompliteGrop}
-                defaultValue={defaultGroup}
+                value={defaultGroup}
                 options={noGroups}
                 getOptionLabel={(option) => option.name}
                 renderOption={(props, option, { selected }) => (

@@ -9,6 +9,7 @@ import { getClouseTableCreate, getOpenTableCreate } from '../../redux/ordersRedu
 export const SaveButton = () =>{
     const dispatch = useDispatch();
     const id = useSelector((state) => state.ordersAll.createRows.id);
+    const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
 
     useEffect(() => {
      if (id !== '') {
@@ -31,11 +32,11 @@ const icoBtnStyle = {
     width: '45px',
     height: '45px',
     borderRadius: '50%',
-    display: 'block',
     position: 'fixed',
     boxShadow:' 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%)',
     bottom: '50px',
-    right: '66px'
+    right: '66px',
+    display: isOpen?"block":"none"
 }
     return(
 
