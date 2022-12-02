@@ -1,9 +1,9 @@
 import {SignIn} from './components/signIn/signIn';
 import CssBaseline from '@mui/material/CssBaseline';
 import {Router} from './routs/routs';
-// import {PublicRoute} from './routs/publikRouts';
+import {PublicRoute} from './routs/publikRouts';
 import { Route, Routes} from 'react-router-dom';
-// import {PrivateRoute} from './routs/privatRouts';
+import {PrivateRoute} from './routs/privatRouts';
 import {Home} from './components/tableBody/pages/home/home';
 import {Users} from './components/tableBody/pages/users/users';
 import {Order} from './components/tableBody/pages/order/order';
@@ -63,51 +63,15 @@ function App() {
 
   return (
     <div >
-
+       <CssBaseline />
         <Routes >
-               {/* <Route path='/auth'  element={<SignIn/>}/>             */}
-               <Route path='/' element={<MiniDrawer/>}> 
-                          <Route path={Router.HOMEBAR} element={<Home/>} />
-                          <Route path={Router.USERS} element={<Users />} />
-                          <Route path={Router.ORDER} element={<Order/>} />
-                          <Route path={Router.PRODUCTS} element={<Products />} />
-                          <Route path={Router.DELIVERY} element={<Delivery />} />
-                          <Route path={Router.CALLS} element={<Calls />} />
-                          <Route path={Router.MESSAGE} element={<Messages />} />
-                          <Route path={Router.ANALITICS} element={<Analytics />} />
-                          <Route path={Router.SETTINGS} element={<Settings />} />
-                          <Route path={Router.FAQ} element={<Faq />} />
-                          <Route path={Router.PURCH} element={<Purchasing />} />
-                          <Route path={Router.HELP} element={<Help />} />
-                          {/* <Route path="*" element={<PublicRoute component={SignIn} />} /> */}
-                </Route> 
-      </Routes>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       {/* <CssBaseline />
-       <Suspense fallback={<Preloader />}>
-        <Routes >
-               <Route path='/'  element={<PublicRoute component={SignIn} />}/>
+               
             
-                  <Route path={Router.HOME} element={<PrivateRoute component={MiniDrawer} />}> 
+                  <Route path='/' element={<PrivateRoute component={MiniDrawer} />}> 
+                           <Route path='auth'  element={<PublicRoute component={SignIn} />}/>
                           <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
                           <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
-                          <Route path={Router.ORDER} element={<PrivateRoute component={Order} errorElement= {<SignIn />}/>} />
+                          <Route path='orders' element={<PrivateRoute component={Order} errorElement= {<SignIn />}/>} />
                           <Route path={Router.PRODUCTS} element={<PrivateRoute component={Products} />} />
                           <Route path={Router.DELIVERY} element={<PrivateRoute component={Delivery} />} />
                           <Route path={Router.CALLS} element={<PrivateRoute component={Calls} />} />
@@ -120,7 +84,6 @@ function App() {
                           <Route path="*" element={<PublicRoute component={SignIn} />} />
                     </Route> 
       </Routes>
-      </Suspense> */}
     </div>
   );
 }

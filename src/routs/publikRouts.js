@@ -8,7 +8,7 @@ export function PublicRoute({ component: C, }) {
     const isAuth = true
     return <>
 
-        {isAuth ? <Navigate to={'/trendcrm/orders'} /> : <C />}
+        {isAuth ? <Navigate to={'/orders'} /> : <C />}
 
 
     </>
