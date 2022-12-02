@@ -28,16 +28,16 @@ function App() {
   const dispatch = useDispatch();
   const hashKey = useSelector(state => state.auth.hashKey);
   const currentUser = useSelector(state => state.auth.id);
-  const isAuth = useSelector(state => state.auth.isAuth)
+  // const isAuth = useSelector(state => state.auth.isAuth)
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuth === false) {
-      navigate("/auth", { replace: true });
-    } else if (isAuth === true) {
-      navigate("/orders", { replace: true });
-    } else navigate("/auth", { replace: true });
-  }, [isAuth]);
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (isAuth === false) {
+  //     navigate("/auth", { replace: true });
+  //   } else if (isAuth === true) {
+  //     navigate("/orders", { replace: true });
+  //   } else navigate("/auth", { replace: true });
+  // }, [isAuth]);
 
 
 
@@ -65,7 +65,7 @@ function App() {
     <div >
 
         <Routes >
-               <Route path='/auth'  element={<SignIn/>}/>            
+               {/* <Route path='/auth'  element={<SignIn/>}/>             */}
                <Route path='/' element={<MiniDrawer/>}> 
                           <Route path={Router.HOMEBAR} element={<Home/>} />
                           <Route path={Router.USERS} element={<Users />} />
