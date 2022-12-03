@@ -12,7 +12,7 @@ import {Preloader} from './components/preloader/preloader';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Provider store={store} loading={<Preloader/>}>
+    <Provider store={store} loading={<Preloader/>} basename="/trendcrm" >
        {/* <PersistGate persistor={persistor} loading={Preloader}> */}
        <BrowserRouter>
          <App />

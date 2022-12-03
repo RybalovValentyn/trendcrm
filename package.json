@@ -39,10 +39,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deployg": "gh-pages -d build",
-    "predeployg": "npm run build",
-    "predeploy": "npm run build",
-    "deploy": "netlify deploy -p"   
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build"
   },
   "homepage": "https:///RybalovValentyn.github.io/trendcrm",
   "eslintConfig": {
