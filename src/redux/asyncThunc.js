@@ -6,13 +6,13 @@ import axios from 'axios';
 // axios.defaults.baseURL = 'http://localhost:5000/api';
 
 
-// const testUrl = 'https://react.trendcrm.biz/api/menu/list';
 const login = "/login";
 const auth = '/authenticate'
 
-const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
+// const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
 
-// const REBASE_URL= 'http://localhost:5000/api';
+const REBASE_URL= 'http://localhost:5000/api';
+
 
 const novaposhta = '/novaposhta/cities/list';
 const adress = '/novaposhta/warehouses/list';
@@ -29,7 +29,7 @@ const getStatus = '/count_status_orders';
 // https://react.trendcrm.biz/api/justin/list_statuse
 
 export const loginThunk = createAsyncThunk(
-  'users/login',
+  'users/login',  
   async (user, { rejectWithValue }) => {
     try {
       const response = await axios({

@@ -11,7 +11,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useDispatch, useSelector } from 'react-redux';
 import {getOpenTableCreate, getClouseTableCreate} from '../../../../redux/ordersReduser';
-import {CreateTable} from './createTable';
 import {StyledButton} from '../../../buttons/buttons';
 import {CreateRows} from './createRow/createRows';
 import { ListAutocompliteStatuses } from './createRow/listStatuses';
@@ -76,7 +75,7 @@ useEffect(() => {
   }, [filteredRows]);
 
 const stopTimer = ()=>{
-  console.log('stop Timer');
+  // console.log('stop Timer');
   clearInterval(timer);
   setTimer(null)
 }
@@ -106,7 +105,7 @@ padding: 0
 const onHandleCheck=(e)=>{
   let check = e.target.checked
   if (number === '' && check) {
-    console.log(check);
+    // console.log(check);
     setNumber(30)
     dispatch(autoUpdate({id: 'autoupdate', str: 30}))
     dispatch(autoUpdate({id: 'isAutoUpdate', str: check}));
@@ -163,7 +162,6 @@ const onchangeAll=(e)=>{
         bgColor={colorsRef.btnAddBgColor}
         border= {colorsRef.btnAddBorderColor}
            />
-      {/* <CreateTable/> */}
       {isOpen && <ListAutocompliteStatuses/>}
 
       {paramsCount>0 && <Box sx={{marginLeft: '20px', marginRight: 'auto'}}>      

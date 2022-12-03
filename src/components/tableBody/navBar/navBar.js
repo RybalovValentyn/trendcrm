@@ -33,6 +33,15 @@ export function MiniDrawer() {
   };
 
 
+  useEffect(() => {
+
+      console.log('loaded');
+      navigate('/trendcrm/orders')
+
+
+
+}, []);
+
   return (
     <Box sx={{ display: 'flex','& .MuiAppBar-root': {boxShadow: 'none !important'}, height: '100vh' }}>
       <CssBaseline />
@@ -75,7 +84,7 @@ export function MiniDrawer() {
 
       </Drawer>
 
-        <Suspense fallback={null}>
+      <Suspense fallback={null}>
         <Outlet />
       </Suspense>
  

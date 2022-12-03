@@ -1,5 +1,5 @@
 export const Router = {
-    HOME: '/trendcrm',
+    HOME: 'home',
     REPORT: 'report',
     HOMEBAR: 'homebar',
     USERS: 'users',

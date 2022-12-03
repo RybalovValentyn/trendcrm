@@ -19,7 +19,7 @@ const authSlice = createSlice({
   name: 'user',
   initialState: {
    id : '',
-   hashKey: '',
+   hashKey: null,
    login: '',
    role: null,
    name: 'Admin',
@@ -54,7 +54,7 @@ const authSlice = createSlice({
     },
     ExitUser: (state, action) => {
       hashKey.set('');
-      return { ...state, ...action.payload, isAuth: false, name: '', login: '' };
+      return { ...state, ...action.payload, isAuth: false, name: '', login: '', hashKey: null };
     },
   },
   extraReducers: {
@@ -68,17 +68,16 @@ const authSlice = createSlice({
       };
     },
     [loginThunk.fulfilled](state, action) {
-
       return {
         ...state,
         id : action.payload.id,
-        hashKey: action.payload.hashKey,
-        login: action.payload.login,
+        hashKey: (action.payload.hashKey !== '' && action.payload.hashKey)?action.payload.hashKey: null,
+       login: action.payload.login,
         role: action.payload.role,
         name: action.payload.name,
         sip_login: action.payload.sip_login,
          isLoading: false,
-         isAuth: true,
+         isAuth: (action.payload.hashKey!== '' && action.payload.hashKey)?true:false,
          menu_list_access: action.payload.menu_list_access,
          order_statuses_access: action.payload.order_statuses_access,
          payment_received: action.payload.payment_received,

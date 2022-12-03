@@ -21,24 +21,15 @@ import { useEffect, Suspense } from 'react';
 import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp, getFilteredOrders } from './redux/asyncThunc';
 import {MiniDrawer} from './components/tableBody/navBar/navBar';
 import { Preloader } from './components/preloader/preloader';
-import SimpleBackdrop from './components/preloader/globalPreloader';
-import { useNavigate } from "react-router-dom";
 
-function App() {
+
+function App(history) {
   const dispatch = useDispatch();
   const hashKey = useSelector(state => state.auth.hashKey);
   const currentUser = useSelector(state => state.auth.id);
-  // const isAuth = useSelector(state => state.auth.isAuth)
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   if (isAuth === false) {
-  //     navigate("/auth", { replace: true });
-  //   } else if (isAuth === true) {
-  //     navigate("/orders", { replace: true });
-  //   } else navigate("/auth", { replace: true });
-  // }, [isAuth]);
-
+  const isLoading = useSelector(state => state.auth.isLoading);
+  const ontableLoad = useSelector(state => state.ordersAll.isLoading);
 
 
   useEffect(() => {
@@ -60,18 +51,44 @@ function App() {
       dispatch(getFilteredOrders())
     } else dispatch(getAllOrders())
   }
-
+  const wildcards = [
+    {id: 'homeBar', target: Home},
+    {id: 'users', target: Users},
+    {id: 'orders', target: Order},
+    {id: 'products', target: Products},
+    {id: 'delivery', target: Delivery},
+    {id: 'calls', target: Calls},
+    {id: 'message', target: Messages},
+    {id: 'analytics', target: Analytics},
+    {id: 'settings', target: Settings},
+    {id: 'faq', target: Faq},
+    {id: 'purchasing', target: Purchasing},
+    {id: 'help', target: Help},
+  ];
   return (
+    
     <div >
-       <CssBaseline />
-        <Routes >
-               
-            
-                  <Route path='/' element={<PrivateRoute component={MiniDrawer} />}> 
+      {isLoading && <Preloader/>}
+
+        <Routes >      
+
+                      <Route loader={<Preloader/>} errorElement={<Preloader/>}  path='/auth' element={<PublicRoute component={SignIn}  />}/>
+                       <Route loader={<Preloader/>} errorElement={<Preloader/>} path='/trendcrm'  element={<PrivateRoute component={MiniDrawer} />}> 
+                           
+                           {wildcards.map(e => (
+                                  <Route loader={<Preloader/>}
+                                    path={`${e.id}`}
+                                    element={<PrivateRoute component={e.target}/>}
+                                    key={`component_${e.id}`}
+                                  />
+                                ))}     
+                    </Route>         
+                    <Route path="*" element={<Preloader/>} />
+                  {/* <Route path='/trendcrm' element={<PrivateRoute component={MiniDrawer}/>}> 
                            <Route path='auth'  element={<PublicRoute component={SignIn} />}/>
                           <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
                           <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
-                          <Route path='orders' element={<PrivateRoute component={Order} errorElement= {<SignIn />}/>} />
+                          <Route path='orders' element={<Outlet component={Order} />} />
                           <Route path={Router.PRODUCTS} element={<PrivateRoute component={Products} />} />
                           <Route path={Router.DELIVERY} element={<PrivateRoute component={Delivery} />} />
                           <Route path={Router.CALLS} element={<PrivateRoute component={Calls} />} />
@@ -82,8 +99,9 @@ function App() {
                           <Route path={Router.PURCH} element={<PrivateRoute component={Purchasing} />} />
                           <Route path={Router.HELP} element={<PrivateRoute component={Help} />} />
                           <Route path="*" element={<PublicRoute component={SignIn} />} />
-                    </Route> 
+                    </Route>  */}
       </Routes>
+
     </div>
   );
 }

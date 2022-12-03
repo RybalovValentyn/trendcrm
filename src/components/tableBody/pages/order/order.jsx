@@ -23,7 +23,6 @@ import { descendingComparator, getComparator, stableSort} from './functionOrder'
 import { useDispatch, useSelector } from 'react-redux';
 import {dividerStyle, rowPosition, tHeadStyle} from './styles';
 import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn} from '../../../../redux/ordersReduser';
-import {replaceRows} from './tHead';
 import {EnhancedTableHead} from './enhancedTableHead';
 import { Preloader } from '../../../preloader/preloader';
 
@@ -115,22 +114,26 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
          if (event.detail === 2) {
           handleDoubleClick(event, name)
       }
-      const selectedIndex = selected.indexOf(name);
-      let newSelected = [];  
-      if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selected, name);
-      } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(selected.slice(1));
-      } else if (selectedIndex === selected.length - 1) {
-        newSelected = newSelected.concat(selected.slice(0, -1));
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          selected.slice(0, selectedIndex),
-          selected.slice(selectedIndex + 1),
-        );
-      }
 
-      setSelected(newSelected);
+      // const selectedIndex = selected.indexOf(name);
+
+      // let newSelected = [];  
+      // if (selectedIndex === -1) {
+      //   newSelected = newSelected.concat(selected, name);
+      // }
+      
+      // else if (selectedIndex === 0) {
+      //   newSelected = newSelected.concat(selected.slice(1));
+      // } else if (selectedIndex === selected.length - 1) {
+      //   newSelected = newSelected.concat(selected.slice(0, -1));
+      // } else if (selectedIndex > 0) {
+      //   newSelected = newSelected.concat(
+      //     selected.slice(0, selectedIndex),
+      //     selected.slice(selectedIndex + 1),
+      //   );
+      // }
+
+      // setSelected(newSelected);
 
     };
   
@@ -145,11 +148,7 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
     };
   
     const StyledTableRow = styled(TableRow)(({ theme }) => ({
-      // backgroundColor: colorsRef.tableRowBgFirstColor,
-
-      // '&:nth-of-type(odd)': {
-      //   backgroundColor: colorsRef.tableRowSecondColor,        
-      // },
+ 
 
     }));
 const handleDoubleClick=(event, name)=>{
@@ -185,15 +184,14 @@ return (
                 .map((rows, index) => {
                   return (
                     <StyledTableRow 
-                    // hover
                     onClick={(event) => handleClick(event, index)}
                     tabIndex={-1}
                     key={index}
                     sx={{
+                      '&:focus': {backgroundColor: '#B0C4FF', color: '#fff'},
                       backgroundColor: selected.includes(index)?'#B0C4FF':rows[0]?.color,
                       color: selected.includes(index)?'#fff':'#000',
                       cursor: 'pointer',
-
                     }}
                   >
             {rows.map((row,ind) => (

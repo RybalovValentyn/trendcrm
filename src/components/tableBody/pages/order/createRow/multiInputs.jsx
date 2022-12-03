@@ -7,7 +7,7 @@ import { MenuItem, Select, TextField} from '@mui/material';
 import {FormControl, Autocomplete} from '@mui/material';
 import { BasicDateTimePicker } from '../../../../inputs/datePicker';
 import { BasicTimePicker } from '../../../../inputs/timePicker';
-import { getSitysFromNp, getAdressFromNp } from '../.../../../../../../redux/asyncThunc';
+import { getSitysFromNp, getAdressFromNp } from '../../../../../redux/asyncThunc';
 import { DotMenu } from '../../../../inputs/dotMenu';
 import {getSityNP, getAddressNP} from '../../../../../redux/novaPoshta';
 import {BootstrapInput, autocompliteInputStyle,
