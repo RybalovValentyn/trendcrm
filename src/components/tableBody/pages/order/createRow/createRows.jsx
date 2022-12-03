@@ -29,7 +29,7 @@ let boxHeight = 0;
 if (isOpen) {
      index = 3;
     positionTop = '100%';
-    boxHeight = '160vh';
+    boxHeight = '90vh';
 
 }
     const boxStyle ={
@@ -42,8 +42,8 @@ if (isOpen) {
         left:positionLeft,
         zIndex: index,
         padding: '20px',
-        overflow: 'hidden',
-
+        overflowY: 'scroll',
+        
     }
     const typographyStyle={fontSize: '16px',
      padding: '2px',     
@@ -59,10 +59,12 @@ if (isOpen) {
       );
 const isPay = useSelector((state) => state.ordersAll.createRows.payment_name.id)
 const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
+const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'}
 return(
-    <Box  sx={boxStyle}>
+    <Box sx={boxStyle}>
+    <Box sx={{paddingBottom: '50px'}} >
 
-        <Paper component="form" sx={{ width: '35%',boxShadow: 'none' }}>
+        <Paper component="form" sx={formStyle}>
         <Typography sx={ typographyStyle} variant="h2" component="h3">
          КЛІЄНТ:
         </Typography >
@@ -94,7 +96,7 @@ return(
 </List>
         </Paper>
 
-        <Paper component="form" sx={{ width: '35%',boxShadow: 'none' }}>
+        <Paper component="form" sx={formStyle}>
         <Typography sx={ typographyStyle} variant="h2" component="h3">
          Доставка:
         </Typography >
@@ -203,6 +205,7 @@ return(
 </List>
         </Paper>
 <SaveButton  />
+    </Box>
     </Box>
 )
 
