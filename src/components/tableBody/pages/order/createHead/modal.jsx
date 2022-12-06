@@ -8,7 +8,7 @@ import Slide from '@mui/material/Slide';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { forwardRef } from 'react';
-import { getOpenTDownloadExel } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
 import { InputFile } from '../../../../inputs/fileInput/fileInput';
 import { StyledButton } from '../../../../buttons/buttons'; 
 import { colorsRef } from '../../../../../consts/colorConstants';
@@ -40,8 +40,7 @@ export const ModalMenu = () =>{
 
 
 const handleClouse =(e)=>{
-  dispatch(getOpenTDownloadExel(false))
-  console.log('close');
+  dispatch(getOpenTableCreate({id: 'opendownload', str: false}));
 }
 const handleSelectChange =(e)=>{
   setGroup(e.target.value)
@@ -97,7 +96,6 @@ const handleSelectChange =(e)=>{
 
       <StyledButton            
         text={'Відправити'}
-        // func= {handleResetFilters}
         func= {handleClouse}
         border= {colorsRef.btnAddBorderColor}
                

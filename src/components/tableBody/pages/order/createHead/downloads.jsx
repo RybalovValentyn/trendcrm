@@ -2,7 +2,7 @@ import { Select, MenuItem, ListItemText, InputBase, InputAdornment } from '@mui/
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { useState, forwardRef } from 'react';
-import { getOpenTDownloadExel } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
 import { selectStyles, svgStyle, listStyle } from './style';
 import { calculateNewValue } from '@testing-library/user-event/dist/utils';
 
@@ -28,7 +28,7 @@ const handleClickOpen = () => {
 };
 
 const handleClickExel = ()=>{    
-    dispatch(getOpenTDownloadExel(true))
+  dispatch(getOpenTableCreate({id: 'opendownload', str: true}));
 };
 
 

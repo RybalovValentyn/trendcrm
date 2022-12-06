@@ -29,12 +29,17 @@ export function EnhancedTableHead({props}) {
 useEffect(() => {
   const result =[]
   if (columns.length > 0 && filteredColumn.length === 0) {
-  const headerValue = columns.flatMap(column => Object.keys(column))  
-  .filter((column, index, array) => array.indexOf(column) === index).reduce((acc,str, ind) =>{
-      if (translater[str]) {
-         return result.push({id:str, str:translater[str]})
-      }    
-  },[]); 
+    const headerValue = Object.keys(columns[0]).reduce((acc,str, ind) =>{
+        if (translater[str]) {
+           return result.push({id:str, str:translater[str]})
+        }    
+    },[]); 
+  // const headerValue = columns.flatMap(column => Object.keys(column))  
+  // .filter((column, index, array) => array.indexOf(column) === index).reduce((acc,str, ind) =>{
+  //     if (translater[str]) {
+  //        return result.push({id:str, str:translater[str]})
+  //     }    
+  // },[]); 
   dispatch(tHeadColumnUpdate(result));
   
 }else  if (columns.length > 0 && filteredColumn.length > 0) {
@@ -55,14 +60,7 @@ useEffect(() => {
    
   const getWidthColumnUpdate =(e)=>{
     setIsResize(false);
-    let id = e.target.id;
-    let width = e.target.clientWidth;
-    const duplicateColumn = [...widthOfColumn];
-    let ind = duplicateColumn.findIndex(str=>str.id === id);
-  if (ind >=0) {
-    duplicateColumn.splice(ind, 1,{id,width})
-   return dispatch(getWidthUpdate(duplicateColumn))
-  } else return dispatch(setWidthColumn({id,width}))
+dispatch(setWidthColumn(width))
   }
   
   const containerStyle ={
@@ -89,7 +87,6 @@ const handleDownResize=(e)=>{
 
 }
 const mouseWheel =(e)=>{
-
 if (isResize) {
   console.log(deltaWidth, firstWidth);
   setWidth({id: width.id, width: firstWidth+(e.clientX - deltaWidth)} )
@@ -100,6 +97,7 @@ if (isResize) {
 const handleMouseUp =(e)=>{
 setIsResize(false)
 setFirstWidth(null)
+
 }
     return (    
       <TableHead sx={{ backgroundColor: colorsRef.formBgColor, position: '-webkit-sticky', position: 'sticky', top: '0', zIndex: 2}} >    
@@ -119,7 +117,7 @@ setFirstWidth(null)
               align= "center"        
               >  
               <div  id={row.id} style={{   overflow: 'hidden', maxWidth: '600px', padding: '3px 10px', alignItems: 'center',
-              minWidth: width?.id === row.id?width?.width : '130px',
+              minWidth: isResize && width?.id === row.id?width?.width : widthOfColumn[row.id],
                 // minWidth:{ width},
                   position: 'relative',}} key={row.id}>
   

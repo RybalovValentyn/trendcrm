@@ -81,9 +81,7 @@ const stopTimer = ()=>{
 }
 
 const handleClick = (e)=>{
-  let id = 'openCreator';
-  let str = !isOpen;  
-  dispatch(getOpenTableCreate({id, str}))
+  dispatch(getOpenTableCreate({id: 'openCreator', str: !isOpen}))
   dispatch(getClouseTableCreate())
 }
 

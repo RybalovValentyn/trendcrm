@@ -18,13 +18,15 @@ import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
 import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp} from '../../../../redux/asyncThunc';
 import {HeaderContainer} from './header';
-import {getRowsComparator} from './getRowsComparator';
+import {GetRowsComparator} from './getRowsComparator';
 import { descendingComparator, getComparator, stableSort} from './functionOrder';
 import { useDispatch, useSelector } from 'react-redux';
 import {dividerStyle, rowPosition, tHeadStyle} from './styles';
-import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn} from '../../../../redux/ordersReduser';
+import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
+   getOpenTableCreate, autoUpdate, getFormTable} from '../../../../redux/ordersReduser';
 import {EnhancedTableHead} from './enhancedTableHead';
 import { Preloader } from '../../../preloader/preloader';
+import { ComentModalMenu } from './createRow/comentmodal';
 
 export  function Order() {
   const dispatch = useDispatch();
@@ -36,14 +38,15 @@ export  function Order() {
   const allOrders = useSelector((state) => state.ordersAll.columns);
   const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
-  
+  const isOpenCreator = useSelector((state) => state.ordersAll.modalControl.openCreator);
+  // const getColumnToUpdate = useSelector((state) => state.ordersAll.rowsToUpdate);
   let arrayRows = []
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(100);
-    const [rowsTable, useRowsTable] = useState([]);
+    const [coment, setComent] = useState(null);
 
 
   useEffect(() => {
@@ -58,7 +61,12 @@ if (!allOrders[0]) {
 }, []);
 
 useEffect(() => {
-handleSelectAllClick()
+  if (isGrabAll) {
+    const newSelected = bodyTableRows.map((n,ind) => ind);
+    setSelected(newSelected);
+    return;
+  }
+  setSelected([]);
 }, [isGrabAll]);
 
 
@@ -102,21 +110,19 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
       setOrderBy(property);
     };
   
-    const handleSelectAllClick = () => {
-      if (isGrabAll) {
-        const newSelected = bodyTableRows.map((n,ind) => ind);
-        setSelected(newSelected);
-        return;
-      }
-      setSelected([]);
-    };
-    const handleClick = (event, name) => {
-         if (event.detail === 2) {
-          handleDoubleClick(event, name)
-      }
 
+    // const handleClick = (e, index, name) => {      
+    //   if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
+    //     dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));
+    //     return setComent(name);
+    //   }
+    //       if (e.detail === 2) {
+    //       handleDoubleClick(e, index, name)
+    //   }
+    
       // const selectedIndex = selected.indexOf(name);
 
+      
       // let newSelected = [];  
       // if (selectedIndex === -1) {
       //   newSelected = newSelected.concat(selected, name);
@@ -135,25 +141,97 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
 
       // setSelected(newSelected);
 
-    };
   
- 
-    const handleChangePage = (event, newPage) => {
+ const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
-  
-    const handleChangeRowsPerPage = (event) => {
+ const handleChangeRowsPerPage = (event) => {
       setRowsPerPage(parseInt(event.target.value));
       setPage(0);
     };
   
-    const StyledTableRow = styled(TableRow)(({ theme }) => ({
- 
+const handleDoubleClick=(event, index, name)=>{
 
-    }));
-const handleDoubleClick=(event, name)=>{
-  console.log('event.target.id',event.target, 'name', name);
+for (const key in name) {
+  if (Object.hasOwnProperty.call(name, key)) {
+    const element = name[key];
+    console.log(key, element);
+if (element) {
+  switch (key) {
+    case 'client':
+            dispatch(getFormTable({id: 'fio', str: element}));
+            break;
+     case 'fio':
+           dispatch(getFormTable({id: 'fio', str: element}));
+         break;
+    case 'client_phone':
+          dispatch(getFormTable({id: 'client_phone', str: element}));
+         break;
+    case 'email':
+        dispatch(getFormTable({id: 'email', str: element}));
+        break;
+    case 'ig_username':
+        dispatch(getFormTable({id: 'ig_username', str: element}));
+        break;
+    case 'comment':
+        dispatch(getFormTable({id: 'comment', str: element}));
+          break;
+    case 'additional_field':
+        dispatch(getFormTable({id: 'additional_field', str: element}));
+          break;
+        
+          default:
+            break;
+        }
 }
+    
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  dispatch(getOpenTableCreate({id: 'openCreator', str: !isOpenCreator}))
+
+  // dispatch(getClouseTableCreate())
+  console.log('event.target.id',event.target.id, 'name', name );
+}
+
+const  hexToRgbA = (hex) =>{
+  let c;
+  if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+      c= hex.substring(1).split('');
+      if(c.length == 3){
+          c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+      }
+      c= '0x'+c.join('');
+      return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',0.25)';
+  }
+  throw new Error('Bad Hex');
+}
+
+const handleClick = (e, index, name) => { 
+  let id = name?.find(n=>n.id === 'id').value;
+  let idRows = columns.find(n=>n.id === id)
+ 
+    if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
+      dispatch(autoUpdate({id: 'rowsToUpdate', str: idRows}))
+        dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
+ 
+      };
+   if (e.detail === 2) {
+       handleDoubleClick(e, index, idRows)
+      }
+  }
 
 return (
 
@@ -162,6 +240,7 @@ return (
                backgroundColor: colorsRef.boxTableColor, paddingBottom: '10px'}} >    
  {/* HEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHT */} 
    < HeaderContainer/>
+
       <Paper sx={{position: "relative", width: '98%', 
                    height: 'calc(90% - 20px)', marginLeft: 'auto', 
                   marginRight: 'auto',overflowY: 'hidden',
@@ -181,17 +260,20 @@ return (
 
         <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}} >
               {stableSort(bodyTableRows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((rows, index) => {
+                .map((rows, index, arr) => {
+                  // console.log(rows);
                   return (
-                    <StyledTableRow 
-                    onClick={(event) => handleClick(event, index)}
+                    <TableRow 
+                    onClick={(e)=>handleClick(e, index, arr[index])}
                     tabIndex={-1}
                     key={index}
                     sx={{
                       '&:focus': {backgroundColor: '#B0C4FF', color: '#fff'},
-                      backgroundColor: selected.includes(index)?'#B0C4FF':rows[0]?.color,
+                      backgroundColor: selected.includes(index)?'#B0C4FF':hexToRgbA(rows[0]?.color),
                       color: selected.includes(index)?'#fff':'#000',
                       cursor: 'pointer',
+                      border: '1px solid #fff'
+                  
                     }}
                   >
             {rows.map((row,ind) => (
@@ -199,12 +281,12 @@ return (
             <TableCell sx={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
             //  borderRight: '1px solid #fff',
              maxWidth: '400px',  overflowX: 'auto', width: '200px',
-             color: 'inherit'
+             color: 'inherit', position: 'relative', borderBottom: '1px solid #fff'
             }}
-            key={ind} align="center" >{getRowsComparator(row.value, row.id)} </TableCell>
+            key={ind} align="center" ><GetRowsComparator row={row}/>  </TableCell>
             
             ))} 
-             </StyledTableRow> );
+             </TableRow> );
              
                 })}
              </TableBody>
@@ -224,6 +306,7 @@ return (
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+    <ComentModalMenu/>
     </Box>
   );
 }

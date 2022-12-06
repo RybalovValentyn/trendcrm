@@ -116,6 +116,23 @@ export const getAdressFromNp = createAsyncThunk(
   },
 );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const getAllStatuses = createAsyncThunk(
   'statuses/all',
   async (_, { rejectWithValue, getState }) => {

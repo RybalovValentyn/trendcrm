@@ -139,7 +139,7 @@ const searchSityFromNP =(e) =>{
       dispatch(getAddressNP(e.target.value))
       break;
     default:
-      console.log(';sddddddd');
+
       break;
   }
 };
@@ -178,6 +178,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
             {label}
             </Label>}
         <textarea
+        value={client[name]}
         style={{maxWidth: '250px',
          border: `1px solid ${colorsRef.modalInputBorderColor}`,
         borderRadius: '8px',

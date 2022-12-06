@@ -17,10 +17,6 @@ export function CreateRows(){
 
     const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
 
-    // const isOpen = true;
-
-
-
 let positionTop = '-100%';
 let positionLeft = '10px';
 let index = -1;
@@ -86,7 +82,7 @@ return(
     </StyledList>
 
     <StyledList>
-    <MultiInput label='Коментарій:' name='client_comment' type='textarea' />
+    <MultiInput label='Коментарій:' name='comment' type='textarea' />
     </StyledList>
     
     <StyledList>

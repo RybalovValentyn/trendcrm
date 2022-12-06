@@ -149,18 +149,19 @@ const ordersReduser = createSlice({
     tHeadColumn: [],
     tHeadColumnFiltered: [],
     bodyTableRows: [],
-
+    rowsToUpdate: {}, 
     nextStatus: 0,
     isLoading: false,
     order: [],
     isValid: false,
     error: '',
     isError: false,
-    widthOfColumn:[],
+    widthOfColumn:{},
     modalControl:{
       openCreator: false,
       opendownload: false,
       columnSettings: false,
+      comentSettings: false,
   },
  
 ttn_status: {},
@@ -191,6 +192,11 @@ ttn_status: {},
   },
 
    reducers: {
+    autoUpdateRowsReupdate: (state, action) => {  
+      console.log(action.payload);
+         return { ...state, 
+          rowsToUpdate: {...state.rowsToUpdate, [action.payload.id]: action.payload.str}}
+    },
     autoUpdate: (state, action) => {  
       console.log(action.payload);
          return { ...state, [action.payload.id]: action.payload.str}
@@ -242,16 +248,13 @@ ttn_status: {},
         };
         },  
         setWidthColumn: (state, action) => {  
+          console.log(action.payload);
           return { ...state,
-            widthOfColumn: [...state.widthOfColumn, action.payload]
+            widthOfColumn: {...state.widthOfColumn, [action.payload.id]: action.payload.width}
         };
         }, 
-        getOpenTDownloadExel:  (state, action) => {  
-          return { ...state  ,
-            modalControl:{...state.modalControl, opendownload: action.payload}
-        }},
         getOpenTableCreate:  (state, action) => {  
-          console.log(action.payload);
+          // console.log(action.payload);
           return { ...state  ,
             modalControl:{...state.modalControl, [action.payload.id]: action.payload.str}
         };
@@ -642,6 +645,8 @@ ttn_status: {},
 );
 
 export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, searchCountUpdate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
-   getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel} = ordersReduser.actions;
+   getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel,
+   autoUpdateRowsReupdate
+  } = ordersReduser.actions;
 export default ordersReduser.reducer;
 
