@@ -21,6 +21,7 @@ import { useEffect, Suspense } from 'react';
 import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp, getFilteredOrders } from './redux/asyncThunc';
 import {MiniDrawer} from './components/tableBody/navBar/navBar';
 import { Preloader } from './components/preloader/preloader';
+import { useCookies } from 'react-cookie';
 
 
 function App(history) {
@@ -32,6 +33,8 @@ function App(history) {
   const ontableLoad = useSelector(state => state.ordersAll.isLoading);
 
 
+  const [cookies, setCookie] = useCookies(['user_id=1']);
+  setCookie('user_id', '1', { path: '/' });
   useEffect(() => {
     if (hashKey) {
       dispatch(currentThunk());

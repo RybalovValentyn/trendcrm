@@ -82,7 +82,7 @@ const stopTimer = ()=>{
 
 const handleClick = (e)=>{
   dispatch(getOpenTableCreate({id: 'openCreator', str: !isOpen}))
-  dispatch(getClouseTableCreate())
+  // dispatch(getClouseTableCreate())
 }
 
 const onChangeCheckBox =() =>{

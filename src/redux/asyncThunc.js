@@ -6,16 +6,16 @@ import axios from 'axios';
 // axios.defaults.baseURL = 'http://localhost:5000/api';
 
 
-const login = "/login";
-const auth = '/authenticate'
+const login = "/auth";
+const auth = '/auth';
 
-// const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
+const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
 
-const REBASE_URL= 'http://localhost:5000/api';
+// const REBASE_URL= 'http://localhost:5000/api';
 
 
-const novaposhta = '/novaposhta/cities/list';
-const adress = '/novaposhta/warehouses/list';
+const syties = '/sityes';
+const adress = '/adress';
 const addOrder = '/order';
 const orders = '/orders';
 const getStatus = '/count_status_orders';
@@ -35,7 +35,7 @@ export const loginThunk = createAsyncThunk(
       const response = await axios({
         method: 'post',
         url: REBASE_URL+login,
-        data: user});      
+         data: user});      
       const data = await response
       // console.log('loginThunk', data.data);
       return data.data;
@@ -63,7 +63,7 @@ export const currentThunk = createAsyncThunk(
           },
           })
           const data = await response
-        // console.log('currentThunk',data.status);
+        console.log('currentThunk',data);
         return data.status;
       } catch (error) {
         return rejectWithValue({
@@ -77,15 +77,15 @@ export const currentThunk = createAsyncThunk(
 
 export const getSitysFromNp = createAsyncThunk(
   'order/DeliveryCity',
-  async (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue, getState }) => { 
 
           try {
         const { data } = await axios({
-          method: "get",
-           url:  REBASE_URL+novaposhta,
+          method: "post",
+           url:  REBASE_URL+syties,
           })
-
         return data.suggestions.flatMap(sity=> sity.value).filter((sity, index, array) => array.indexOf(sity) === index);
+        
       } catch (error) {
         return rejectWithValue({
           error: error.message,
@@ -105,8 +105,9 @@ export const getAdressFromNp = createAsyncThunk(
           method: "post",
            url:  REBASE_URL+adress,
            data: {warehouse_city: sity}
-          })
-         return data.flatMap(street=> street.value).filter((street, index, array) => array.indexOf(street) === index)
+          });
+         return data.suggestions.flatMap(street=> street.value).filter((street, index, array) => array.indexOf(street) === index);
+         
       } catch (error) {
         return rejectWithValue({
          error: error.message
@@ -115,24 +116,7 @@ export const getAdressFromNp = createAsyncThunk(
     
   },
 );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// method.request.querystring.params
 export const getAllStatuses = createAsyncThunk(
   'statuses/all',
   async (_, { rejectWithValue, getState }) => {
@@ -142,19 +126,50 @@ export const getAllStatuses = createAsyncThunk(
         try {
         const { data } = await axios({
           method: "get",
-           url:  REBASE_URL+getStatus,
-           params:{ cookie: 'user_id=1'}
+          url:  REBASE_URL,
+          // url: 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function',
+          // url: 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function',
+           params:{ cookie: document.cookie}
           })
-         
+        //  console.log(data);
          return data.orders_status_count
       } catch (error) {
+        // console.log(error.message);
         return rejectWithValue({
+          
          error: error.message
         });
       }
     
   },
 );
+
+
+
+
+
+// export const getAllStatuses = createAsyncThunk(
+//   'statuses/all',
+//   async (_, { rejectWithValue, getState }) => {
+//     const state = getState(); 
+//     const cookie = state.auth.id
+
+//         try {
+//         const { data } = await axios({
+//           method: "get",
+//            url:  REBASE_URL+getStatus,
+//            params:{ cookie: 'user_id=1'}
+//           })
+         
+//          return data.orders_status_count
+//       } catch (error) {
+//         return rejectWithValue({
+//          error: error.message
+//         });
+//       }
+    
+//   },
+// );
 export const getFilteredOrders = createAsyncThunk(
   'filtered/all',
   async (_, { rejectWithValue, getState }) => { 

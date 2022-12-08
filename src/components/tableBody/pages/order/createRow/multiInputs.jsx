@@ -15,6 +15,7 @@ import {BootstrapInput, autocompliteInputStyle,
 
 
 export function MultiInput({label, name, func, val, type}) {
+
     const dispatch = useDispatch();
     const client = useSelector((state) => state.ordersAll.createRows);
     const dataForSelect = useSelector((state) => state.ordersAll[name]);
@@ -86,7 +87,7 @@ const inputFocus =(e)=>{
    return dispatch(getFormTable({id, str}));
   }
     let str = ''
-  return  dispatch(getFormTable({id, str}))
+  // return  dispatch(getFormTable({id, str}))
   
 }
 const keyCodeInput = (e) =>{ 
@@ -178,7 +179,6 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
             {label}
             </Label>}
         <textarea
-        value={client[name]}
         style={{maxWidth: '250px',
          border: `1px solid ${colorsRef.modalInputBorderColor}`,
         borderRadius: '8px',
