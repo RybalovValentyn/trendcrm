@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// const REBASE_URL = 'https://immense-basin-96488.herokuapp.com/api';
-const REBASE_URL= 'http://localhost:5000/api';
-const postStatus = '/select_list/3/select_item/add'
+const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
+// const REBASE_URL= 'http://localhost:5000/api';
+const postStatus = '/status'
 
 
 export const getValidationForm = createAsyncThunk(
@@ -65,7 +65,7 @@ export const orderStatusThunk = createAsyncThunk(
          url:  REBASE_URL+postStatus,
          data: status
         })
-      
+      console.log(data);
        return data
       } catch (error) {
         return rejectWithValue({

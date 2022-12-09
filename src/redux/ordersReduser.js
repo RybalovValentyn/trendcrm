@@ -174,7 +174,8 @@ ttn_status: {},
                  {name: 'Наложений', id: '15', prepay_status: '' }, 
                 {name: 'Передплата (оплачено)', id: '16', prepay_status: '1' } ,
                  {name: 'Передплата (не оплачено)', id: '16',  prepay_status: '0'},
-                 {name: 'Оплачено', id: '95', prepay_status: '' },],
+                 {name: 'Оплачено', id: '95', prepay_status: '' },
+                {name: 'operator', id: '2', prepay_status: '' }],
   delivery_service_type: ['Відділення','Адреса'],
   sityNewPost:[],
   adressNewPost: [],
@@ -266,7 +267,7 @@ ttn_status: {},
         };
         },
         getFormTable: (state, action) => { 
-          console.log(action.payload);
+          // console.log(action.payload);
           switch (action.payload.id) {
             case ('fio'):
                return { ...state,

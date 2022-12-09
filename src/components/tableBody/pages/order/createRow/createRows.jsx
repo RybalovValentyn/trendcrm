@@ -53,7 +53,7 @@ if (isOpen) {
         padding: 0
       `,
       );
-const isPay = useSelector((state) => state.ordersAll.createRows.payment_name.id)
+const isPay = useSelector((state) => state.ordersAll.createRows.payment_name?.id)
 const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
 const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'}
 return(

@@ -18,7 +18,7 @@ import {Purchasing} from './components/tableBody/pages/purchasing/purchasing';
 import {Help} from './components/tableBody/pages/help/help';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, Suspense } from 'react';
-import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp, getFilteredOrders } from './redux/asyncThunc';
+import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp, getFilteredOrders,getRowsAfterAdd } from './redux/asyncThunc';
 import {MiniDrawer} from './components/tableBody/navBar/navBar';
 import { Preloader } from './components/preloader/preloader';
 import { useCookies } from 'react-cookie';
@@ -31,6 +31,10 @@ function App(history) {
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isLoading = useSelector(state => state.auth.isLoading);
   const ontableLoad = useSelector(state => state.ordersAll.isLoading);
+
+//   useEffect(() => {
+// dispatch(getRowsAfterAdd())
+// }, []);
 
 
   const [cookies, setCookie] = useCookies(['user_id=1']);

@@ -144,10 +144,6 @@ export const getAllStatuses = createAsyncThunk(
   },
 );
 
-
-
-
-
 // export const getAllStatuses = createAsyncThunk(
 //   'statuses/all',
 //   async (_, { rejectWithValue, getState }) => {
@@ -296,11 +292,12 @@ export const getRowsAfterAdd = createAsyncThunk(
            url:  REBASE_URL+addOrder,
            params: {
             id: state.ordersAll.createRows.id
-          },
+                 },
           });
         console.log(data);
         return data;
       } catch (error) {
+        console.log(error);
         return rejectWithValue({
           error: error.message,
         });

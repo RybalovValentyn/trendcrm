@@ -15,7 +15,7 @@ import {BootstrapInput, autocompliteInputStyle,
 
 
 export function MultiInput({label, name, func, val, type}) {
-
+  
     const dispatch = useDispatch();
     const client = useSelector((state) => state.ordersAll.createRows);
     const dataForSelect = useSelector((state) => state.ordersAll[name]);
@@ -23,6 +23,7 @@ export function MultiInput({label, name, func, val, type}) {
     const deliveryAddress = useSelector((state) => state.ordersAll.adressNewPost);
     // const dataAutocomplite = useSelector((state) => state.ordersAll.sityFromNovaPoshta);
     const sityValue = useSelector((state) => state.ordersAll.createRows.warehouse_city);    
+    const adressValue = useSelector((state) => state.ordersAll.createRows.warehouse_address); 
     const paymentType = useSelector((state)=> state.ordersAll.payment_name);
     const ordersAll = useSelector((state) => state.ordersAll);
     const valuePaymentType = useSelector((state)=> state.ordersAll.createRows.payment_name);
@@ -80,16 +81,16 @@ const setStreetDelivery=(e)=>{
     }
 
 
-const inputFocus =(e)=>{
-  let id = e.target.id;
-  if (id === 'client_phone'){
-    let str = '+38(0'
-   return dispatch(getFormTable({id, str}));
-  }
-    let str = ''
-  // return  dispatch(getFormTable({id, str}))
+// const inputFocus =(e)=>{
+//   let id = e.target.id;
+//   if (id === 'client_phone'){
+//     let str = '+38(0'
+//   //  return dispatch(getFormTable({id, str}));
+//   }
+//     let str = ''
+//   // return  dispatch(getFormTable({id, str}))
   
-}
+// }
 const keyCodeInput = (e) =>{ 
   let id = e.target.id; 
   if (id === 'client_phone' && e.key === 'Backspace') {
@@ -168,7 +169,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
     value={client[name]}
     id={name}
     onKeyDown={keyCodeInput}
-    onFocus={inputFocus}      
+    // onFocus={inputFocus}      
     onChange={inputSwicher}
     variant="outlined" />
  </Box>
@@ -289,7 +290,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
                 freeSolo  
                 id={name}
                 name={name}
-                
+                value = {adressValue}
                 options={deliveryAddress}
                 onFocus={getStreets}
                  onChange={setStreetDelivery}

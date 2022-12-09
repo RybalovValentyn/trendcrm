@@ -153,13 +153,13 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
     };
   
 const handleDoubleClick=(event, index, name)=>{
+  // console.log(name);
   dispatch(getOpenTableCreate({id: 'openCreator', str: !isOpenCreator}))
 for (const key in name) {
   if (Object.hasOwnProperty.call(name, key)) {
     const element = name[key];
     // console.log(key, element);
 if (element) {
-
    switch (key) {
     case 'client':
             dispatch(getFormTable({id: 'fio', str: element}));
@@ -195,7 +195,11 @@ if (element) {
     case 'payment_name':
       let id = name.payment_type;
       let payment_name = dataForSelect.payment_name?.find(n=>n?.id === id)
-       dispatch(getFormTable({id: 'payment_name', str: payment_name}));
+      if (payment_name) {
+        dispatch(getFormTable({id: 'payment_name', str: payment_name}));
+      } else dispatch(getFormTable({id: 'payment_name',
+                 str: {name: element, id: name.payment_type, prepay_status: '' ,}}));
+       
           break;  
      case 'datetime_sent':
       dispatch(getFormTable({id: 'datetime_sent', str: element}));
