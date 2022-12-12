@@ -25,7 +25,7 @@ import { StyledInput } from '../../../inputs/textfield';
 import {clearStatusState, modalOpenUpdate} from '../../../../redux/statusReduser';
 import {SimpleSnackbar} from '../../../alerts/alertStatus';
 import {StatusesSelectInput} from '../../../inputs/statusses';
-import { ColorButton, buttonStyle, textStyle, inputGroupStyle } from './styles';
+import { ColorButton, buttonStyle, textStyle, inputGroupStyle } from '../order/styles';
 import { getAllStatuses } from '../../../../redux/asyncThunc';
 import {StyledButton} from '../../../buttons/buttons';
 
@@ -34,7 +34,7 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
   });
 
-export function AddStatusForm() {
+export function AddStatusForm({isbutton}) {
   const isValid = useSelector((state) => state.ordersAll.isValid);
   const modalOpen = useSelector((state) => state.addStatus.modalOpen);
   const nextStatus = useSelector((state) => state.ordersAll.nextStatus);
@@ -112,9 +112,9 @@ dispatch(getValidationForm())
  
   return (
     <div>
-      <ColorButton startIcon={<AddIcon sx={{ '&.MuiIcon-root': {fontSize: '20px'}}}/>} variant="contained" size="small" onClick={handleClickOpen}>
+      { isbutton ===true  && <ColorButton startIcon={<AddIcon sx={{ '&.MuiIcon-root': {fontSize: '20px'}}}/>} variant="contained" size="small" onClick={handleClickOpen}>
         Створити статус
-      </ColorButton>
+      </ColorButton>}
 
       <BootstrapDialog  TransitionComponent={Transition} keepMounted open={modalOpen} >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}  >

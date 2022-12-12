@@ -11,6 +11,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PhoneInTalkOutlinedIcon from '@mui/icons-material/PhoneInTalkOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
+
 export const mainNavBarItem = [
     {
         id: 'homeBar',
@@ -72,6 +73,11 @@ export const mainNavBarItem = [
         item: <PhoneInTalkOutlinedIcon/>,
         label: 'Допомога',
         route: 'help'
+    },
+    {
+        id: 'order',
+        label: 'order',
+        route: 'order'
     },
 ]
 

@@ -191,8 +191,8 @@ if (name === 'payment_name') {
       {'Всі'}
       </MenuItem>
     {packerName.map((name, ind) => (
-      <MenuItem  key={ind} value={name} sx={listStyle} >      
-        {name}
+      <MenuItem  key={ind} value={name.name} sx={listStyle} >      
+        {name.name}
       </MenuItem>
     ))}
   </Select>
@@ -200,7 +200,7 @@ if (name === 'payment_name') {
 }else if (name === 'group_name') {
   return (
     <Select 
-    id="status_name"
+    id="group_name"
     name = {name}
     value={group}
     onChange={handleSelectChange}

@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-
+import {SearchInputSity} from '../../../../inputs/asyncInput';
 import { colorsRef } from '../../../../../consts/colorConstants';
 import {getFormTable} from '../../../../../redux/ordersReduser';
 import { useDispatch, useSelector,  } from 'react-redux';
@@ -26,24 +26,17 @@ export function MultiInput({label, name, func, val, type}) {
     const adressValue = useSelector((state) => state.ordersAll.createRows.warehouse_address); 
     const paymentType = useSelector((state)=> state.ordersAll.payment_name);
     const ordersAll = useSelector((state) => state.ordersAll);
-    const valuePaymentType = useSelector((state)=> state.ordersAll.createRows.payment_name);
 
     const getSitysNovaPoshta = ordersAll[name]?.flatMap(sity=> sity.Present)?.filter((sity, index, array) => array.indexOf(sity) === index);
 
 
-const getSitys =(e) =>{
-  
+const getSitys =(e) =>{  
     if (e.target.id === 'warehouse_city' && deliveryCity.length === 0) {
       console.log(deliveryCity.length);
       dispatch(getSitysFromNp())
     }   
     }
-const getStreets = (e) =>{
-  
-if (e.target.id === 'warehouse_address') {
-    
-  } 
-}
+
   const setSytyDelivery =(e) =>{  
     console.log(sityValue);  
     let id = 'warehouse_city'
@@ -61,42 +54,21 @@ const setStreetDelivery=(e)=>{
    
 }
   
-    const telNumberMask = (e)=>{      
-      let id = e.target.id;
-      let str = e.target.value.split('');
-      let isNUmber = str.slice(-1);
-        if (Number(isNUmber)) {
-           if (str.length ===7) {
-            str.push(')')
-          } else if (str.length ===11) {
-            str.push('-')
-          } else if (str.length ===14) {
-            str.push('-')
-          }else if (str.length ===18) {
-           return
-          }
-          let string = str.join('')
-          dispatch(getFormTable({id, str: string}))
-        }
-    }
 
 
-// const inputFocus =(e)=>{
-//   let id = e.target.id;
-//   if (id === 'client_phone'){
-//     let str = '+38(0'
-//   //  return dispatch(getFormTable({id, str}));
-//   }
-//     let str = ''
-//   // return  dispatch(getFormTable({id, str}))
+const inputFocus =(e)=>{
+  let id = e.target.id;
+  if (id === 'client_phone'){
+    let str = '+38(0'
+   return dispatch(getFormTable({id, str}));
+  }
+    let str = ''
+  return  dispatch(getFormTable({id, str}))
   
-// }
+}
 const keyCodeInput = (e) =>{ 
   let id = e.target.id; 
-  if (id === 'client_phone' && e.key === 'Backspace') {
-    let str = '+38(0'
-    dispatch(getFormTable({id, str}))
-  } else if (e.key === 'Backspace') {
+ if (e.key === 'Backspace') {
     let str = ''
     dispatch(getFormTable({id, str}))
   }
@@ -107,19 +79,18 @@ const keyCodeInput = (e) =>{
         let str = e.target.value
         let name = e.target.name
         console.log(str);
-      if (id === 'client_phone') {
-        telNumberMask(e);
-     }else if (id === 'backward_delivery_summ' || id === 'weight' || id ==='volume_general' || id === 'seats_amount' || id ==='backward_summ') {
+ if (id === 'backward_delivery_summ' || id === 'weight' || id ==='volume_general' || id === 'seats_amount' || id ==='backward_summ') {
           if (Number(str) ) {dispatch(getFormTable({id, str})) }
              
    }else if (type === 'select' && name !== 'payment_name') {
-    let ind = dataForSelect.indexOf(str)
-        dispatch(getFormTable({id:name, ind})) 
+    let ind = dataForSelect.find(str=>str.name === e.target.value)
+        dispatch(getFormTable({id:name, str: ind.id})) 
 
   } else if (type === 'select' && name === 'payment_name') {
     let type = paymentType.find(str=>str.name === e.target.value)
     console.log(type);
-       dispatch(getFormTable({id:name, str: type}))
+       dispatch(getFormTable({id:name, str: type.id}))
+                               
   } else dispatch(getFormTable({id, str}))       
           
     }
@@ -169,7 +140,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
     value={client[name]}
     id={name}
     onKeyDown={keyCodeInput}
-    // onFocus={inputFocus}      
+    onFocus={inputFocus}      
     onChange={inputSwicher}
     variant="outlined" />
  </Box>
@@ -196,48 +167,23 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
          ></textarea>
      </Box>
 
-     )} else if (type === 'select' && name === 'payment_name') 
-          {return(
-      <Box sx={boxStyle} autoComplete="off" >
-      {label && <Label htmlFor="named-select">
-      {label}
-      </Label>}
-      <FormControl sx={{ m: 1, width: '100%', maxWidth: '250px',}} size="small">
-      <Select
-      onChange={inputSwicher}
-     name={name}
-      type={type}
-      id="multiple-checkbox"
-      value ={valuePaymentType.name}     
-       sx={inputStyle}
-    >
-      {paymentType.map((nam, ind) => (
-       <MenuItem sx={{fontSize: '12px' }}  id={name.id} key ={ind} value={nam.name}>
-       {nam.name}
-        </MenuItem>
-       ))}
-
-    </Select>
-    </FormControl>
-    </Box>
-
-   )} if (type === 'select') {return(
+     )} else if (type === 'select') {return(
         <Box sx={boxStyle} autoComplete="off" >
-        {label && <Label htmlFor="named-select">
+        {label && <Label htmlFor={name}>
         {label}
         </Label>}
         <FormControl sx={{ m: 1, width: '100%', maxWidth: '250px',}} size="small">
-        <Select
+       <Select
         onChange={inputSwicher}
        name={name}
         type={type}
         id="multiple-checkbox"
-        value ={dataForSelect[Number(client[name])]}      
+        value ={dataForSelect.find(n=>n.id===String(client[name]))?.name}      
          sx={inputStyle}
       >
         {dataForSelect.map((nam, ind) => (
-         <MenuItem sx={{fontSize: '12px' }}  id={name} key ={ind} value={nam}>
-         {nam}
+         <MenuItem sx={{fontSize: '12px' }}  id={name} key ={ind} value={nam.name}>
+         {nam.name}
           </MenuItem>
          ))}
 
@@ -265,14 +211,16 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
       )} else if (type === 'autocomplete' && name === 'warehouse_city')      
       {return(
           <Box sx={boxStyle} autoComplete="off" >
-          {label && <Label htmlFor="named-select">
+          {label && <Label htmlFor="warehouse_city">
           {label}
           </Label>}
+
+          {/* <SearchInputSity/> */}
           <Autocomplete
               freeSolo  
               id={name}
               name={name}
-              value = {sityValue}
+              value = {sityValue?sityValue:null}
               options={deliveryCity}
               onFocus={getSitys}
                onChange={setSytyDelivery}
@@ -283,17 +231,16 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
         )}else if (type === 'autocomplete' && name === 'warehouse_address')      
         {return(
             <Box sx={boxStyle} autoComplete="off" >
-            {label && <Label htmlFor="named-select">
+            {label && <Label htmlFor="warehouse_address">
             {label}
             </Label>}
             <Autocomplete
                 freeSolo  
                 id={name}
                 name={name}
-                value = {adressValue}
+                value = {adressValue?adressValue:null}
                 options={deliveryAddress}
-                onFocus={getStreets}
-                 onChange={setStreetDelivery}
+                onChange={setStreetDelivery}
                 sx={autocompliteInputStyle}
                 renderInput={(params) => <TextField sx={textFieldStyles}  {...params}/>}
               />

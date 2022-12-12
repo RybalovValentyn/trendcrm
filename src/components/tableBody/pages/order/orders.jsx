@@ -13,7 +13,7 @@ import {useState, useEffect, useLayoutEffect, useRef} from 'react';
 // import {tableParse} from './tableParse';
 // import {translater} from './translate';
 import {ScrollTabsButton} from './tableInBody';
-
+import {useNavigate} from 'react-router-dom';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
 import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp} from '../../../../redux/asyncThunc';
@@ -26,10 +26,11 @@ import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
    getOpenTableCreate, autoUpdate, getFormTable} from '../../../../redux/ordersReduser';
 import {EnhancedTableHead} from './enhancedTableHead';
 import { Preloader } from '../../../preloader/preloader';
-import { ComentModalMenu } from './createRow/comentmodal';
+import { ComentModalMenu } from '../modals/comentmodal';
 
 export  function Order() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const columns = useSelector((state) => state.ordersAll.columns);
   const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
   const bodyTableRows = useSelector((state) => state.ordersAll.bodyTableRows);
@@ -38,9 +39,7 @@ export  function Order() {
   const allOrders = useSelector((state) => state.ordersAll.columns);
   const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
-  const isOpenCreator = useSelector((state) => state.ordersAll.modalControl.openCreator);
   const dataForSelect = useSelector((state) => state.ordersAll);
-  const createdRows = useSelector((state) => state.ordersAll.createRows);
   // const getColumnToUpdate = useSelector((state) => state.ordersAll.rowsToUpdate);
   let arrayRows = []
     const [order, setOrder] = useState('asc');
@@ -48,8 +47,6 @@ export  function Order() {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(100);
-    const [coment, setComent] = useState(null);
-
 
   useEffect(() => {
 if (statuses.length === 0) {
@@ -111,16 +108,7 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(property);
     };
-  
 
-    // const handleClick = (e, index, name) => {      
-    //   if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
-    //     dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));
-    //     return setComent(name);
-    //   }
-    //       if (e.detail === 2) {
-    //       handleDoubleClick(e, index, name)
-    //   }
     
       // const selectedIndex = selected.indexOf(name);
 
@@ -152,131 +140,7 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
       setPage(0);
     };
   
-const handleDoubleClick=(event, index, name)=>{
-  // console.log(name);
-  dispatch(getOpenTableCreate({id: 'openCreator', str: !isOpenCreator}))
-for (const key in name) {
-  if (Object.hasOwnProperty.call(name, key)) {
-    const element = name[key];
-    // console.log(key, element);
-if (element) {
-   switch (key) {
-    case 'client':
-            dispatch(getFormTable({id: 'fio', str: element}));
-            break;
-     case 'fio':
-           dispatch(getFormTable({id: 'fio', str: element}));
-         break;
-    case 'client_phone':
-          dispatch(getFormTable({id: 'client_phone', str: element}));
-         break;
-    case 'email':
-        dispatch(getFormTable({id: 'email', str: element}));
-        break;
-    case 'ig_username':
-        dispatch(getFormTable({id: 'ig_username', str: element}));
-        break;
-    case 'comment':
-        dispatch(getFormTable({id: 'comment', str: element}));
-          break;
-    case 'additional_field':
-        dispatch(getFormTable({id: 'additional_field', str: element}));
-          break;
-    case 'delivery_type':
-        //  console.log(dataForSelect.delivery_type.indexOf(element), element);
-         let delivery_type = dataForSelect.delivery_type.indexOf('Нова пошта')
-            dispatch(getFormTable({id: 'delivery_type', ind: delivery_type}));
-          break;
-     case 'packer_name':
-            // console.log(dataForSelect.packer_name.indexOf(element), element);
-            let packer_name = dataForSelect.packer_name.indexOf('admin')
-           dispatch(getFormTable({id: 'packer_name', ind: packer_name}));
-          break;  
-    case 'payment_name':
-      let id = name.payment_type;
-      let payment_name = dataForSelect.payment_name?.find(n=>n?.id === id)
-      if (payment_name) {
-        dispatch(getFormTable({id: 'payment_name', str: payment_name}));
-      } else dispatch(getFormTable({id: 'payment_name',
-                 str: {name: element, id: name.payment_type, prepay_status: '' ,}}));
-       
-          break;  
-     case 'datetime_sent':
-      dispatch(getFormTable({id: 'datetime_sent', str: element}));
-                break; 
-     case 'delivery_service_type':
-          dispatch(getFormTable({id: 'delivery_service_type', str: element}));
-           break;   
-       case 'prepay_status':
-           dispatch(getFormTable({id: 'prepay_status', str: element}));
-           break; 
-       case 'store_url':
-          dispatch(getFormTable({id: 'store_url', str: element}));
-            break; 
-       case 'backward_delivery_summ':
-          dispatch(getFormTable({id: 'backward_delivery_summ', str: element}));
-          break;
-      case 'backward_summ':
-          dispatch(getFormTable({id: 'backward_summ', str: element}));
-        break;
-      case 'warehouse_city':
-         dispatch(getFormTable({id: 'warehouse_city', str: element}));
-        break;
-        case 'warehouse_address':
-          dispatch(getFormTable({id: 'warehouse_address', str: element}));
-         break;
-         case 'delivery_payers':
-          dispatch(getFormTable({id: 'delivery_payers', str: element}));
-         break;
-         case 'delivery_payers_redelivery':
-          dispatch(getFormTable({id: 'delivery_payers_redelivery', str: element}));
-         break;
-         case 'weight':
-          dispatch(getFormTable({id: 'weight', str: element}));
-         break;
-         case 'volume_general':
-          dispatch(getFormTable({id: 'volume_general', str: element}));
-         break;
-         case 'seats_amount':
-          dispatch(getFormTable({id: 'seats_amount', str: element}));
-         break;
-         case 'cost':
-          dispatch(getFormTable({id: 'cost', str: element}));
-         break;
-         case 'novaposhta_comment':
-          dispatch(getFormTable({id: 'novaposhta_comment', str: element}));
-         break;
-         case 'tnn':
-          dispatch(getFormTable({id: 'tnn', str: element}));
-         break;
-         case 'sent':
-          dispatch(getFormTable({id: 'sent', str: element}));
-         break;
-         case 'status':
-          dispatch(getFormTable({id: 'status', str: element}));
-         break;
-         case 'doors_address':
-          dispatch(getFormTable({id: 'doors_address', str: element}));
-         break;
-         case 'doors_city':
-          dispatch(getFormTable({id: 'doors_city', str: element}));
-         break;
-         case 'responsible':
-          dispatch(getFormTable({id: 'responsible', str: element}));
-         break;
-         case 'group_name':
-          dispatch(getFormTable({id: 'group_name', str: element}));
-         break;
-         case 'data_create':
-          dispatch(getFormTable({id: 'data_create', str: element}));
-         break;
-          default:
-            break;
-        }}   
-  }
-};
 
-}
 
 const  hexToRgbA = (hex) =>{
   let c;
@@ -301,10 +165,137 @@ const handleClick = (e, index, name) => {
  
       };
    if (e.detail === 2) {
+    dispatch(autoUpdate({id: 'rowsToUpdate', str: idRows}))
        handleDoubleClick(e, index, idRows)
       }
   }
-
+  const handleDoubleClick=(event, index, name)=>{
+    let id = name.id
+    console.log(name);
+    dispatch(getRowsAfterAdd(id))
+    navigate(`/trendcrm/order/${id}`)
+  // for (const key in name) {
+  //   if (Object.hasOwnProperty.call(name, key)) {
+  //     const element = name[key];
+  //     // console.log(key, element);
+  // if (element) {
+  //    switch (key) {
+  //     case 'client':
+  //             dispatch(getFormTable({id: 'fio', str: element}));
+  //             break;
+  //      case 'fio':
+  //            dispatch(getFormTable({id: 'fio', str: element}));
+  //          break;
+  //     case 'client_phone':
+  //           dispatch(getFormTable({id: 'client_phone', str: element}));
+  //          break;
+  //     case 'email':
+  //         dispatch(getFormTable({id: 'email', str: element}));
+  //         break;
+  //     case 'ig_username':
+  //         dispatch(getFormTable({id: 'ig_username', str: element}));
+  //         break;
+  //     case 'comment':
+  //         dispatch(getFormTable({id: 'comment', str: element}));
+  //           break;
+  //     case 'additional_field':
+  //         dispatch(getFormTable({id: 'additional_field', str: element}));
+  //           break;
+  //     case 'delivery_type':
+  //         //  console.log(dataForSelect.delivery_type.indexOf(element), element);
+  //          let delivery_type = dataForSelect.delivery_type.indexOf('Нова пошта')
+  //             dispatch(getFormTable({id: 'delivery_type', ind: delivery_type}));
+  //           break;
+  //      case 'packer_name':
+  //             // console.log(dataForSelect.packer_name.indexOf(element), element);
+  //             let packer_name = dataForSelect.packer_name.indexOf('admin')
+  //            dispatch(getFormTable({id: 'packer_name', ind: packer_name}));
+  //           break;  
+  //     case 'payment_name':
+  //       let id = name.payment_type;
+  //       let payment_name = dataForSelect.payment_name?.find(n=>n?.id === id)
+  //       if (payment_name) {
+  //         dispatch(getFormTable({id: 'payment_name', str: payment_name}));
+  //       } else dispatch(getFormTable({id: 'payment_name',
+  //                  str: {name: element, id: name.payment_type, prepay_status: '' ,}}));
+         
+  //           break;  
+  //      case 'datetime_sent':
+  //       dispatch(getFormTable({id: 'datetime_sent', str: element}));
+  //                 break; 
+  //      case 'delivery_service_type':
+  //           dispatch(getFormTable({id: 'delivery_service_type', str: element}));
+  //            break;   
+  //        case 'prepay_status':
+  //            dispatch(getFormTable({id: 'prepay_status', str: element}));
+  //            break; 
+  //        case 'store_url':
+  //           dispatch(getFormTable({id: 'store_url', str: element}));
+  //             break; 
+  //        case 'backward_delivery_summ':
+  //           dispatch(getFormTable({id: 'backward_delivery_summ', str: element}));
+  //           break;
+  //       case 'backward_summ':
+  //           dispatch(getFormTable({id: 'backward_summ', str: element}));
+  //         break;
+  //       case 'warehouse_city':
+  //          dispatch(getFormTable({id: 'warehouse_city', str: element}));
+  //         break;
+  //         case 'warehouse_address':
+  //           dispatch(getFormTable({id: 'warehouse_address', str: element}));
+  //          break;
+  //          case 'delivery_payers':
+  //           dispatch(getFormTable({id: 'delivery_payers', str: element}));
+  //          break;
+  //          case 'delivery_payers_redelivery':
+  //           dispatch(getFormTable({id: 'delivery_payers_redelivery', str: element}));
+  //          break;
+  //          case 'weight':
+  //           dispatch(getFormTable({id: 'weight', str: element}));
+  //          break;
+  //          case 'volume_general':
+  //           dispatch(getFormTable({id: 'volume_general', str: element}));
+  //          break;
+  //          case 'seats_amount':
+  //           dispatch(getFormTable({id: 'seats_amount', str: element}));
+  //          break;
+  //          case 'cost':
+  //           dispatch(getFormTable({id: 'cost', str: element}));
+  //          break;
+  //          case 'novaposhta_comment':
+  //           dispatch(getFormTable({id: 'novaposhta_comment', str: element}));
+  //          break;
+  //          case 'tnn':
+  //           dispatch(getFormTable({id: 'tnn', str: element}));
+  //          break;
+  //          case 'sent':
+  //           dispatch(getFormTable({id: 'sent', str: element}));
+  //          break;
+  //          case 'status':
+  //           dispatch(getFormTable({id: 'status', str: element}));
+  //          break;
+  //          case 'doors_address':
+  //           dispatch(getFormTable({id: 'doors_address', str: element}));
+  //          break;
+  //          case 'doors_city':
+  //           dispatch(getFormTable({id: 'doors_city', str: element}));
+  //          break;
+  //          case 'responsible':
+  //           dispatch(getFormTable({id: 'responsible', str: element}));
+  //          break;
+  //          case 'group_name':
+  //           dispatch(getFormTable({id: 'group_name', str: element}));
+  //          break;
+  //          case 'data_create':
+  //           dispatch(getFormTable({id: 'data_create', str: element}));
+  //          break;
+  //           default:
+  //             break;
+  //         }}   
+  //   }
+  // };
+  
+  }
 return (
 
     <Box sx={{flexGrow: 1, paddingTop: '47px', maxWidth: '100%',overflowX: 'hidden', overflowY: 'hidden',

@@ -22,11 +22,9 @@ const getStatus = '/count_status_orders';
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
-// https://react.trendcrm.biz/api/menu/list
-// https://react.trendcrm.biz/api/tariff/0
-// https://react.trendcrm.biz/api/select_items/access
-// https://react.trendcrm.biz/api/novaposhta/status_list
-// https://react.trendcrm.biz/api/justin/list_statuse
+
+
+// https://react.trendcrm.biz/api/order/27/comment
 
 export const loginThunk = createAsyncThunk(
   'users/login',  
@@ -77,14 +75,14 @@ export const currentThunk = createAsyncThunk(
 
 export const getSitysFromNp = createAsyncThunk(
   'order/DeliveryCity',
+ 
   async (_, { rejectWithValue, getState }) => { 
-
           try {
         const { data } = await axios({
           method: "post",
            url:  REBASE_URL+syties,
           })
-        return data.suggestions.flatMap(sity=> sity.value).filter((sity, index, array) => array.indexOf(sity) === index);
+      return data.suggestions.flatMap(sity=> sity.value).filter((sity, index, array) => array.indexOf(sity) === index);
         
       } catch (error) {
         return rejectWithValue({
@@ -282,22 +280,17 @@ export const getAllOrders = createAsyncThunk(
 );
 export const getRowsAfterAdd = createAsyncThunk(
   'rows/post',
-  async (_, { rejectWithValue, getState }) => {
-    const state = getState();
-   
-    console.log(state.ordersAll.createRows.id);
-          try {
+  async (id, { rejectWithValue, getState }) => {
+  
+    console.log(id);
+            try {
         const { data } = await axios({
           method: "get",
-           url:  REBASE_URL+addOrder,
-           params: {
-            id: state.ordersAll.createRows.id
-                 },
+           url:  REBASE_URL+addOrder+`/${id}`,
           });
         console.log(data);
         return data;
       } catch (error) {
-        console.log(error);
         return rejectWithValue({
           error: error.message,
         });
@@ -320,9 +313,9 @@ const clientData = {
       phone: rows.client_phone,
       email: rows.email,
       ig_username :rows.ig_username,
-      comment: rows.client_comment,
+      comment: rows.comment,
       additional_field: rows.additional_field,
-      group_name: rows.group_name,
+      // group_name: rows.group_name,
     }  
 const deliveryData = {
     client_comment: rows.client_comment,
@@ -384,6 +377,27 @@ const dataSend ={
       } catch (error) {
         return rejectWithValue({
          error: error.message
+        });
+      }
+    
+  },
+);
+
+export const setCommentAdd = createAsyncThunk(
+  'comment/post',
+  async ({coment, idComent}, { rejectWithValue}) => {
+          try {
+        const { data } = await axios({
+          method: "post",
+           url:  REBASE_URL+addOrder+`/${idComent}/comment`,
+           data: {comment: coment},
+          });
+        console.log(data);
+        return {coment, idComent};
+      } catch (error) {
+        console.log(error);
+        return rejectWithValue({
+          error: error.message,
         });
       }
     

@@ -10,9 +10,11 @@ import { NavLink } from 'react-router-dom';
 import HelpIcon from '@mui/icons-material/Help';
 import { BootstrapTooltip } from './styles';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export function GetRowsComparator({row}) {
 const {value, id, color} = row
+const dataForSelect = useSelector((state) => state.ordersAll.payment_name);
 
     const operators = {
         "63": "lifecell",
@@ -105,12 +107,16 @@ case 'delivery_type':
         textColor = "#104f6e"
     }
     return (<span style = {{color: `${textColor}`}}>{value}</span> ); 
+ case 'payment_type':
+          let data = dataForSelect.find(n=>n.id===value)?dataForSelect.find(n=>n.id===value).name:'Нема даних'
+// console.log(dataForSelect, value);
+        return data
 case 'products_names':
         return (
             <Box sx={{maxWidth: '100px', overflow: 'hidden'}}>
                 {value}
             </Box>
-            );
+    );
     
 
         default:

@@ -5,19 +5,20 @@ import { useDispatch, useSelector,  } from 'react-redux';
 import { postRowsFromForm, getRowsAfterAdd, getAllOrders } from '../../redux/asyncThunc';
 import { useEffect } from 'react';
 import { getClouseTableCreate, getOpenTableCreate } from '../../redux/ordersReduser';
+import {useNavigate} from 'react-router-dom';
 
 export const SaveButton = () =>{
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const id = useSelector((state) => state.ordersAll.createRows.id);
     const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
 
     useEffect(() => {
-     if (id !== '') {
+     if (id) {
         console.log(id);
-        // dispatch(getRowsAfterAdd())
+        dispatch(getRowsAfterAdd(id));
         dispatch(getAllOrders());
-        dispatch(getClouseTableCreate());
-        dispatch(getOpenTableCreate(false));
+        navigate('/trendcrm/orders');         
      }
    }, [id]);
 
@@ -36,7 +37,7 @@ const icoBtnStyle = {
     boxShadow:' 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%)',
     bottom: '50px',
     right: '66px',
-    display: isOpen?"block":"none"
+    display: "block"
 }
     return(
 

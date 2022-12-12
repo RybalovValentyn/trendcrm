@@ -1,7 +1,6 @@
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import {colorsRef} from '../../consts/colorConstants';
-import {useState} from 'react';
 
 export const textTooltip =  `Наш сайт використовує файли cookies,
  щоб покращити роботу та підвищити ефективність сайту.

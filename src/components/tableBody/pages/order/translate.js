@@ -51,7 +51,7 @@ export const translater = {
     // "product_amount":"1",
     // "system_action":"",
     "storage_income_price_sum": "Ціна",
-    "payment_name":"Спосіб оплати",
+    // "payment_name":"Спосіб оплати",
     // "j_number":null,
     // "justin_account":null,
     // "j_ttn_cost":null,

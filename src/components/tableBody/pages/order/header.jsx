@@ -1,10 +1,7 @@
 import Box from '@mui/material/Box';
 import {clasListContainer, svgStyle} from './styles';
 import AddIcon from '@mui/icons-material/Add';
-import AddTaskIcon from '@mui/icons-material/AddTask';
-
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
-import { styled } from '@mui/material/styles';
 import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
 import {BpCheckbox} from '../../../inputs/checkBox'
 import List from '@mui/material/List';
@@ -12,25 +9,25 @@ import ListItem from '@mui/material/ListItem';
 import { useDispatch, useSelector } from 'react-redux';
 import {getOpenTableCreate, getClouseTableCreate} from '../../../../redux/ordersReduser';
 import {StyledButton} from '../../../buttons/buttons';
-import {CreateRows} from './createRow/createRows';
-import { ListAutocompliteStatuses } from './createRow/listStatuses';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { useEffect, useState } from 'react';
-import { searchCountUpdate, CountUpdate, autoUpdate } from '../../../../redux/ordersReduser';
+import { searchCountUpdate, CountUpdate, autoUpdate} from '../../../../redux/ordersReduser';
 import { getAllOrders, getAllStatuses, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { DownloadComponent } from './createHead/downloads'; 
-import { ModalMenu } from './createHead/modal'
+import { ModalMenu } from '../modals/modal'
 import { BootstrapTooltip } from './styles';
 import { ColumnSettings } from './createHead/columnSettings';
 import {OtherMenuComponent} from './createHead/menuother';
 import { CustomizedCheckboxAll } from '../../../inputs/checkBox';
+import {useNavigate} from 'react-router-dom';
 
 
 export function HeaderContainer() {
 const dispatch = useDispatch();
+const navigate = useNavigate();
 const params = useSelector((state) => state.ordersAll.searchParams);
 const copyParams = Object.values(params);
-const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
+
 const paramsCount = useSelector((state) => state.ordersAll.searchParamCount);
 const columns = useSelector((state) => state.ordersAll.tHeadColumn);
 const [number, setNumber] = useState('');
@@ -80,14 +77,12 @@ const stopTimer = ()=>{
   setTimer(null)
 }
 
-const handleClick = (e)=>{
-  dispatch(getOpenTableCreate({id: 'openCreator', str: !isOpen}))
+const handleClick = ()=>{
   // dispatch(getClouseTableCreate())
+  navigate('/trendcrm/order')
+  
 }
 
-const onChangeCheckBox =() =>{
-  console.log('sd');
-}
 
 const handleResetFilters=()=>{
 dispatch(CountUpdate())
@@ -101,6 +96,7 @@ const listStyle={
 padding: 0
 }
 const onHandleCheck=(e)=>{
+  console.log('autoonHandleCheck');
   let check = e.target.checked
   if (number === '' && check) {
     // console.log(check);
@@ -154,13 +150,13 @@ const onchangeAll=(e)=>{
     <Box sx={clasListContainer}  component="section">
 
       <StyledButton
-        text={isOpen?'Cloused': 'Створити'}
+        text={'Створити'}
         func= {handleClick}
         startIcon = { <AddIcon sx={{fill: colorsRef.fillSvgColor, width: '17px', marginTop: '-2px'}} />}
         bgColor={colorsRef.btnAddBgColor}
         border= {colorsRef.btnAddBorderColor}
            />
-      {isOpen && <ListAutocompliteStatuses/>}
+      
 
       {paramsCount>0 && <Box sx={{marginLeft: '20px', marginRight: 'auto'}}>      
       <StyledButton            
@@ -170,8 +166,7 @@ const onchangeAll=(e)=>{
         border= {'#7bb31a'}        
            />
            </Box>}
-          
-      <CreateRows/>
+
     <List  sx={listStyle}>
 
     <ListItem sx={{paddingLeft: '0px', paddingRight: '10px'}}>

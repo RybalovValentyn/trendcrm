@@ -6,7 +6,7 @@ import { Route, Routes} from 'react-router-dom';
 import {PrivateRoute} from './routs/privatRouts';
 import {Home} from './components/tableBody/pages/home/home';
 import {Users} from './components/tableBody/pages/users/users';
-import {Order} from './components/tableBody/pages/order/order';
+import {Order} from './components/tableBody/pages/order/orders';
 import {Products} from './components/tableBody/pages/products/products';
 import {Delivery} from './components/tableBody/pages/delivery/delivery';
 import {Calls} from './components/tableBody/pages/calls/calls';
@@ -22,6 +22,7 @@ import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp, getFiltered
 import {MiniDrawer} from './components/tableBody/navBar/navBar';
 import { Preloader } from './components/preloader/preloader';
 import { useCookies } from 'react-cookie';
+import { CreateRows } from './components/tableBody/pages/orderCreate/order';
 
 
 function App(history) {
@@ -31,6 +32,8 @@ function App(history) {
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isLoading = useSelector(state => state.auth.isLoading);
   const ontableLoad = useSelector(state => state.ordersAll.isLoading);
+  const idRows = useSelector((state) => state.ordersAll.rowsToUpdate.id);
+  
 
 //   useEffect(() => {
 // dispatch(getRowsAfterAdd())
@@ -71,7 +74,9 @@ function App(history) {
     {id: 'faq', target: Faq},
     {id: 'purchasing', target: Purchasing},
     {id: 'help', target: Help},
+    {id: 'order', target: CreateRows},
   ];
+
   return (
     
     <div >
@@ -88,7 +93,8 @@ function App(history) {
                                     element={<PrivateRoute component={e.target}/>}
                                     key={`component_${e.id}`}
                                   />
-                                ))}     
+                                ))}  
+                    <Route path={idRows?`order/${idRows}`:'orders'} element={<PrivateRoute component={CreateRows} />} />   
                     </Route>         
                     <Route path="*" element={<Preloader/>} />
                   {/* <Route path='/trendcrm' element={<PrivateRoute component={MiniDrawer}/>}> 

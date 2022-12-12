@@ -8,14 +8,15 @@ import Slide from '@mui/material/Slide';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { forwardRef } from 'react';
-import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
-import { InputFile } from '../../../../inputs/fileInput/fileInput';
-import { StyledButton } from '../../../../buttons/buttons'; 
-import { colorsRef } from '../../../../../consts/colorConstants';
+import { getOpenTableCreate } from '../../../../redux/ordersReduser';
+import { InputFile } from '../../../inputs/fileInput/fileInput';
+import { StyledButton } from '../../../buttons/buttons'; 
+import { colorsRef } from '../../../../consts/colorConstants';
 import { MenuItem, Select, Box, ListItemText, InputBase, Typography, OutlinedInput, IconButton } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { autoUpdate, autoUpdateRowsReupdate } from '../../../../../redux/ordersReduser';
+import { autoUpdate, autoUpdateRowsReupdate } from '../../../../redux/ordersReduser';
+import { setCommentAdd } from '../../../../redux/asyncThunc';
 
 
 const Transition = forwardRef(function Transition(props, ref) {       
@@ -44,11 +45,12 @@ const handleClouse =(e)=>{
 }
 const handleChange = (e)=>{
     setComent(e.target.value)
+    console.log(coment, idComent);
 }
 
 const setHandleupdateInfo =()=>{
-    dispatch(autoUpdateRowsReupdate({id: 'comment', str: coment }));
-    dispatch(getOpenTableCreate({id: 'comentSettings', str: false}));
+  dispatch(setCommentAdd({coment, idComent}));
+   dispatch(getOpenTableCreate({id: 'comentSettings', str: false}));
 }
     return(
         <Dialog

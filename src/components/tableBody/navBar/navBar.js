@@ -35,7 +35,7 @@ export function MiniDrawer() {
 
   useEffect(() => {
 
-      console.log('loaded');
+      // console.log('loaded');
       navigate('/trendcrm/orders')
 
 

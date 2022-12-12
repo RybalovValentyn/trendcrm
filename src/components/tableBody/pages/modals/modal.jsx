@@ -8,13 +8,13 @@ import Slide from '@mui/material/Slide';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { forwardRef } from 'react';
-import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
-import { InputFile } from '../../../../inputs/fileInput/fileInput';
-import { StyledButton } from '../../../../buttons/buttons'; 
-import { colorsRef } from '../../../../../consts/colorConstants';
+import { getOpenTableCreate } from '../../../../redux/ordersReduser';
+import { InputFile } from '../../../inputs/fileInput/fileInput';
+import { StyledButton } from '../../../buttons/buttons'; 
+import { colorsRef } from '../../../../consts/colorConstants';
 import { MenuItem, Select, Box, ListItemText, InputBase, Typography, OutlinedInput, IconButton } from '@mui/material';
 import { useState } from 'react';
-import { selectStyles } from './input';
+import { selectStyles } from '../order/createHead/input';
 
 const Transition = forwardRef(function Transition(props, ref) {       
     return <Slide direction="down" ref={ref} {...props} />;
@@ -69,7 +69,7 @@ const handleSelectChange =(e)=>{
         <Typography>{'Дія:'}</Typography>
 
         <Select 
-          id="2"
+          id="3"
            value={group}
           onChange={handleSelectChange}
           input={<OutlinedInput  sx={selectStyles}/>}
