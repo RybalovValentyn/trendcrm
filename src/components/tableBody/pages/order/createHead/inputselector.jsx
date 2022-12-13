@@ -52,6 +52,7 @@ export const  InputSelector =({name}) => {
     const [packer, setPacker] = useState('');
     const [payType, setPaytype] = useState('');
 
+
 // console.log(statuses[0].name);
 
 const handleChangeFor = (newValue) => {  
@@ -141,10 +142,10 @@ const handleSelectChange = (e) => {
   str = groups.find(str=>str.name === e.target.value)?.id
   }else if (id === 'packer_name' ) {
     setPacker(typeof value === 'string' ? value.split(',') : value,)
-    str = packerName.indexOf(e.target.value)
+    str = packerName.find(str=>str.name === e.target.value)?.id
     }else if (id === 'payment_name' ) {
       setPaytype(typeof value === 'string' ? value.split(',') : '0',);
-      let type = paymentType.find(str=>str.name === e.target.value)
+      let type = paymentType.find(str=>str.name === e.target.value)?.id
       str= type?.id+`,${type?.prepay_status}`
     }
 if (str === 0 || str === undefined || e.target.value === '') {

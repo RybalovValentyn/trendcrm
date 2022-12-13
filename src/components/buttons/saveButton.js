@@ -11,10 +11,10 @@ export const SaveButton = () =>{
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const id = useSelector((state) => state.ordersAll.createRows.id);
-    const isOpen = useSelector((state) => state.ordersAll.modalControl.openCreator);
-
+    const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
+    
     useEffect(() => {
-     if (id) {
+     if (id && !isUpdateRows) {
         console.log(id);
         dispatch(getRowsAfterAdd(id));
         dispatch(getAllOrders());

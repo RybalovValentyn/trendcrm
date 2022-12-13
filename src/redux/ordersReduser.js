@@ -166,6 +166,8 @@ client: {...client},
   autoupdate: 0,
   isAutoUpdate: false,
   isGrabAll: false,
+  isUpdateRows: false,
+  isAllListProducts: false,
   },
 
    reducers: {
@@ -234,7 +236,8 @@ client: {...client},
         getClouseTableCreate:  (state, action) => {  
           return { ...state,
             createRows: {...rows},
-            client: {...client}
+            client: {...client},
+            isUpdateRows: false,
         };
         },
         setClientForm:  (state, action) => {  
@@ -479,12 +482,35 @@ client: {...client},
           [getRowsAfterAdd.pending]:handlePending,
           [getRowsAfterAdd.fulfilled](state, action) {    
             console.log(action.payload);
+            let packer_name = action.payload.delivery.packer_name?action.payload.delivery.packer_name: '0' ;
+            let payment_type = action.payload.order.payment_type?action.payload.order.payment_type : '0';
+            let delivery_service_type = (action.payload.delivery.delivery_service_type || action.payload.delivery.warehouse_city !== '')?'0' : '1';
+            let delivery_payers =  action.payload.delivery.payer === 'Recipient'?'0': '1';
+            let delivery_payers_redelivery = action.payload.delivery.payer_redelivery === 'Recipient'?'0': '1';                                                
+            let weight = action.payload.delivery.weight?action.payload.delivery.weight: 0;
+            let volume_general = action.payload.delivery.volume_general?action.payload.delivery.volume_general: 0;
+            let seats_amount = action.payload.delivery.seats_amount?action.payload.delivery.seats_amount:1;
+            let prepay_status = action.payload.delivery.prepay_status?action.payload.delivery.prepay_status: 0
               return{
-             ...state,
+             ...state,            
              client: {...action.payload.client, comment: action.payload.order.comment, 
                additional_field: action.payload.order.additional_field,},          
-               createRows: {...action.payload.order},
-
+               createRows: {...action.payload.order, ...action.payload.delivery,
+                  packer_name: packer_name, 
+                  payment_name: payment_type,
+                  delivery_service_type: delivery_service_type,
+                  delivery_payers: delivery_payers,
+                  delivery_payers_redelivery: delivery_payers_redelivery,
+                  weight: weight,
+                  volume_general: volume_general,
+                  seats_amount:seats_amount,
+                  status: action.payload.order.status,
+                  backward_summ: action.payload.delivery.backward_summ?action.payload.delivery.backward_summ: 0,
+                  prepay_status:prepay_status,
+                  backward_delivery_summ: action.payload.delivery.backward_delivery_summ?action.payload.delivery.backward_delivery_summ: 0.00,
+                  
+                }, 
+            
              isError: false,
              isLoading: false,
 

@@ -1,7 +1,7 @@
 import {Children, useState, useEffect, Suspense} from 'react';
 // import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-
+import { useDispatch, useSelector } from 'react-redux';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -24,6 +24,8 @@ import {openedMixin, closedMixin, AppBar, Drawer} from './styles';
 
 
 export function MiniDrawer() {
+  const idRows = useSelector((state) => state?.ordersAll?.createRows?.id);
+  const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
   // const theme = useTheme();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -34,13 +36,13 @@ export function MiniDrawer() {
 
 
   useEffect(() => {
-
-      // console.log('loaded');
+    if (!Number(idRows)) {
       navigate('/trendcrm/orders')
-
-
-
-}, []);
+    } else if(Number(idRows) && isUpdateRows){
+      navigate(`/trendcrm/order/${idRows}`)
+    }
+      
+}, [idRows]);
 
   return (
     <Box sx={{ display: 'flex','& .MuiAppBar-root': {boxShadow: 'none !important'}, height: '100vh' }}>

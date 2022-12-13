@@ -23,22 +23,19 @@ import {MiniDrawer} from './components/tableBody/navBar/navBar';
 import { Preloader } from './components/preloader/preloader';
 import { useCookies } from 'react-cookie';
 import { CreateRows } from './components/tableBody/pages/orderCreate/order';
-
+import {useNavigate} from 'react-router-dom';
+import {ErrorPage} from './components/errorPage/ErrorPage'
 
 function App(history) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const hashKey = useSelector(state => state.auth.hashKey);
   const currentUser = useSelector(state => state.auth.id);
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isLoading = useSelector(state => state.auth.isLoading);
   const ontableLoad = useSelector(state => state.ordersAll.isLoading);
-  const idRows = useSelector((state) => state.ordersAll.rowsToUpdate.id);
+  const idRows = useSelector((state) => state.ordersAll.createRows?.id);
   
-
-//   useEffect(() => {
-// dispatch(getRowsAfterAdd())
-// }, []);
-
 
   const [cookies, setCookie] = useCookies(['user_id=1']);
   setCookie('user_id', '1', { path: '/' });
@@ -56,11 +53,13 @@ function App(history) {
   }, [currentUser]);
 
   const handleReload =()=>{
+    console.log('reload');
     dispatch(getAllStatuses())
     if (filteredRows?.length > 0) {
       dispatch(getFilteredOrders())
     } else dispatch(getAllOrders())
   }
+  
   const wildcards = [
     {id: 'homeBar', target: Home},
     {id: 'users', target: Users},
@@ -94,8 +93,11 @@ function App(history) {
                                     key={`component_${e.id}`}
                                   />
                                 ))}  
-                    <Route path={idRows?`order/${idRows}`:'orders'} element={<PrivateRoute component={CreateRows} />} />   
-                    </Route>         
+                   { idRows?  <Route path={`order/${idRows}`} element={<PrivateRoute component={CreateRows} />} />:
+                   <Route  path='/trendcrm'  element={<PrivateRoute component={MiniDrawer}/>} />
+                   }  
+                    </Route>
+                    <Route path="/trendcrm/order/*" element={<ErrorPage/>} />         
                     <Route path="*" element={<Preloader/>} />
                   {/* <Route path='/trendcrm' element={<PrivateRoute component={MiniDrawer}/>}> 
                            <Route path='auth'  element={<PublicRoute component={SignIn} />}/>

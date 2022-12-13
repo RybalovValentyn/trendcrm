@@ -306,24 +306,24 @@ export const postRowsFromForm = createAsyncThunk(
     const state = getState();
     
 const rows = state.ordersAll.createRows
-console.log('postRowsFromForm', rows.payment_name);
+console.log('postRowsFromForm', rows);
 
 const clientData = {
-      fio: rows.fio,
-      phone: rows.client_phone,
-      email: rows.email,
-      ig_username :rows.ig_username,
-      comment: rows.comment,
-      additional_field: rows.additional_field,
+      fio: state.ordersAll.client.fio,
+      phone: state.ordersAll.client.client_phone,
+      email: state.ordersAll.client.email,
+      ig_username : state.ordersAll.client.ig_username,
+      comment: state.ordersAll.client.comment,
+      additional_field: state.ordersAll.client.additional_field,
       // group_name: rows.group_name,
     }  
 const deliveryData = {
     client_comment: rows.client_comment,
     // additional_field: rows.additional_field,
-    delivery_type: '12',
+    delivery_type: rows.delivery_type,
     packer_name: rows.packer_name,
     payment_name: rows.payment_name.id,
-    delivery_service_type: Number(rows.delivery_service_type)+1,
+    delivery_service_type: rows.delivery_service_type,
     warehouse_city: rows.warehouse_city,
     warehouse_address:rows.warehouse_address,
     doors_city: rows.doors_city.Present,

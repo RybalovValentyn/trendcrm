@@ -49,6 +49,10 @@ export const ValidationTextField = styled(TextField)({
         width: '100%',      
       marginLeft: '50px'
   },
+  '& .MuiInputBase-root > fieldset': {
+    // borderColor: '#c0c0c0 !important',
+    borderRadius: '8px !important'
+  }
 });
 
 export const BootstrapInput = styled(InputBase)(({ theme }) => ({

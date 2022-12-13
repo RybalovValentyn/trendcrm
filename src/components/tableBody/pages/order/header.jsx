@@ -35,15 +35,17 @@ const autoUdatesTime = useSelector((state) => state.ordersAll.autoupdate);
 const isAutoUdate = useSelector((state) => state.ordersAll.isAutoUpdate);
 const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
 const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+const isAllListProducts =  useSelector((state) => state.ordersAll.isAllListProducts);
 let [timer, setTimer] = useState(null);
 
-
 useEffect(() => {
+
   const searchCount = copyParams.reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
   dispatch(searchCountUpdate(searchCount));
   }, [params]);
 
   useEffect(() => {
+
 if (isAutoUdate && Number(autoUdatesTime) > 29) {
   console.log('start timer');
 let time = Number(autoUdatesTime)*1000
@@ -78,7 +80,7 @@ const stopTimer = ()=>{
 }
 
 const handleClick = ()=>{
-  // dispatch(getClouseTableCreate())
+  dispatch(getClouseTableCreate())
   navigate('/trendcrm/order')
   
 }
@@ -106,6 +108,7 @@ const onHandleCheck=(e)=>{
   } else if (!check) {
     setNumber('');
     dispatch(autoUpdate({id: 'isAutoUpdate', str: check}));
+    dispatch(autoUpdate({id: 'autoupdate', str: 0}))
     stopTimer()
   } 
   
@@ -145,7 +148,11 @@ const onchangeAll=(e)=>{
   let s = !isGrabAll
   dispatch(autoUpdate({id: 'isGrabAll', str: s}))
 }
+const onHandleCheckProduct=(e)=>{
+  let check = e.target.checked
+  dispatch(autoUpdate({id: 'isAllListProducts', str: check}))
 
+}
   return (
     <Box sx={clasListContainer}  component="section">
 
@@ -170,7 +177,8 @@ const onchangeAll=(e)=>{
     <List  sx={listStyle}>
 
     <ListItem sx={{paddingLeft: '0px', paddingRight: '10px'}}>
-        <BpCheckbox name='product_list' onChange={onHandleCheck} tooltip ={'Повний список товарів'} placement="left" />    
+        <BpCheckbox name='product_list' onChange={onHandleCheckProduct} tooltip ={'Повний список товарів'} 
+        placement="left"  checked={isAllListProducts}/>    
         </ListItem>
 
       <ListItem sx={{paddingLeft: '10px', paddingRight: '10px', "& :hover": {cursor: 'pointer', }}}>
@@ -202,13 +210,13 @@ const onchangeAll=(e)=>{
 
         <ListItem>
         <BootstrapTooltip title="Частота автооновлення">
-        <input onKeyDown={handleKeyDown} value={number} style={{width: '50px', padding: '4px 5px', border: '1px solid #d0d0d0', borderRadius: '4px'}} type='text'  onChange={numberChange}
+        <input value ={autoUdatesTime?autoUdatesTime:number}  onKeyDown={handleKeyDown} style={{width: '50px', padding: '4px 5px', border: '1px solid #d0d0d0', borderRadius: '4px'}} type='text'  onChange={numberChange}
          ></input>
         </BootstrapTooltip>
         </ListItem>
 
         <ListItem sx={{paddingLeft: '10px', paddingRight: '10px'}}>
-        <BpCheckbox onChange={onHandleCheck} name='auto_reloading' tooltip ={'Увімкнути автооновлення'} />
+        <BpCheckbox onChange={onHandleCheck} name='auto_reloading' tooltip ={'Увімкнути автооновлення'} checked={isAutoUdate}/>
         </ListItem>
 
 

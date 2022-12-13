@@ -91,7 +91,7 @@ const listItemStyles={
 }
 
     return(
-        <Paper sx={{width: '100%', boxShadow: 'none'}}>
+        <Paper sx={{width: '80%',maxWidth: '870px', minWidth: '600px', boxShadow: 'none', backgroundColor: '#ededed'}}>
         <List sx={{padding: '0px',  display: 'flex'}}>
             <ListItem sx={listItemStyles}>
 

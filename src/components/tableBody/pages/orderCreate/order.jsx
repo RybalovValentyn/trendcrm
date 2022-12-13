@@ -11,17 +11,22 @@ import { SaveButton } from '../../../buttons/saveButton';
 import {ListAutocompliteStatuses} from '../order/forms/listStatuses';
 import {AddStatusForm} from '../modals/modalAddStatus';
 import { ClientForm } from '../order/forms/client';
+import { HeaderOrder } from './headerOrder';
 
 export function CreateRows(){
    
-
+    const isPay = useSelector((state) => state.ordersAll.createRows.payment_name)
+    const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
+    const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'};
+    
     const boxStyle ={
         width: '99%',
         display: 'block', 
-        backgroundColor: '#fff',
-        padding: '20px',
+        backgroundColor: '#ededed',
+        padding: '10px',
         overflowY: 'scroll',
-        marginTop: '47px'
+        marginTop: '37px',
+        
     }
     const typographyStyle={fontSize: '16px',
      padding: '2px',     
@@ -35,14 +40,15 @@ export function CreateRows(){
         padding: 0
       `,
       );
-const isPay = useSelector((state) => state.ordersAll.createRows.payment_name)
-const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
-const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'};
+
 
 return(
     <Box sx={boxStyle}>
+        <Box sx={{display: 'flex', width: '100%', padding: '5px 0px', alignItems: 'center'}}>
         <ListAutocompliteStatuses/>
-    <Box sx={{paddingBottom: '50px'}} >
+        <HeaderOrder/>
+        </Box>
+    <Box sx={{paddingBottom: '50px', backgroundColor: '#fff', width: '100%', boxShadow:'0px 4px 18px -10px rgb(0 0 0 / 50%)', padding: '20px'}} >
 
 <ClientForm/>
 

@@ -18,7 +18,7 @@ const BpIcon = styled('span')(({ theme }) => ({
 
 
 export function BpCheckbox(props) {
- const  {tooltip, placement, func} = props
+ const  {tooltip, placement, func, check} = props
   return (
 
      <BootstrapTooltip title={tooltip} placement ={placement}>
