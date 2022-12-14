@@ -15,7 +15,7 @@ import { HeaderOrder } from './headerOrder';
 
 export function CreateRows(){
    
-    const isPay = useSelector((state) => state.ordersAll.createRows.payment_name)
+    const isPay = useSelector((state) => state.ordersAll.createRows.payment_type)
     const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
     const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'};
     
@@ -40,11 +40,20 @@ export function CreateRows(){
         padding: 0
       `,
       );
+const headerBoxStyle = {display: 'flex',
+ width: '100%',
+  padding: '5px 0px',
+   alignItems: 'center',    
+   '@media (max-width:924px)': {
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
 
+}
 
 return(
     <Box sx={boxStyle}>
-        <Box sx={{display: 'flex', width: '100%', padding: '5px 0px', alignItems: 'center'}}>
+        <Box sx={headerBoxStyle}>
         <ListAutocompliteStatuses/>
         <HeaderOrder/>
         </Box>
@@ -66,18 +75,18 @@ return(
     </StyledList>
     
     <StyledList>
-    <MultiInput label='Спосіб оплати:' name='payment_name' type='select'/>
+    <MultiInput label='Спосіб оплати:' name='payment_type' type='select'/>
     </StyledList>
 
   {(isPay === '16') &&  <StyledList>
-    <MultiInput label='Cума передплати:' name='backward_summ' type='num'/>
+    <MultiInput label='Cума передплати:' name='prepay_amount' type='num'/>
     </StyledList>}
 
  { (isPay === '16') &&   <StyledList>
-    <MultiInput label='Передплата оплачена?' name='prepay_status' type='select'/>    
+    <MultiInput label='Передплата оплачена?' name='payment_status' type='select'/>    
     </StyledList> }
 
-{(isPay === '15') &&    <StyledList>
+{(isPay === '15'||isPay === '86') &&    <StyledList>
     <MultiInput label='Cума наложеного платежу:' name='backward_delivery_summ' type='num'/>
     </StyledList>}
 

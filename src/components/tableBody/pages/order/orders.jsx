@@ -27,6 +27,7 @@ import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
 import {EnhancedTableHead} from './enhancedTableHead';
 import { Preloader } from '../../../preloader/preloader';
 import { ComentModalMenu } from '../modals/comentmodal';
+import { flushSync } from 'react-dom';
 
 export  function Order() {
   const dispatch = useDispatch();
@@ -60,12 +61,15 @@ if (!allOrders[0]) {
 }, []);
 
 useEffect(() => {
+  
   if (isGrabAll) {
-    const newSelected = bodyTableRows.map((n,ind) => ind);
+    console.log('Выбрать все', bodyTableRows);
+    const newSelected = bodyTableRows.map((n,ind) => n[0].value);
+
+
     setSelected(newSelected);
     return;
-  }
-  setSelected([]);
+  } else  setSelected([]);
 }, [isGrabAll]);
 
 
@@ -111,26 +115,26 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
     };
 
     
-      // const selectedIndex = selected.indexOf(name);
+const handleSelect = (id) =>{
+ 
+    setSelected(id);
+  
 
-      
-      // let newSelected = [];  
-      // if (selectedIndex === -1) {
-      //   newSelected = newSelected.concat(selected, name);
-      // }
-      
-      // else if (selectedIndex === 0) {
-      //   newSelected = newSelected.concat(selected.slice(1));
-      // } else if (selectedIndex === selected.length - 1) {
-      //   newSelected = newSelected.concat(selected.slice(0, -1));
-      // } else if (selectedIndex > 0) {
-      //   newSelected = newSelected.concat(
-      //     selected.slice(0, selectedIndex),
-      //     selected.slice(selectedIndex + 1),
-      //   );
-      // }
+    
+  
+  // else if (selectedIndex === 0) {
+  //   newSelected = newSelected.concat(selected.slice(1));
+  // } else if (selectedIndex === selected.length - 1) {
+  //   newSelected = newSelected.concat(selected.slice(0, -1));
+  // } else if (selectedIndex > 0) {
+  //   newSelected = newSelected.concat(
+  //     selected.slice(0, selectedIndex),
+  //     selected.slice(selectedIndex + 1),
+  //   );
+  // }
 
-      // setSelected(newSelected);
+  // setSelected(newSelected);
+}
 
   
  const handleChangePage = (event, newPage) => {
@@ -159,7 +163,7 @@ const  hexToRgbA = (hex) =>{
 const handleClick = (e, index, name) => { 
   let id = name?.find(n=>n.id === 'id').value;
   let idRows = columns.find(n=>n.id === id)
- 
+  handleSelect(id)
     if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
       dispatch(autoUpdate({id: 'rowsToUpdate', str: idRows}))
         dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
@@ -177,6 +181,7 @@ const handleClick = (e, index, name) => {
     dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
 // dispatch(autoUpdate({id: 'createRows', str: name})) 
   }
+
 return (
 
     <Box sx={{flexGrow: 1, paddingTop: '47px', maxWidth: '100%',overflowX: 'hidden', overflowY: 'hidden',
@@ -195,26 +200,30 @@ return (
                            paddingBottom: '10px', overflowY: 'scroll',overflowX: 'scroll', }} >
          {isLoading && <Preloader/>}
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
-            <EnhancedTableHead   props ={bodyTableRows}
-                          numSelected={selected.length}
-                          order={order}
-                          orderBy={orderBy}
-                          onRequestSort={handleRequestSort}
+            <EnhancedTableHead 
+                          props ={bodyTableRows}
+                          // numSelected={selected.length}
+                          // order={order}
+                          // orderBy={orderBy}
+                          // onRequestSort={handleRequestSort}
                           rowCount={bodyTableRows?.length}/>
 
         <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}} >
               {stableSort(bodyTableRows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((rows, index, arr) => {
-                  // console.log(rows);
                   return (
-                    <TableRow 
+                    <tr 
                     onClick={(e)=>handleClick(e, index, arr[index])}
                     tabIndex={-1}
                     key={index}
-                    sx={{
-                      '&:focus': {backgroundColor: '#B0C4FF', color: '#fff'},
-                      backgroundColor: selected.includes(index)?'#B0C4FF':hexToRgbA(rows[0]?.color),
-                      color: selected.includes(index)?'#fff':'#000',
+                    
+                    // selected={selected.indexOf(rows[0].value) !== -1}
+                     style={{
+
+                      // '&:focus': {backgroundColor: '#B0C4FF', color: '#fff'},
+
+                      backgroundColor: selected.includes(rows[0].value)?'#B0C4FF':hexToRgbA(rows[0]?.color),
+                      color: selected.includes(rows[0].value)?'#fff':'#000', 
                       cursor: 'pointer',
                       border: '1px solid #fff'
                   
@@ -222,15 +231,15 @@ return (
                   >
             {rows.map((row,ind) => (
               
-            <TableCell sx={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
+            <td sx={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
             //  borderRight: '1px solid #fff',
              maxWidth: '400px',  overflowX: 'auto', width: '200px',
              color: 'inherit', position: 'relative', borderBottom: '1px solid #fff'
             }}
-            key={ind} align="center" ><GetRowsComparator row={row}/>  </TableCell>
+            key={ind} align="center" ><GetRowsComparator row={row}/>  </td>
             
             ))} 
-             </TableRow> );
+             </tr> );
              
                 })}
              </TableBody>

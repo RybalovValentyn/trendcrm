@@ -95,3 +95,42 @@ view_name: null,
 products
 : 
 []
+
+client: {fio: "www.twsttrend", phone: "38 (930) 202-25-68", email: "vwww.twsttrendov@gmail.com",…}
+additional_field: "www.twsttrend"
+comment: "www.twsttrend"
+email: "vwww.twsttrendov@gmail.com"
+fio: "www.twsttrend"
+ig_username: "www.twsttrend"
+phone: "38 (930) 202-25-68"
+date_create: "2022-12-22"
+
+backward_delivery_summ: "23",
+cost: "",
+delivery_payers: "Recipient",
+delivery_payers_redelivery: "Recipient",
+delivery_service_type: "1",
+delivery_type: "12",
+doors_address: "",
+doors_city: "",
+doors_flat: "",
+doors_house: "",
+novaposhta_comment: "www.twsttrend23",
+payment_status: "1",
+payment_type: "16",
+prepay_amount: "234",
+responsible_packer: "1",
+seats_amount: "23",
+status: "",
+tnn: "",
+volume_general: "23",
+warehouse_address: "Відділення №2: вул. Карпенка-Карого, 58",
+warehouse_city: "Запоріжжя",
+weight: "23",
+discount: "",
+discount_type: "0",
+order_products: [],
+responsible: "1",
+responsible_group: "4",
+status: "4",
+store_url: "www.twsttrend",

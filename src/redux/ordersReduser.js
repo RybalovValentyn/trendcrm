@@ -10,50 +10,61 @@ import { tableParse } from '../components/tableBody/pages/order/tableParse';
 
 const table = tableParse.data
 
-const rows=  { 
 
+const rows=  { 
   delivery_type: '0',
   responsible_packer: '0',
   packer_name:'0',
-  // payment_type:0,
-  payment_name: 0,
+  payment_type: '0',
   backward_delivery_summ: '0.00',
-  backward_summ: '0.00',
+  prepay_amount: '0.00',
   datetime: '',
   datetime_sent: '',
-  delivery_service_type: 0,
-  prepay_status: 0,
+  delivery_service_type: '0',
+  payment_status: '0',
   warehouse_city: '',
   warehouse_address: '',
-  delivery_payers: 0,
-  delivery_payers_redelivery: 0,
-  weight: 0,
+  delivery_payers: '0',
+  delivery_payers_redelivery: '0',
+  weight: '0',
   volume_general: "0.0000",
   seats_amount: "1",
-  cost: "0.00",
+  cost: "",
   novaposhta_comment: "",
   tnn: '',
   sent: "0",
   status: "4",
   doors_address: "",
   doors_city: "",
-  responsible: 'Admin',
-  group_name: '',
-  store_url:'',
-  data_create: '',
-  // ttn_cost: '',
+  doors_house: "",
+  doors_flat: "",
+  responsible: '0',
+  // group_name: '',
 
+
+  responsible_group: "4",
+
+  store_url:'',
+  // ttn_cost: '',
+  client_comment: '',
+
+  discount: "",
+discount_type: "0",
+order_products: [],
+
+
+date_create:'',
 };
 
 const client={
   fio: '',
-  id: null,
+  // id: null,
   client_phone: '+38(0__)___-__-__',
   email: '',
   ig_username: '',
   comment: '',
   additional_field: '',
-  group_name: '',
+  // group_name: '',
 }
 
 const searchRefParams = {
@@ -140,7 +151,7 @@ client: {...client},
                   {name: 'Курєр', id: '17'},
                  { name: 'УкрПошта', id: '13'},
                 { name: 'Самовивіз', id: '14'}],
- payment_name: [{name: 'Не Вибрано', id: '0', prepay_status: '' },
+ payment_type: [{name: 'Не Вибрано', id: '0', prepay_status: '' },
                 {name: 'Оплачено', id: '86', prepay_status: '' },
                  {name: 'Наложений', id: '15', prepay_status: '' }, 
                 {name: 'Передплата (оплачено)', id: '16', prepay_status: '1' } ,
@@ -151,29 +162,33 @@ client: {...client},
                           {name:'Адреса', id: '1'}],
   sityNewPost:[],
   adressNewPost: [],
-  delivery_payers: [{name: 'Отримувач', id: '0'},
-                    {name: 'Відправник', id: '1'}],
-  delivery_payers_redelivery: [{name: 'Отримувач', id: '0'},
-                               {name: 'Відправник', id: '1'}],
+  delivery_payers: [{name: 'Отримувач', value: 'Recipient', id: '0'},
+                    {name: 'Відправник', value: 'Sender', id: '1' }],
+  delivery_payers_redelivery: [{name: 'Отримувач', value: 'Recipient',  id: '0'},
+                               {name: 'Відправник', value: 'Sender',  id: '1'}],
   packer_name: [{name: 'Нічого не вибрано', id: '0'},
                 {name: 'admin', id:'1'}],
   responsible: [{name: 'Admins', id: '1'}, {name: 'Admin', id: '0'}],
-  prepay_status: [{name: 'Ні', id: '0'}, {name:'Так', id: '1'}],
+  payment_status: [{name: 'Ні', id: '0'}, {name:'Так', id: '1'}],
   doors_city: [],
   doors_address:[],
   doors_flat: [],
   doors_house: [],
   autoupdate: 0,
   isAutoUpdate: false,
-  isGrabAll: false,
+  isGrabAll: [],
   isUpdateRows: false,
   isAllListProducts: false,
   },
 
    reducers: {
     autoUpdate: (state, action) => {  
-      console.log(action.payload);
+      // console.log(action.payload);
          return { ...state, [action.payload.id]: action.payload.str}
+    },
+    isAll: (state, action) => {  
+      console.log(action.payload);
+         return { ...state, isGrabAll: action.payload}
     },
         tHeadFilteredColumnUpdate: (state, action) => {  
           return { ...state,
@@ -250,46 +265,11 @@ client: {...client},
         getFormTable: (state, action) => { 
           console.log(action.payload);
           switch (action.payload.id) {
-          //   case ('delivery_type'):       
+
+          //   case ('payment_name'):            
           //   return { ...state,
-          //     createRows:{ ...state.createRows,delivery_type :action.payload.ind}
+          //     createRows:{ ...state.createRows, payment_name:action.payload.str, backward_delivery_summ: '0.00'}
           // };
-        //   case ('responsible_packer'):                    
-        //   return { ...state,
-        //     createRows:{ ...state.createRows, responsible_packer:action.payload.ind}
-        // };
-      //   case ('packer_name'):                    
-      //   return { ...state,
-      //     createRows:{ ...state.createRows, packer_name:action.payload.ind}
-      // };
-            case ('payment_name'):            
-            return { ...state,
-              createRows:{ ...state.createRows, payment_name:action.payload.str, backward_delivery_summ: '0.00'}
-          };
-        //   case ('delivery_service_type'):                    
-        //   return { ...state,
-        //     createRows:{ ...state.createRows, delivery_service_type:action.payload.ind}
-        // };
-        // case ('delivery_payers'):                    
-        // return { ...state,
-        //   createRows:{ ...state.createRows, delivery_payers:action.payload.ind}
-        //   };
-          // case ('prepay_status'):                    
-          // return { ...state,
-          //   createRows:{ ...state.createRows, prepay_status:action.payload.ind}
-          //   };
-        //   case ('delivery_payers_redelivery'):                    
-        //   return { ...state,
-        //     createRows:{ ...state.createRows, delivery_payers_redelivery:action.payload.ind}
-        // };
-          //   case ('backward_delivery_summ'):          
-          //   return { ...state,
-          //     createRows:{ ...state.createRows, backward_delivery_summ:action.payload.str}
-          // };
-        //   case ('datetime'):              
-        //   return { ...state,
-        //     createRows:{ ...state.createRows, datetime:action.payload.str}
-        // };
         case ('warehouse_city'):               
         return { ...state,
           createRows:{ ...state.createRows, warehouse_city:action.payload.str,warehouse_address: '' }
@@ -497,7 +477,7 @@ client: {...client},
                additional_field: action.payload.order.additional_field,},          
                createRows: {...action.payload.order, ...action.payload.delivery,
                   packer_name: packer_name, 
-                  payment_name: payment_type,
+                  payment_type: payment_type,
                   delivery_service_type: delivery_service_type,
                   delivery_payers: delivery_payers,
                   delivery_payers_redelivery: delivery_payers_redelivery,
@@ -523,7 +503,7 @@ client: {...client},
 
 export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, searchCountUpdate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
    getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel, setOpenRowsCreator,
-   autoUpdateRowsReupdate, setClientForm
+   autoUpdateRowsReupdate, setClientForm, isAll
   } = ordersReduser.actions;
 export default ordersReduser.reducer;
 

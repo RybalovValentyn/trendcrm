@@ -13,19 +13,24 @@ export const SaveButton = () =>{
     const id = useSelector((state) => state.ordersAll.createRows.id);
     const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
     
-    useEffect(() => {
-     if (id && !isUpdateRows) {
-        console.log(id);
-        dispatch(getRowsAfterAdd(id));
-        dispatch(getAllOrders());
-        navigate('/trendcrm/orders');         
-     }
-   }, [id]);
+//     useEffect(() => {
+//      if (id && !isUpdateRows) {
+//         console.log(id);
+      
+//      }
+//    }, [id]);
+
 
 
     const btnChangeSave =()=>{
         dispatch(postRowsFromForm())
-        console.log('hi');
+        dispatch(getRowsAfterAdd(id));
+        if (id) {
+            dispatch(getAllOrders());
+            navigate('/trendcrm/orders');               
+            console.log('hi');  
+        }
+
     }
 
 const icoBtnStyle = {

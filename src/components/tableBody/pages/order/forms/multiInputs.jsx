@@ -24,7 +24,7 @@ export function MultiInput({label, name, func, val, type}) {
     // const dataAutocomplite = useSelector((state) => state.ordersAll.sityFromNovaPoshta);
     const sityValue = useSelector((state) => state.ordersAll.createRows.warehouse_city);    
     const adressValue = useSelector((state) => state.ordersAll.createRows.warehouse_address); 
-    const paymentType = useSelector((state)=> state.ordersAll.payment_name);
+    const paymentType = useSelector((state)=> state.ordersAll.payment_type);
     const ordersAll = useSelector((state) => state.ordersAll);
 
     const getSitysNovaPoshta = ordersAll[name]?.flatMap(sity=> sity.Present)?.filter((sity, index, array) => array.indexOf(sity) === index);
@@ -86,11 +86,11 @@ const keyCodeInput = (e) =>{
            return dispatch(getFormTable({id, str})) 
         }
              
-   }else if (type === 'select' && name !== 'payment_name') {
+   }else if (type === 'select' && name !== 'payment_type') {
     let ind = dataForSelect.find(str=>str.name === e.target.value)
         dispatch(getFormTable({id:name, str: ind.id})) 
 
-  } else if (type === 'select' && name === 'payment_name') {
+  } else if (type === 'select' && name === 'payment_type') {
     let type = paymentType.find(str=>str.name === e.target.value)
     console.log(type);
        dispatch(getFormTable({id:name, str: type.id}))

@@ -289,8 +289,10 @@ export const getRowsAfterAdd = createAsyncThunk(
            url:  REBASE_URL+addOrder+`/${id}`,
           });
         console.log(data);
-        return data;
-      } catch (error) {
+        if (data.order) {
+          return data;
+        } else throw new Error('Неможливо, пусто');
+          } catch (error) {
         return rejectWithValue({
           error: error.message,
         });
@@ -306,43 +308,10 @@ export const postRowsFromForm = createAsyncThunk(
     const state = getState();
     
 const rows = state.ordersAll.createRows
+const client = state.ordersAll.client
 console.log('postRowsFromForm', rows);
 
-const clientData = {
-      fio: state.ordersAll.client.fio,
-      phone: state.ordersAll.client.client_phone,
-      email: state.ordersAll.client.email,
-      ig_username : state.ordersAll.client.ig_username,
-      comment: state.ordersAll.client.comment,
-      additional_field: state.ordersAll.client.additional_field,
-      // group_name: rows.group_name,
-    }  
-const deliveryData = {
-    client_comment: rows.client_comment,
-    // additional_field: rows.additional_field,
-    delivery_type: rows.delivery_type,
-    packer_name: rows.packer_name,
-    payment_name: rows.payment_name.id,
-    delivery_service_type: rows.delivery_service_type,
-    warehouse_city: rows.warehouse_city,
-    warehouse_address:rows.warehouse_address,
-    doors_city: rows.doors_city.Present,
-    doors_address:rows.doors_address.Present,
-    doors_house:rows.doors_house,
-    doors_flat: rows.doors_flat,
-    delivery_payers: "Recipient",
-    delivery_payers_redelivery:"Recipient",
-    weight: rows.weight,
-    volume_general: rows.volume_general,
-    seats_amount: rows.seats_amount,
-    tnn: rows.tnn,
-    status: '',
-    cost: rows.cost,
-    datetime_sent: rows.datetime_sent,
-    // novaposhta_comment: rows.novaposhta_comment,
-    comment: rows.novaposhta_comment,
-    }
-    const utm ={
+   const utm ={
       utm_source:"",
       utm_medium:"",
       utm_term:"",
@@ -350,19 +319,16 @@ const deliveryData = {
       utm_campaign:""
       }
 const dataSend ={
-  client: {...clientData},
-  delivery: {...deliveryData},
-  utm: {...utm},
-   discount:"",
-   discount_type:"0",
-   order_products:[],
-   responsible: "1",
-  //  responsible_group:"0",
-   group_name: rows.group_name,
-  date_create: rows.datetime,
-  status: rows.status,
-  store_url: rows.store_url,
-  
+  client: {...client, phone: state.ordersAll.client.client_phone },
+  delivery: {...rows},
+  utm: {...utm}, 
+  date_create: '',
+  discount: "",
+  discount_type: "0",
+  responsible: rows.responsible,
+  responsible_group: rows.responsible_group,
+  status:  rows.status,
+  store_url: rows.store_url
   }
   console.log(dataSend);
        try {

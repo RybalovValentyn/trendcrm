@@ -11,7 +11,7 @@ import {getOpenTableCreate, getClouseTableCreate} from '../../../../redux/orders
 import {StyledButton} from '../../../buttons/buttons';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { useEffect, useState } from 'react';
-import { searchCountUpdate, CountUpdate, autoUpdate} from '../../../../redux/ordersReduser';
+import { searchCountUpdate, CountUpdate, autoUpdate, isAll} from '../../../../redux/ordersReduser';
 import { getAllOrders, getAllStatuses, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { DownloadComponent } from './createHead/downloads'; 
 import { ModalMenu } from '../modals/modal'
@@ -45,7 +45,6 @@ useEffect(() => {
   }, [params]);
 
   useEffect(() => {
-
 if (isAutoUdate && Number(autoUdatesTime) > 29) {
   console.log('start timer');
 let time = Number(autoUdatesTime)*1000
@@ -145,9 +144,12 @@ const handleKeyDown=(e)=>{
 }
 
 const onchangeAll=(e)=>{
-  let s = !isGrabAll
-  dispatch(autoUpdate({id: 'isGrabAll', str: s}))
+  console.log('ksdfsdf');
+
+  dispatch(isAll(!isGrabAll))
 }
+
+
 const onHandleCheckProduct=(e)=>{
   let check = e.target.checked
   dispatch(autoUpdate({id: 'isAllListProducts', str: check}))

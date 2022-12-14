@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 
 export function GetRowsComparator({row}) {
 const {value, id, color} = row
-const dataForSelect = useSelector((state) => state.ordersAll.payment_name);
+const dataForSelect = useSelector((state) => state.ordersAll.payment_type);
 
     const operators = {
         "63": "lifecell",

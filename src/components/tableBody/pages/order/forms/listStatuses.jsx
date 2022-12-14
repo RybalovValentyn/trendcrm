@@ -37,7 +37,7 @@ export const ListAutocompliteStatuses =()=>{
     const defaultGroup = noGroups.find(str=> str.id === '0');
     const defaultRespinsible = responsibleList.find(str=> str.id === '0');
     const storeUrl = useSelector((state) => state.ordersAll.createRows.store_url);
-    const clientDate = useSelector((state) => state.ordersAll.createRows.datetime);
+    const clientDate = useSelector((state) => state.ordersAll.createRows.date_create);
 
 
 const onAutocompliteChange=(e)=>{    
@@ -71,8 +71,8 @@ const inputChange=(e)=>{
 }
 
 const daateChange =(newValue) =>{
-    let id = 'datetime'
-    let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString();
+    let id = 'date_create'
+    let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split(' ')[0];
     dispatch(getFormTable({id, str }))
       }
 
@@ -89,9 +89,21 @@ const listItemStyles={
     padding: 0,
     maxWidth: '160px'
 }
+const paperStyle={
+    width: '80%',
+    maxWidth: '870px',
+     minWidth: '600px',
+      boxShadow: 'none',
+       backgroundColor: '#ededed',
+ '@media (max-width:924px)': {
+    maxWidth: '100%',
+     width: '100%',
+     justifyContent: 'space-between',
+      },
+}
 
     return(
-        <Paper sx={{width: '80%',maxWidth: '870px', minWidth: '600px', boxShadow: 'none', backgroundColor: '#ededed'}}>
+        <Paper sx={paperStyle}>
         <List sx={{padding: '0px',  display: 'flex'}}>
             <ListItem sx={listItemStyles}>
 
@@ -128,7 +140,8 @@ const listItemStyles={
     <ListItem sx={listItemStyles}>
         <Autocomplete
             disablePortal
-                id={'group_name'}
+                // id={'group_name'}
+                id={'responsible_group'}
                  onChange={onAutocompliteGrop}
                 value={defaultGroup}
                 options={noGroups}
@@ -157,7 +170,7 @@ const listItemStyles={
      <ListItem sx={listItemStyles} >
         <LocalizationProvider   dateAdapter={AdapterDayjs}>
              <DatePicker
-             id={'datetime'}            
+             id={'date_create'}            
             inputFormat="YYYY-MM-DD"
              value={clientDate}
              onChange={daateChange}
