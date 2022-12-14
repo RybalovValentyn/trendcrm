@@ -176,7 +176,7 @@ client: {...client},
   doors_house: [],
   autoupdate: 0,
   isAutoUpdate: false,
-  isGrabAll: [],
+  isGrabAll: false,
   isUpdateRows: false,
   isAllListProducts: false,
   },
@@ -185,10 +185,6 @@ client: {...client},
     autoUpdate: (state, action) => {  
       // console.log(action.payload);
          return { ...state, [action.payload.id]: action.payload.str}
-    },
-    isAll: (state, action) => {  
-      console.log(action.payload);
-         return { ...state, isGrabAll: action.payload}
     },
         tHeadFilteredColumnUpdate: (state, action) => {  
           return { ...state,

@@ -11,7 +11,7 @@ import {getOpenTableCreate, getClouseTableCreate} from '../../../../redux/orders
 import {StyledButton} from '../../../buttons/buttons';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { useEffect, useState } from 'react';
-import { searchCountUpdate, CountUpdate, autoUpdate, isAll} from '../../../../redux/ordersReduser';
+import { searchCountUpdate, CountUpdate, autoUpdate, isGrabAll} from '../../../../redux/ordersReduser';
 import { getAllOrders, getAllStatuses, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { DownloadComponent } from './createHead/downloads'; 
 import { ModalMenu } from '../modals/modal'
@@ -45,6 +45,7 @@ useEffect(() => {
   }, [params]);
 
   useEffect(() => {
+
 if (isAutoUdate && Number(autoUdatesTime) > 29) {
   console.log('start timer');
 let time = Number(autoUdatesTime)*1000
@@ -144,9 +145,8 @@ const handleKeyDown=(e)=>{
 }
 
 const onchangeAll=(e)=>{
-  console.log('ksdfsdf');
-
-  dispatch(isAll(!isGrabAll))
+  let s = !isGrabAll
+  dispatch(autoUpdate({id: 'isGrabAll', str: s}))
 }
 
 
@@ -184,7 +184,7 @@ const onHandleCheckProduct=(e)=>{
         </ListItem>
 
       <ListItem sx={{paddingLeft: '10px', paddingRight: '10px', "& :hover": {cursor: 'pointer', }}}>
-        <CustomizedCheckboxAll name='product_list' onChange={onchangeAll} tooltip ={'Вибрати все'} />
+        <CustomizedCheckboxAll name='product_list' onChange={onchangeAll} tooltip ={'Вибрати все'} checked={isGrabAll} />
       </ListItem>
        
         <ListItem sx={{paddingLeft: '10px', paddingRight: '20px', "& :hover": {cursor: 'pointer', }}}>

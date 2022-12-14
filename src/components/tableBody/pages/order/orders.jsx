@@ -48,6 +48,7 @@ export  function Order() {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(100);
+    const [isCtrl, setCtrl] = useState(false);
 
   useEffect(() => {
 if (statuses.length === 0) {
@@ -61,15 +62,11 @@ if (!allOrders[0]) {
 }, []);
 
 useEffect(() => {
-  
   if (isGrabAll) {
-    console.log('Выбрать все', bodyTableRows);
     const newSelected = bodyTableRows.map((n,ind) => n[0].value);
-
-
     setSelected(newSelected);
     return;
-  } else  setSelected([]);
+  } else  setSelected([selected]);
 }, [isGrabAll]);
 
 
@@ -116,26 +113,30 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
 
     
 const handleSelect = (id) =>{
- 
+
+  dispatch(autoUpdate({id: 'isGrabAll', str: false}))
     setSelected(id);
-  
 
+ if (isCtrl) {
+  const selectedIndex = selected.indexOf(id);
+  let newSelected = [];
+  setCtrl(false)
+  if (selectedIndex === -1) {
+    newSelected = newSelected.concat(selected, id);
+  } else if (selectedIndex === 0) {
+    newSelected = newSelected.concat(selected.slice(1));
+  } else if (selectedIndex === selected.length - 1) {
+    newSelected = newSelected.concat(selected.slice(0, -1));
+  } else if (selectedIndex > 0) {
+    newSelected = newSelected.concat(
+      selected.slice(0, selectedIndex),
+      selected.slice(selectedIndex + 1),)
     
-  
-  // else if (selectedIndex === 0) {
-  //   newSelected = newSelected.concat(selected.slice(1));
-  // } else if (selectedIndex === selected.length - 1) {
-  //   newSelected = newSelected.concat(selected.slice(0, -1));
-  // } else if (selectedIndex > 0) {
-  //   newSelected = newSelected.concat(
-  //     selected.slice(0, selectedIndex),
-  //     selected.slice(selectedIndex + 1),
-  //   );
-  // }
-
-  // setSelected(newSelected);
+  }
+  setSelected(newSelected);
 }
-
+ }
+  
   
  const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -181,6 +182,12 @@ const handleClick = (e, index, name) => {
     dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
 // dispatch(autoUpdate({id: 'createRows', str: name})) 
   }
+  const handleKeyDown =(e)=>{
+    if (e.ctrlKey) {
+      setCtrl(true)
+    } 
+  }
+
 
 return (
 
@@ -208,7 +215,7 @@ return (
                           // onRequestSort={handleRequestSort}
                           rowCount={bodyTableRows?.length}/>
 
-        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}} >
+        <TableBody onKeyDown={handleKeyDown} sx={{backgroundColor: colorsRef.tabsBgColor}} >
               {stableSort(bodyTableRows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((rows, index, arr) => {
                   return (
@@ -219,9 +226,7 @@ return (
                     
                     // selected={selected.indexOf(rows[0].value) !== -1}
                      style={{
-
                       // '&:focus': {backgroundColor: '#B0C4FF', color: '#fff'},
-
                       backgroundColor: selected.includes(rows[0].value)?'#B0C4FF':hexToRgbA(rows[0]?.color),
                       color: selected.includes(rows[0].value)?'#fff':'#000', 
                       cursor: 'pointer',
@@ -231,7 +236,7 @@ return (
                   >
             {rows.map((row,ind) => (
               
-            <td sx={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
+            <td style={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
             //  borderRight: '1px solid #fff',
              maxWidth: '400px',  overflowX: 'auto', width: '200px',
              color: 'inherit', position: 'relative', borderBottom: '1px solid #fff'
