@@ -3,15 +3,10 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import {dataParse} from './dataParse';
 import TableRow from '@mui/material/TableRow';
 import {Paper,TableSortLabel, Stack, Tab, Checkbox,Divider, 
     TablePagination, FormControlLabel, Switch, Hidden} from '@mui/material';
 import {useState, useEffect, useLayoutEffect, useRef} from 'react';
-// import {HeaderTable} from './tHead';
-// import {tableParse} from './tableParse';
-// import {translater} from './translate';
 import {ScrollTabsButton} from './tableInBody';
 import {useNavigate} from 'react-router-dom';
 import { colorsRef } from '../../../../consts/colorConstants';
@@ -21,7 +16,8 @@ import {HeaderContainer} from './header';
 import {GetRowsComparator} from './getRowsComparator';
 import { descendingComparator, getComparator, stableSort} from './functionOrder';
 import { useDispatch, useSelector } from 'react-redux';
-import {dividerStyle, rowPosition, tHeadStyle} from './styles';
+import {dividerStyle, rowPosition, tHeadStyle, tableBoxStyle,
+         paperTableStyle, tableContainerStyle} from './styles';
 import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
    getOpenTableCreate, autoUpdate, getFormTable} from '../../../../redux/ordersReduser';
 import {EnhancedTableHead} from './enhancedTableHead';
@@ -112,15 +108,12 @@ const GetRenderFilteredRows =(dataForHeader, columns) =>{
     };
 
     
-const handleSelect = (id) =>{
-
-  dispatch(autoUpdate({id: 'isGrabAll', str: false}))
-    setSelected(id);
-
- if (isCtrl) {
-  const selectedIndex = selected.indexOf(id);
-  let newSelected = [];
-  setCtrl(false)
+const handleSelect = (e, id) =>{
+  dispatch(autoUpdate({id: 'isGrabAll', str: false}))    
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+    newSelected.push(id);
+ if (e.ctrlKey) {
   if (selectedIndex === -1) {
     newSelected = newSelected.concat(selected, id);
   } else if (selectedIndex === 0) {
@@ -130,11 +123,10 @@ const handleSelect = (id) =>{
   } else if (selectedIndex > 0) {
     newSelected = newSelected.concat(
       selected.slice(0, selectedIndex),
-      selected.slice(selectedIndex + 1),)
-    
-  }
-  setSelected(newSelected);
+      selected.slice(selectedIndex + 1),)    
+  }  
 }
+setSelected(newSelected);
  }
   
   
@@ -164,7 +156,7 @@ const  hexToRgbA = (hex) =>{
 const handleClick = (e, index, name) => { 
   let id = name?.find(n=>n.id === 'id').value;
   let idRows = columns.find(n=>n.id === id)
-  handleSelect(id)
+  handleSelect(e,id)
     if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
       dispatch(autoUpdate({id: 'rowsToUpdate', str: idRows}))
         dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
@@ -182,29 +174,17 @@ const handleClick = (e, index, name) => {
     dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
 // dispatch(autoUpdate({id: 'createRows', str: name})) 
   }
-  const handleKeyDown =(e)=>{
-    if (e.ctrlKey) {
-      setCtrl(true)
-    } 
-  }
-
 
 return (
 
-    <Box sx={{flexGrow: 1, paddingTop: '47px', maxWidth: '100%',overflowX: 'hidden', overflowY: 'hidden',
-               maxHeight: '100%', height: '100%',
-               backgroundColor: colorsRef.boxTableColor, paddingBottom: '10px'}} >    
+    <Box sx={tableBoxStyle} >    
  {/* HEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHT */} 
    < HeaderContainer/>
 
-      <Paper sx={{position: "relative", width: '98%', 
-                   height: 'calc(90% - 20px)', marginLeft: 'auto', 
-                  marginRight: 'auto',overflowY: 'hidden',
-                   boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'}}>
+      <Paper sx={paperTableStyle}>
       <ScrollTabsButton/> 
 {/* HEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHT */}
-         <TableContainer sx={{ width: '100%', maxHeight: 'calc(95% - 70px)',  backgroundColor: '#fff', minHeight: '100px',
-                           paddingBottom: '10px', overflowY: 'scroll',overflowX: 'scroll', }} >
+         <TableContainer sx={tableContainerStyle} >
          {isLoading && <Preloader/>}
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
             <EnhancedTableHead 
@@ -215,9 +195,12 @@ return (
                           // onRequestSort={handleRequestSort}
                           rowCount={bodyTableRows?.length}/>
 
-        <TableBody onKeyDown={handleKeyDown} sx={{backgroundColor: colorsRef.tabsBgColor}} >
+        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}} >
               {stableSort(bodyTableRows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((rows, index, arr) => {
+                  if (selected.indexOf(rows[0].value) !== -1) {
+                    console.log(selected.indexOf(rows[0].value), 'sd');
+                  }
                   return (
                     <tr 
                     onClick={(e)=>handleClick(e, index, arr[index])}
@@ -227,8 +210,8 @@ return (
                     // selected={selected.indexOf(rows[0].value) !== -1}
                      style={{
                       // '&:focus': {backgroundColor: '#B0C4FF', color: '#fff'},
-                      backgroundColor: selected.includes(rows[0].value)?'#B0C4FF':hexToRgbA(rows[0]?.color),
-                      color: selected.includes(rows[0].value)?'#fff':'#000', 
+                      backgroundColor: selected.indexOf(rows[0].value) !== -1?'#B0C4FF':hexToRgbA(rows[0]?.color),
+                      color: selected.indexOf(rows[0].value) !== -1?'#fff':'#000', 
                       cursor: 'pointer',
                       border: '1px solid #fff'
                   

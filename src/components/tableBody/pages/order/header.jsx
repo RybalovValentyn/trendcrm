@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import {clasListContainer, svgStyle} from './styles';
+import {clasListContainer, svgStyle, buttonBoxStyle, BootstrapTooltip, listStyle} from './styles';
 import AddIcon from '@mui/icons-material/Add';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
@@ -15,7 +15,6 @@ import { searchCountUpdate, CountUpdate, autoUpdate, isGrabAll} from '../../../.
 import { getAllOrders, getAllStatuses, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { DownloadComponent } from './createHead/downloads'; 
 import { ModalMenu } from '../modals/modal'
-import { BootstrapTooltip } from './styles';
 import { ColumnSettings } from './createHead/columnSettings';
 import {OtherMenuComponent} from './createHead/menuother';
 import { CustomizedCheckboxAll } from '../../../inputs/checkBox';
@@ -89,14 +88,10 @@ const handleClick = ()=>{
 const handleResetFilters=()=>{
 dispatch(CountUpdate())
 dispatch(getAllOrders())
-
+navigate('/trendcrm/orders')
 }
 
-const listStyle={
-  display: 'flex',
-  alignItems: 'center',
-padding: 0
-}
+
 const onHandleCheck=(e)=>{
   console.log('autoonHandleCheck');
   let check = e.target.checked
@@ -157,7 +152,7 @@ const onHandleCheckProduct=(e)=>{
 }
   return (
     <Box sx={clasListContainer}  component="section">
-
+<Box sx={buttonBoxStyle}>
       <StyledButton
         text={'Створити'}
         func= {handleClick}
@@ -175,7 +170,8 @@ const onHandleCheckProduct=(e)=>{
         border= {'#7bb31a'}        
            />
            </Box>}
-
+  </Box>
+  <Box sx={{'@media (max-width:768px)': {width: '100%', textAlign: 'center' },}}>
     <List  sx={listStyle}>
 
     <ListItem sx={{paddingLeft: '0px', paddingRight: '10px'}}>
@@ -223,6 +219,7 @@ const onHandleCheckProduct=(e)=>{
 
 
     </List>
+    </Box>
     </Box>
   );
 }

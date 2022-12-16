@@ -19,6 +19,7 @@ import {useNavigate, useParams, Outlet} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
 import { AppBarComponent } from './appBar';
 import {openedMixin, closedMixin, AppBar, Drawer} from './styles';
+import { Preloader } from '../../preloader/preloader';
 
 
 
@@ -44,6 +45,18 @@ export function MiniDrawer() {
       
 }, [idRows]);
 
+const handleNavigate=(text)=>{
+  navigate(text);
+  setOpen(false);
+}
+
+const drawerStyle = {
+  '@media (max-width:768px)': {
+    display: open?"block":'none',
+    maxWidth: '100%',
+    position: 'absolute'
+           },
+}
   return (
     <Box sx={{ display: 'flex','& .MuiAppBar-root': {boxShadow: 'none !important'}, height: '100vh' }}>
       <CssBaseline />
@@ -55,10 +68,8 @@ export function MiniDrawer() {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{
-              marginRight: 1,
-              // ...(open && { display: 'none' }),
-            }}
+            sx={{ marginRight: 1,
+                    }}
           >
             <MenuIcon sx={{fill: '#555555'}}/>
           </IconButton>
@@ -69,11 +80,11 @@ export function MiniDrawer() {
 
       </AppBar>
 
-      <Drawer  variant="permanent" open={open} >
+      <Drawer  variant="permanent" open={open} sx={drawerStyle}>
 
          <List sx={{paddingTop: '50px'}} >
           {mainNavBarItem.map((text, index) => (
-            <ListItem onClick={() => navigate(text.route)} key={text.id} disablePadding sx={{ display: 'block' }}>
+            <ListItem onClick={() =>handleNavigate(text.route)} key={text.id} disablePadding sx={{ display: 'block' }}>
               <ListItemButton >
                 <ListItemIcon  >
                   {text.item}
@@ -86,6 +97,7 @@ export function MiniDrawer() {
 
       </Drawer>
 
+      {/* <Suspense fallback={<Preloader/>}> */}
       <Suspense fallback={null}>
         <Outlet />
       </Suspense>

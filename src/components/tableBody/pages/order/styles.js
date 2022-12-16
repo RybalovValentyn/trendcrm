@@ -3,6 +3,39 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
+// ordersordersordersordersordersordersordersordersordersordersordersordersordersorders
+export const tableBoxStyle= {flexGrow: 1, 
+  paddingTop: '47px', 
+  maxWidth: '100%',
+  overflowX: 'hidden',
+   overflowY: 'hidden',
+maxHeight: '100%',
+ height: '100%',
+backgroundColor: colorsRef.boxTableColor,
+ paddingBottom: '10px'}
+
+
+export const tableContainerStyle ={ width: '100%', 
+maxHeight: 'calc(95% - 70px)', 
+ backgroundColor: '#fff',
+  minHeight: '100px',
+  paddingBottom: '10px',
+   overflowY: 'scroll',
+   overflowX: 'scroll', 
+  }
+
+export const paperTableStyle = {position: "relative",
+width: '98%', 
+'@media (max-width:768px)': {
+  height: 'calc(90% - 60px)',
+},
+height: 'calc(90% - 20px)',
+ marginLeft: 'auto', 
+ marginRight: 'auto',
+ overflowY: 'hidden',
+ boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'
+}
+
 
 export const dividerStyle = {
     padding: '1px',
@@ -74,11 +107,16 @@ fontSize: '14px',
   borderRadius: '8px',
   padding: '4px 35px'
 }
+// headerheaderheaderheaderheaderheaderheaderheaderheaderheader
 
 export const clasListContainer ={
   width: '100%',
   position: 'relative',
   backgroundColor: colorsRef.boxTableColor,
+  '@media (max-width:768px)': {
+    display: 'block',
+    borderButtom: '1px solid #d0d0d0'
+  },
   display: 'flex',
   justifyContent: 'space-between',
   fontSize: '13px',
@@ -88,6 +126,27 @@ export const clasListContainer ={
   color: colorsRef.tabHeaderTextColor
   };
 
+  export const buttonBoxStyle={
+    padding: '0px',
+    display: 'flex',
+    '@media (max-width:768px)': {
+      padding: '10px',
+      borderBottom: '1px solid #d0d0d0'
+    },
+    
+  }
+export const listStyle={
+  display: 'flex',
+  alignItems: 'center',
+  padding: 0,
+  '@media (max-width:768px)': {
+    maxWidth: '400px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    overflow: 'wrap',
+  },
+
+}
  export const svgStyle = {
     fill:  colorsRef.inputTextColor,
     marginRight: '-10px',

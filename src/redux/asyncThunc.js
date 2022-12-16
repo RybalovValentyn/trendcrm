@@ -369,18 +369,11 @@ export const setCommentAdd = createAsyncThunk(
     
   },
 );
-// export const currentThunk = createAsyncThunk(
-//   'users/current',
-//   async (_, { rejectWithValue, getState }) => {
-//           try {
-//         const { data } = await axios.get(REBASE_URL+auth);
-//         console.log(data);
-//         return data.data;
-//       } catch (error) {
-//         return rejectWithValue({
-//           error: error.message,
-//         });
-//       }
-    
-//   },
-// );
+// {orders: ["33"], values: {status: 32}}
+// orders
+// : 
+// ["33"]
+// values
+// : 
+// {status: 32}
+
