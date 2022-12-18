@@ -33,7 +33,7 @@ const rows=  {
   novaposhta_comment: "",
   tnn: '',
   sent: "0",
-  status: "4",
+  status: "0",
   doors_address: "",
   doors_city: "",
   doors_house: "",
@@ -215,7 +215,9 @@ client: {...client},
         }
         default:
           return { ...state,
-            searchParams:{ ...state.searchParams, [action.payload.id]: action.payload.str}
+            searchParams:{ ...state.searchParams, [action.payload.id]: action.payload.str},
+            rowsPerPage: state.rowsPerPage,
+            start: 0
         }
       }
 ;},
@@ -312,7 +314,7 @@ client: {...client},
           [getFilteredOrders.fulfilled](state, action) {
               return{
              ...state,
-             columns: [...action.payload.data],
+             columns: [...action.payload.data.reverse()],
              tableLength: action.payload.recordsFiltered,
               isLoading: false,
               isError: false,
@@ -325,8 +327,8 @@ client: {...client},
         [getAllOrders.fulfilled](state, action) {
             return{
            ...state,
-           columns: [...action.payload.data],
-           tableLength: action.payload.recordsTotal,
+           columns: [...action.payload.data.reverse()],
+           tableLength: Number(action.payload.recordsTotal),
             isLoading: false,
             isError: false,
  

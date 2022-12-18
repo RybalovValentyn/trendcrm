@@ -2,7 +2,7 @@ import {TablePagination, Box, Select, MenuItem, Typography, List, ListItem,
          IconButton, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { autoUpdate } from '../../../../redux/ordersReduser';
-import {useMemo, useState}  from 'react';
+import {useMemo, useState, useEffect}  from 'react';
 import { colorsRef } from '../../../../consts/colorConstants';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -16,15 +16,33 @@ const startRows = useSelector((state) => state.ordersAll.start);
 const [optionPage, setOptionPage] = useState([10, 25, 50, 100,250, 500]);
 const [paginLength, setPaginLength] =useState(3);
 const isLoading = useSelector((state) => state.ordersAll.isLoading);
+
+// const [pages, setPages] = useState([]);
+// const [lengtTable, setLengtTable] = useState(0)
+
+
+// useEffect(() => {
+//     console.log(length, pages);
+//     if (rowsPerPage>0 && length>0) {
+//         let num = Array.from(Array(Math.ceil(length/rowsPerPage)).keys());
+//         setPages(num);
+//         setLengtTable(num.length)
+//     }
+      
+            
+//     }, [length, rowsPerPage]);
+
 let pages = Array.from(Array(Math.ceil(length/rowsPerPage)).keys());
 let lengtTable = Array.from(Array(Math.ceil(length/rowsPerPage)).keys()).length;
 
-if (page === 0 && pages.length > paginLength) {
-    pages = pages.splice(0, paginLength)  
+if (page === 0 && pages.length > paginLength) {    
+  pages= pages.splice(0, paginLength) 
+//    console.log(pages); 
+    // setPages(pages)
 } 
 
 if (pages.length > paginLength) {
-    // console.log('pages.lengt',pages.length);
+    // setPages(pages.splice(page-1, paginLength))
     pages = pages.splice(page-1, paginLength) 
 }
 
@@ -35,7 +53,8 @@ const pageUpdate=()=>{
 }
 
  const handleChangeRowsPerPage = (event) => {
-    dispatch(autoUpdate({id: 'rowsPerPage', str: parseInt(event.target.value)}))
+    dispatch(autoUpdate({id: 'rowsPerPage', str: parseInt(event.target.value)}));
+    dispatch(autoUpdate({id: 'start', str: 0}));
     dispatch(autoUpdate({id: 'page', str: 0}))
     pageUpdate();
       };
@@ -48,7 +67,7 @@ const inputStyle ={
       position: 'relative',
       backgrounColor: '#fff',
       fontSize: 13,
-      padding: '6px 32px 6px 12px',
+      padding: '2px 32px 2px 12px',
       width:'100%',
       maxWidth: '250px', 
       
@@ -59,7 +78,6 @@ const handleSelect =()=>{
 
 }
 const handleNextClick=()=>{
-    console.log(Number(page) === lengtTable);
     if (Number(page) === lengtTable-1) {
         console.log("endTable");
         return
@@ -82,7 +100,7 @@ const handleNextPrev=()=>{
 const SelectPagination =()=>(
     <Box sx={{display: 'flex', alignItems: 'center', marginRight: '10px',
     '@media (max-width:898px)': { marginLeft: 'auto', width: 'min-content', marginBottom: '20px' }}}>
-    <Typography sx={{marginRight: '10px'}}>{'Показати:'}</Typography>
+    <Typography sx={{marginRight: '10px', fontSize: '14px'}}>{'Показати:'}</Typography>
     <Select
         onChange={handleChangeRowsPerPage}
         id="multiple-checkbox"
@@ -115,7 +133,7 @@ const onHandleLastClick =()=>{
     <SelectPagination/>
     </Box>
     <Box sx={dataRowsStyle}>
-     <Button variant="text" onClick={onFirstHandleClick} sx={{color: '#272727', textTransform: 'none'}}>Перша</Button>
+     <Button variant="text" disabled={Number(page) === 0 || isLoading} onClick={onFirstHandleClick} sx={{color: '#272727', textTransform: 'none' }}>Перша</Button>
         <IconButton onClick={handleNextPrev} color="primary" aria-label="pagination prev" 
         disabled={Number(page) === 0 || isLoading} component="label">
         <ArrowBackIcon />
@@ -145,7 +163,7 @@ const onHandleLastClick =()=>{
          size='small' component="label" disabled={Number(page) === lengtTable-1 || isLoading} sx={{marginLeft: '-5px',}}>
         <ArrowForwardIcon />
         </IconButton>
-        <Button variant="text" onClick={onHandleLastClick} sx={{color: '#272727', textTransform: 'none'}}>Остання</Button>
+        <Button variant="text" disabled={Number(page) === lengtTable-1 || isLoading} onClick={onHandleLastClick} sx={{color: '#272727', textTransform: 'none'}}>Остання</Button>
     </Box>
     <Box sx={{ '@media (min-width:899px)': {display: 'none', width: 0, height: 0 },
                 '@media (max-width:898px)': {display: 'block' }}}>

@@ -24,8 +24,8 @@ maxHeight: '95%',
  backgroundColor: '#fff',
   minHeight: '100px',
   paddingBottom: '10px',
-   overflowY: 'scroll',
-   overflowX: 'scroll', 
+  overflowY: 'auto',
+  overflowX: 'auto', 
   }
 
 export const paperTableStyle = {position: "relative",

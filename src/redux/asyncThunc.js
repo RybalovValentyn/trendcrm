@@ -172,7 +172,7 @@ export const getFilteredOrders = createAsyncThunk(
     const column = state.ordersAll.tHeadColumnFiltered;
 console.log('getFilteredOrders',column);
           let columns ={ draw: '1',
-          start: state.ordersAll.page?state.ordersAll.page:0,
+          start: state.ordersAll.start?state.ordersAll.start:0,
           length: state.ordersAll.rowsPerPage,
           create_date_from: state.ordersAll.searchParams.create_date_from,
           create_date_to: state.ordersAll.searchParams.create_date_to,
@@ -181,7 +181,7 @@ console.log('getFilteredOrders',column);
           datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name,
-          order:[{data:{dir:'desc'}}],
+          order:[{column: 0, dir: 'desc'}],
           columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: ''}},] ,
            }
 
@@ -208,8 +208,9 @@ export const getAllOrders = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => { 
     const state = getState();  
     const patrams =  state.ordersAll.searchParams
-let order = {order:[{dir:'desc'}]};
-          let columns ={ draw: '1',
+// let order = {order:[{dir:'desc'}]};
+
+      let columns ={ draw: '1',
           start: state.ordersAll.start?state.ordersAll.start:0,
           length: state.ordersAll.rowsPerPage,
           // status: 4,
@@ -220,7 +221,7 @@ let order = {order:[{dir:'desc'}]};
           datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name,
-          order:{dir:'desc'},
+          order:[{column: 0, dir: 'desc'}],
           columns:[
             {data: 'id', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.id} },
              {data: 'status_name', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.status_name}}, 
@@ -260,7 +261,7 @@ let order = {order:[{dir:'desc'}]};
            
           ] ,
            }
-
+// console.log(columns);
         try {
         const { data } = await axios({
           method: "post",
@@ -268,7 +269,7 @@ let order = {order:[{dir:'desc'}]};
            data: columns
           })
           console.log(data);
-          console.log('getAllOrders', Object.keys(data?.data[0])?.length);
+          // console.log('getAllOrders', Object.keys(data?.data[0])?.length);
          return data
       } catch (error) {
         return rejectWithValue({

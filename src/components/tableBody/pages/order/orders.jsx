@@ -134,6 +134,7 @@ setSelected(newSelected);
  } 
 
 const  hexToRgbA = (hex) =>{
+  // console.log(hex);
   let c;
   if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
       c= hex.substring(1).split('');
@@ -236,7 +237,7 @@ return (
   <Typography sx={{fontSize: '14px', '@media (max-width:768px)': {
     display: 'block', textAlign: 'center',
 
-  },}}> {`Записів від ${startRows+1} до ${(startRows+1+rowsPerPage)>tableLength?tableLength:startRows+1+rowsPerPage} 
+  },}}> {`Записів від ${startRows+1} до ${(startRows+rowsPerPage)>tableLength?tableLength:startRows+rowsPerPage} 
             з ${tableLength} записів`}</Typography> 
             <Typography sx={{'@media (max-width:768px)': { display: 'block', textAlign: 'center',marginLeft: '0px'}, fontSize: '14px', marginLeft: '10px' }}>{`Вибрано:
              ${selected[0]?selected.length: 0}`}</Typography>
