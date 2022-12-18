@@ -179,11 +179,15 @@ client: {...client},
   isGrabAll: false,
   isUpdateRows: false,
   isAllListProducts: false,
+  rowsPerPage: 25,
+  page: 0,
+  start: 0,
+  tableLength: null,
   },
 
    reducers: {
     autoUpdate: (state, action) => {  
-      // console.log(action.payload);
+      console.log(action.payload);
          return { ...state, [action.payload.id]: action.payload.str}
     },
         tHeadFilteredColumnUpdate: (state, action) => {  
@@ -308,7 +312,8 @@ client: {...client},
           [getFilteredOrders.fulfilled](state, action) {
               return{
              ...state,
-             columns: [...action.payload],
+             columns: [...action.payload.data],
+             tableLength: action.payload.recordsFiltered,
               isLoading: false,
               isError: false,
    
@@ -320,7 +325,8 @@ client: {...client},
         [getAllOrders.fulfilled](state, action) {
             return{
            ...state,
-           columns: [...action.payload],
+           columns: [...action.payload.data],
+           tableLength: action.payload.recordsTotal,
             isLoading: false,
             isError: false,
  

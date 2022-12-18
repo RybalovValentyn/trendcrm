@@ -16,7 +16,11 @@ backgroundColor: colorsRef.boxTableColor,
 
 
 export const tableContainerStyle ={ width: '100%', 
-maxHeight: 'calc(95% - 70px)', 
+maxHeight: '95%',
+'@media (min-width:767px)': {
+  maxHeight: '96%',
+},
+// maxHeight: 'calc(95% - 70px)', 
  backgroundColor: '#fff',
   minHeight: '100px',
   paddingBottom: '10px',
@@ -26,14 +30,19 @@ maxHeight: 'calc(95% - 70px)',
 
 export const paperTableStyle = {position: "relative",
 width: '98%', 
-'@media (max-width:768px)': {
-  height: 'calc(90% - 60px)',
+'@media (max-width:420px)': {
+  height: '55%'
 },
-height: 'calc(90% - 20px)',
+'@media (min-width:421px) and (max-width:768px)': {
+  height: '60%'
+},
+
+height: 'calc(80% - 20px)',
  marginLeft: 'auto', 
  marginRight: 'auto',
  overflowY: 'hidden',
- boxShadow: '0px -2px 20px -10px rgb(0 0 0 / 50%)'
+ boxShadow: '6px 0px 11px -10px rgb(0 0 0 / 50%)',
+backgroundColor:'#ededed',
 }
 
 
@@ -140,10 +149,10 @@ export const listStyle={
   alignItems: 'center',
   padding: 0,
   '@media (max-width:768px)': {
-    maxWidth: '400px',
+     maxWidth: '400px',
     marginLeft: 'auto',
     marginRight: 'auto',
-    overflow: 'wrap',
+    overflowX: 'auto'
   },
 
 }
@@ -165,3 +174,59 @@ export const listStyle={
       backgroundColor: theme.palette.common.black,
     },
   }));
+
+  // paginationpaginationpaginationpaginationpagination
+ export const inOrdersBoxStyle = {
+  width: '98%',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  backgroundColor: '#fff',
+  '@media (max-width:767px)': {
+    display: 'block', 
+    padding: '10px'
+  },
+  '@media (min-width:768px) and (max-width:898px)': {
+     display: 'flex',
+     justifyContent: 'space-between', 
+     alignItems: 'flex-start',
+     },
+  '@media (min-width:899px)': {
+    display: 'flex',
+    height: '60px',     
+     justifyContent: 'space-between', 
+     alignItems: 'center',
+
+  },
+  boxShadow: '0px 6px 20px -10px rgb(0 0 0 / 50%)',
+  }
+
+  export const dataRowsStyle = {
+    display: 'flex', 
+    alignItems: 'center', 
+    height: '50px', 
+    
+    '@media (max-width:767px)': {
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      textAlign: 'center',
+      maxWidth: '300px',
+    },
+    // marginRight: '10px',
+
+  }
+
+  export const bodyPaginationStyle={
+    '@media (max-width:767px)': {
+      display: 'block',
+      width: '100%',
+      textAlign: 'center',
+    },
+    '@media (min-width:768px) and (max-width:898px)': {
+      display: 'block',
+
+      height: '100px'
+    },
+    display: 'flex',
+     marginRight: '10px', 
+     alignItems: 'center'
+  }

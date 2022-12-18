@@ -87,7 +87,9 @@ const handleClick = ()=>{
 
 const handleResetFilters=()=>{
 dispatch(CountUpdate())
-dispatch(getAllOrders())
+if (filteredRows?.length > 0) {
+  dispatch(getFilteredOrders())
+} else dispatch(getAllOrders())
 navigate('/trendcrm/orders')
 }
 

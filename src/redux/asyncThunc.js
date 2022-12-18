@@ -172,8 +172,8 @@ export const getFilteredOrders = createAsyncThunk(
     const column = state.ordersAll.tHeadColumnFiltered;
 console.log('getFilteredOrders',column);
           let columns ={ draw: '1',
-          start:0,
-          length: 100,
+          start: state.ordersAll.page?state.ordersAll.page:0,
+          length: state.ordersAll.rowsPerPage,
           create_date_from: state.ordersAll.searchParams.create_date_from,
           create_date_to: state.ordersAll.searchParams.create_date_to,
           update_date_from: state.ordersAll.searchParams.update_date_from,
@@ -192,7 +192,7 @@ console.log('getFilteredOrders',column);
            data: columns
           })
           console.log('getFilteredOrders', Object.keys(data?.data[0])?.length);
-         return data.data
+         return data
         // return columns
       } catch (error) {
         return rejectWithValue({
@@ -208,10 +208,10 @@ export const getAllOrders = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => { 
     const state = getState();  
     const patrams =  state.ordersAll.searchParams
-
+let order = {order:[{dir:'desc'}]};
           let columns ={ draw: '1',
-          start:0,
-          length: 100,
+          start: state.ordersAll.start?state.ordersAll.start:0,
+          length: state.ordersAll.rowsPerPage,
           // status: 4,
           create_date_from: state.ordersAll.searchParams.create_date_from,
           create_date_to: state.ordersAll.searchParams.create_date_to,
@@ -220,7 +220,7 @@ export const getAllOrders = createAsyncThunk(
           datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name,
-          order:[{data:{dir:'desc'}}],
+          order:{dir:'desc'},
           columns:[
             {data: 'id', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.id} },
              {data: 'status_name', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.status_name}}, 
@@ -267,9 +267,9 @@ export const getAllOrders = createAsyncThunk(
            url:  REBASE_URL+orders,
            data: columns
           })
-          // console.log(data.data);
+          console.log(data);
           console.log('getAllOrders', Object.keys(data?.data[0])?.length);
-         return data.data
+         return data
       } catch (error) {
         return rejectWithValue({
          error: error.message
