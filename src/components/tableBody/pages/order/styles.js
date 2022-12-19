@@ -25,7 +25,7 @@ maxHeight: '95%',
   minHeight: '100px',
   paddingBottom: '10px',
   overflowY: 'auto',
-  overflowX: 'auto', 
+  overflowX: 'scroll', 
   }
 
 export const paperTableStyle = {position: "relative",
@@ -41,7 +41,8 @@ height: 'calc(80% - 20px)',
  marginLeft: 'auto', 
  marginRight: 'auto',
  overflowY: 'hidden',
- boxShadow: '6px 0px 11px -10px rgb(0 0 0 / 50%)',
+ boxShadow: '0px -5px 20px -10px rgb(0 0 0 / 50%)',
+ boxShadowLeft: '6px 0px 11px -10px rgb(0 0 0 / 50%)',
 backgroundColor:'#ededed',
 }
 
@@ -73,6 +74,7 @@ export const dividerSecondStyle = {
      maxWidth: '600px', 
      marginTop: '-1px',
      position: 'relative',
+     color: colorsRef.labelTextColor,
      
    }
 export const rowPosition={
@@ -157,9 +159,9 @@ export const listStyle={
 
 }
  export const svgStyle = {
-    fill:  colorsRef.inputTextColor,
+    fill:  colorsRef.svgColor,
     marginRight: '-10px',
-    
+    color: colorsRef.svgColor,
 
 
   }
@@ -192,7 +194,7 @@ export const listStyle={
      },
   '@media (min-width:899px)': {
     display: 'flex',
-    height: '60px',     
+    height: '50px',     
      justifyContent: 'space-between', 
      alignItems: 'center',
 

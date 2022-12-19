@@ -1,6 +1,6 @@
 export const colorsRef = {
 
-
+    svgColor: '#797979',
 
     fillSvgColor: '#000000',
     btnAddBgColor: '#ffffff',

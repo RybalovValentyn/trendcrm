@@ -13,7 +13,7 @@ import { UserSelectItem } from "./userSelect";
 import { MobiNavList } from "./mibiNavList.jsx";
 import { boxListStyle, navlogoStyle, navListStyle, mediaIconLogoList } from "./styles";
 import { UserSelectMobil } from "./userSelectMob";
-
+import { colorsRef } from "../../../consts/colorConstants";
 
 export const AppBarComponent = () =>{
     const dispatch = useDispatch();
@@ -48,20 +48,20 @@ const isShowMediaUserList=()=>{
             <ListItem sx={{heigth: '100%',width: '54px', padding: '5px 15px'}}>
                 <NavLink to="/trendcrm/orders">
                     <BootstrapTooltip  title="Аналітика">
-                <LeaderboardOutlinedIcon sx={{fill: '#777', marginTop: '5px'}} />
+                <LeaderboardOutlinedIcon sx={{fill: colorsRef.svgColor, marginTop: '5px'}} />
                      </BootstrapTooltip>
                 </NavLink>
             </ListItem>
             <ListItem sx={{heigth: '100%',width: '54px', padding: '5px 15px'}}>
                 <NavLink to="/trendcrm/orders">
                     <BootstrapTooltip  title="Info">
-                <InfoOutlinedIcon sx={{fill: '#777', marginTop: '5px'}} />
+                <InfoOutlinedIcon sx={{fill: colorsRef.svgColor, marginTop: '5px'}} />
                      </BootstrapTooltip>
                 </NavLink>
             </ListItem>
 
             <ListItem sx={mediaIconLogoList} onClick={isShowMediaUserList}>
-                <AccountTreeOutlinedIcon sx={{fill: '#777', marginTop: '5px'}}/>
+                <AccountTreeOutlinedIcon sx={{fill: colorsRef.svgColor, marginTop: '5px'}}/>
             </ListItem>
 
 

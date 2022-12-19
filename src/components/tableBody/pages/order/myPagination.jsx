@@ -17,32 +17,15 @@ const [optionPage, setOptionPage] = useState([10, 25, 50, 100,250, 500]);
 const [paginLength, setPaginLength] =useState(3);
 const isLoading = useSelector((state) => state.ordersAll.isLoading);
 
-// const [pages, setPages] = useState([]);
-// const [lengtTable, setLengtTable] = useState(0)
-
-
-// useEffect(() => {
-//     console.log(length, pages);
-//     if (rowsPerPage>0 && length>0) {
-//         let num = Array.from(Array(Math.ceil(length/rowsPerPage)).keys());
-//         setPages(num);
-//         setLengtTable(num.length)
-//     }
-      
-            
-//     }, [length, rowsPerPage]);
-
 let pages = Array.from(Array(Math.ceil(length/rowsPerPage)).keys());
 let lengtTable = Array.from(Array(Math.ceil(length/rowsPerPage)).keys()).length;
 
 if (page === 0 && pages.length > paginLength) {    
   pages= pages.splice(0, paginLength) 
-//    console.log(pages); 
-    // setPages(pages)
+
 } 
 
 if (pages.length > paginLength) {
-    // setPages(pages.splice(page-1, paginLength))
     pages = pages.splice(page-1, paginLength) 
 }
 
@@ -127,6 +110,13 @@ const onHandleLastClick =()=>{
     pageUpdate();
     dispatch(autoUpdate({id: 'page', str: Number(lengtTable-1)}));
 }
+const onHandleNumberClick=(num)=>{
+let start = num*rowsPerPage
+dispatch(autoUpdate({id: 'start', str: Number(start)}));
+pageUpdate();
+dispatch(autoUpdate({id: 'page', str: Number(num)}));
+
+}
     return(
 <Box sx={bodyPaginationStyle}> 
     <Box sx={{ '@media (max-width:898px)': {display: 'none', width: 0, height: 0 },}}>
@@ -141,7 +131,7 @@ const onHandleLastClick =()=>{
             <List sx={{display: 'flex',  fontSize: '12px',    alignItems: 'center',}}>
                 {pages.map((num, i)=>{ 
                 let isActiv = (Number(page) === num)?true:false;
-                return (<ListItem key={i} sx={{
+                return (<ListItem key={i} onClick={()=>onHandleNumberClick(num)} sx={{
                     padding: '0px',
                 borderRadius: '50%',
                 border: isActiv?'1px solid #186efd':'1px solid #d0d0d0', 
@@ -155,7 +145,7 @@ const onHandleLastClick =()=>{
             alignItems: 'center',
             "&:hover": {cursor: 'pointer',
                     backgroundColor: isActiv?'#cbd2f0':'#dedede'}}}>
-                    <span style={{}}>{num+1}</span>
+                    <span >{num+1}</span>
                     </ListItem>)
             })}
             </List>

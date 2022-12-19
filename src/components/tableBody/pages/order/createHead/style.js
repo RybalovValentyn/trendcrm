@@ -20,7 +20,7 @@ export  const selectStyles ={
 };
 
 export  const svgStyle = {
-    fill: colorsRef.inputTextColor,
+    fill: colorsRef.svgColor,
     marginRight: '-10px'
 
   };

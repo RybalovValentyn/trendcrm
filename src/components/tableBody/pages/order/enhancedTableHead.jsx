@@ -34,12 +34,7 @@ useEffect(() => {
            return result.push({id:str, str:translater[str]})
         }    
     },[]); 
-  // const headerValue = columns.flatMap(column => Object.keys(column))  
-  // .filter((column, index, array) => array.indexOf(column) === index).reduce((acc,str, ind) =>{
-  //     if (translater[str]) {
-  //        return result.push({id:str, str:translater[str]})
-  //     }    
-  // },[]); 
+
   dispatch(tHeadColumnUpdate(result));
   
 }else  if (columns.length > 0 && filteredColumn.length > 0) {
@@ -64,17 +59,12 @@ dispatch(setWidthColumn(width))
   }
   
   const containerStyle ={
-    // resize: 'horizontal',
-    // resizeColor: '#fff',
    overflow: 'hidden',
   maxWidth: '600px',
    padding: '3px 10px',
     alignItems: 'center',
    minWidth: width,
     position: 'relative',
-    // "& :resize" : {
-    //   color: "#fff"
-    // }
 }
 
 const handleDownResize=(e)=>{
@@ -106,34 +96,30 @@ setFirstWidth(null)
   
           {dataForHeader.map((row) => (          
             <TableCell
-            
-            //  onMouseDown={(e) =>replaceRows(e)} 
             onMouseUp={getWidthColumnUpdate}            
             onMouseMove={mouseWheel}
               colSpan={1}
               key={row.id}
               id={row.id}
               sx={tHeadStyle} 
-              align= "center"        
+              align= "left"        
               >  
-              <div  id={row.id} style={{   overflow: 'hidden', maxWidth: '600px', padding: '3px 10px', alignItems: 'center',
+              <div  id={row.id} style={{   overflow: 'hidden', maxWidth: '600px', padding: '4px 40px', alignItems: 'center',
               minWidth: isResize && width?.id === row.id?width?.width : widthOfColumn[row.id],
-                // minWidth:{ width},
-                  position: 'relative',}} key={row.id}>
+                   position: 'relative', color: colorsRef.labelTextColor}} key={row.id}>
   
-              <TableSortLabel            
+              {/* <TableSortLabel            
                 active={orderBy === row.id}
                 direction={orderBy === row.id ? order : 'asc'}
-                // onClick={createSortHandler(HeaderTable.id)}
-              >
+              > */}
                 {row.str}
-                {orderBy === row.id ? (
+                {/* {orderBy === row.id ? (
                   <Box component="span" sx={visuallyHidden}>
                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                   </Box>
-                ) : null}
+                ) : null} */}
                
-              </TableSortLabel>
+              {/* </TableSortLabel> */}
               <Divider onMouseDown={handleDownResize} 
               onMouseUp = {handleMouseUp}  
               id={row.id} key={row.id} sx={dividerStyle} orientation="vertical" flexItem />

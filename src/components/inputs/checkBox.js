@@ -7,12 +7,14 @@ import { BootstrapTooltip } from '../tableBody/pages/order/styles';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { useState } from 'react';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { colorsRef } from '../../consts/colorConstants';
 
 const BpIcon = styled('span')(({ theme }) => ({
   borderRadius: '50%',
   border: 'none',
   width: 23,
   height: 23,
+  color: colorsRef.svgColor
 }));
 
 
@@ -25,15 +27,15 @@ export function BpCheckbox(props) {
     <Checkbox
       sx={{padding: 0,
         borderRadius: '50%',
-        border: '1px solid #2f2c2d',
+        border: `1px solid ${colorsRef.svgColor}`,
         width: 23,
         height: 23,
         '&:hover': { bgcolor: 'transparent' },
       }}
       disableRipple
       color="default"
-      checkedIcon={<CheckIcon sx={{color: '#2f2c2d' }}  />}
-      icon={<BpIcon sx={{color: '#2f2c2d' }} />}
+      checkedIcon={<CheckIcon sx={{color: colorsRef.svgColor }}  />}
+      icon={<BpIcon sx={{color: colorsRef.svgColor }} />}
       inputProps={{ 'aria-label': 'Checkbox demo' }}
       {...props}
     />
@@ -98,8 +100,8 @@ export function CustomizedCheckboxAll(props) {
       sx={style}
       disableRipple
       color="default"
-      checkedIcon={<TaskAltIcon sx={{color: '#2f2c2d',}}  />}
-      icon={<AddTaskIcon sx={{color: '#2f2c2d' }} />}
+      checkedIcon={<TaskAltIcon sx={{color: colorsRef.svgColor,}}  />}
+      icon={<AddTaskIcon sx={{color: colorsRef.svgColor }} />}
       inputProps={{ 'aria-label': 'Checkbox demo' }}
       {...props}
     />

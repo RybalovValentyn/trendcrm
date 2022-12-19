@@ -71,7 +71,7 @@ const drawerStyle = {
             sx={{ marginRight: 1,
                     }}
           >
-            <MenuIcon sx={{fill: '#555555'}}/>
+            <MenuIcon sx={{fill: colorsRef.svgColor}}/>
           </IconButton>
 
           <AppBarComponent/>
