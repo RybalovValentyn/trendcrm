@@ -111,6 +111,10 @@ const onHandleLastClick =()=>{
     dispatch(autoUpdate({id: 'page', str: Number(lengtTable-1)}));
 }
 const onHandleNumberClick=(num)=>{
+    if (pages.length===1) {
+        console.log(pages.length);
+        return
+    }
 let start = num*rowsPerPage
 dispatch(autoUpdate({id: 'start', str: Number(start)}));
 pageUpdate();
@@ -134,7 +138,7 @@ dispatch(autoUpdate({id: 'page', str: Number(num)}));
                 return (<ListItem key={i} onClick={()=>onHandleNumberClick(num)} sx={{
                     padding: '0px',
                 borderRadius: '50%',
-                border: isActiv?'1px solid #186efd':'1px solid #d0d0d0', 
+                border: isActiv&&pages.length!==1?'1px solid #186efd':'1px solid #d0d0d0', 
             marginRight: '5px', 
             backgroundColor: isActiv?'#e9ecfa':'#fff',
             fontSize: isActiv?'16px': '12px',

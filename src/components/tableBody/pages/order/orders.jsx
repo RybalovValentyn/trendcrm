@@ -8,7 +8,7 @@ import {Paper,TableSortLabel, Stack, Tab, Checkbox,Divider,
     TablePagination, FormControlLabel, Switch, Hidden, Typography} from '@mui/material';
 import {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import {ScrollTabsButton} from './tableInBody';
-import {useNavigate, useSearchParams, useLocation} from 'react-router-dom';
+import {useNavigate, useSearchParams, useLocation, createSearchParams} from 'react-router-dom';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
 import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp, getFilteredOrders} from '../../../../redux/asyncThunc';
@@ -23,7 +23,7 @@ import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
 import {EnhancedTableHead} from './enhancedTableHead';
 import { Preloader } from '../../../preloader/preloader';
 import { ComentModalMenu } from '../modals/comentmodal';
-import { CustomTablePagination } from './pagination';
+
 import {MyTablePagination} from './myPagination';
 
 
@@ -56,18 +56,18 @@ const statusName = searchParams.get('status');
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
 
    useEffect(()=>{
-    
+    console.log(statusName);
        if (Number(statusName)) {
-        console.log('filter status_name');
+        // console.log('filter status_name');
       dispatch(autoUpdate({id:'statusName', str: statusName}));
       getUpdate();      
       } else if (!statusName && !idRows) {
-        console.log('orders');
+        // console.log('orders');
         dispatch(autoUpdate({id:'statusName', str: null}));
         navigate('/trendcrm/orders')
         getUpdate()
       } else if(Number(idRows) && isUpdateRows){      
-        console.log('Number(idRows) && isUpdateRows', idRows);
+        // console.log('Number(idRows) && isUpdateRows', idRows);
         navigate(`/trendcrm/order/:${idRows}`);        
       } else if (location.pathname === '/trendcrm/orders') {
         console.log(location.pathname);
@@ -77,19 +77,6 @@ const statusName = searchParams.get('status');
    
 
   },[statusName, idRows])  
-
-//   useEffect(() => {
-//     // if (!Number(idRows)) {
-//     //   navigate('/trendcrm/order')
-//     // } else
-//     console.log('idRows', idRows);
-//      if(Number(idRows) && isUpdateRows){
-//       console.log('Number(idRows) && isUpdateRows');
-//       navigate(`/trendcrm/order/${idRows}`)
-//     }
-      
-// }, [idRows]);
-
 
   useEffect(() => {
 if (statuses.length === 0) {
@@ -214,6 +201,11 @@ const handleClick = (e, index, name) => {
   const handleDoubleClick=(event, index, name)=>{
     let id = name.id;
     dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
+    if (Number(statusName)){
+      dispatch(autoUpdate({id:'statusName', str: null}));
+      setSearchParams('');
+    }
+
     dispatch(getRowsAfterAdd(id));
     
 

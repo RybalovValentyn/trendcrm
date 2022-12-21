@@ -6,7 +6,7 @@ import {colorsRef} from '../../../../consts/colorConstants';
 
 import {AddStatusForm} from '../modals/modalAddStatus';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSortDate } from '../../../../redux/ordersReduser';
+import { getSortDate, autoUpdate } from '../../../../redux/ordersReduser';
 import { getAllOrders } from '../../../../redux/asyncThunc';
 import { useParams, useSearchParams, useLocation,useNavigate, createSearchParams } from "react-router-dom";
 
@@ -41,6 +41,7 @@ const dispatch = useDispatch();
 const handleClick =(e)=>{
   let str = e.target.id;
   let id = 'status_name';  
+  dispatch(autoUpdate({id: 'start', str: 0}));
   setSearchParams(createSearchParams({ status: str }));
 }
 

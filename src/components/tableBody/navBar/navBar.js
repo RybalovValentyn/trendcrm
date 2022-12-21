@@ -10,17 +10,17 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {mainNavBarItem} from './navBarItems';
-import {useNavigate,Outlet,} from 'react-router-dom';
+import {useNavigate,Outlet,useLocation} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
 import { AppBarComponent } from './appBar';
 import { AppBar, Drawer} from './styles';
-
+import { useEffect } from 'react';
 
 
 
 
 export function MiniDrawer() {
-
+  const location = useLocation();
 
 
   const navigate = useNavigate();
@@ -30,6 +30,12 @@ export function MiniDrawer() {
     setOpen(!open);
   };
 
+    useEffect(() => {
+if (location.pathname === '/trendcrm') {
+  navigate(`/trendcrm/orders`)
+}       
+      
+}, []);
 
 const handleNavigate=(text)=>{
   navigate(text);
