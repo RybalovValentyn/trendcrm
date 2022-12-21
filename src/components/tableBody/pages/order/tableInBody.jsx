@@ -8,25 +8,15 @@ import {AddStatusForm} from '../modals/modalAddStatus';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSortDate } from '../../../../redux/ordersReduser';
 import { getAllOrders } from '../../../../redux/asyncThunc';
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useLocation,useNavigate, createSearchParams } from "react-router-dom";
 
 export function ScrollTabsButton() {
   const [value, setValue] = useState(0);
-  
 const [searchParams, setSearchParams] = useSearchParams();
-const statusName = searchParams.get('id');
-
 
 const statuses = useSelector((state) => state.ordersAll.getStatuses);
 const dispatch = useDispatch();
 
-useEffect(() => {
-  if (statusName === "") return;
-}, [statusName]);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   const boxStyles={
     flexGrow: 1,
@@ -50,20 +40,15 @@ useEffect(() => {
 
 const handleClick =(e)=>{
   let str = e.target.id;
-  let id = 'status_name'
-  setSearchParams({ id: str });
-  if (str === 0 || str === '0') {
-    str = ''
-  }
-  dispatch(getSortDate({id, str}));
-  dispatch(getAllOrders());
+  let id = 'status_name';  
+  setSearchParams(createSearchParams({ status: str }));
 }
 
   return (
     <Box sx={boxStyles} >
       <Tabs
         value={value}
-        onChange={handleChange}
+        // onChange={handleChange}
         variant="scrollable"
         scrollButtons
         aria-label="visible arrows tabs example"

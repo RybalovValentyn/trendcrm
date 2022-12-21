@@ -8,10 +8,10 @@ import {Paper,TableSortLabel, Stack, Tab, Checkbox,Divider,
     TablePagination, FormControlLabel, Switch, Hidden, Typography} from '@mui/material';
 import {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import {ScrollTabsButton} from './tableInBody';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useSearchParams, useLocation} from 'react-router-dom';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
-import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp} from '../../../../redux/asyncThunc';
+import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp, getFilteredOrders} from '../../../../redux/asyncThunc';
 import {HeaderContainer} from './header';
 import {GetRowsComparator} from './getRowsComparator';
 import { descendingComparator, getComparator, stableSort} from './functionOrder';
@@ -19,16 +19,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import {dividerStyle, rowPosition, tHeadStyle, tableBoxStyle,
          paperTableStyle, tableContainerStyle, inOrdersBoxStyle} from './styles';
 import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
-   getOpenTableCreate, autoUpdate, getFormTable} from '../../../../redux/ordersReduser';
+   getOpenTableCreate, autoUpdate, getFormTable, getClouseTableCreate} from '../../../../redux/ordersReduser';
 import {EnhancedTableHead} from './enhancedTableHead';
 import { Preloader } from '../../../preloader/preloader';
 import { ComentModalMenu } from '../modals/comentmodal';
 import { CustomTablePagination } from './pagination';
 import {MyTablePagination} from './myPagination';
 
+
 export  function Order() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const columns = useSelector((state) => state.ordersAll.columns);
   const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
   const bodyTableRows = useSelector((state) => state.ordersAll.bodyTableRows);
@@ -37,9 +39,14 @@ export  function Order() {
   const allOrders = useSelector((state) => state.ordersAll.columns);
   const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
-  const idRows = useSelector((state) => state.ordersAll.CreateRows?.id);
+  const idRows = useSelector((state) => state.ordersAll.createRows?.id);
   const tableLength = useSelector((state) => state.ordersAll.tableLength);
   const startRows = useSelector((state) => state.ordersAll.start);
+  const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
+  const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+const [searchParams, setSearchParams] = useSearchParams();
+const statusName = searchParams.get('status');
+
   let arrayRows = []
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
@@ -48,17 +55,58 @@ export  function Order() {
     const page = useSelector((state) => state.ordersAll.page);
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
 
+   useEffect(()=>{
+    
+       if (Number(statusName)) {
+        console.log('filter status_name');
+      dispatch(autoUpdate({id:'statusName', str: statusName}));
+      getUpdate();      
+      } else if (!statusName && !idRows) {
+        console.log('orders');
+        dispatch(autoUpdate({id:'statusName', str: null}));
+        navigate('/trendcrm/orders')
+        getUpdate()
+      } else if(Number(idRows) && isUpdateRows){      
+        console.log('Number(idRows) && isUpdateRows', idRows);
+        navigate(`/trendcrm/order/:${idRows}`);        
+      } else if (location.pathname === '/trendcrm/orders') {
+        console.log(location.pathname);
+        dispatch(autoUpdate({id:'statusName', str: null}));
+        getUpdate();
+      }
+   
+
+  },[statusName, idRows])  
+
+//   useEffect(() => {
+//     // if (!Number(idRows)) {
+//     //   navigate('/trendcrm/order')
+//     // } else
+//     console.log('idRows', idRows);
+//      if(Number(idRows) && isUpdateRows){
+//       console.log('Number(idRows) && isUpdateRows');
+//       navigate(`/trendcrm/order/${idRows}`)
+//     }
+      
+// }, [idRows]);
+
 
   useEffect(() => {
 if (statuses.length === 0) {
   dispatch(getAllStatuses());
 }
-if (!allOrders[0]) {
-  dispatch(getAllOrders());
-}
+// if (!allOrders[0]) {
+//   getUpdate()
+// }
   
         
 }, []);
+
+const getUpdate = ()=>{
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
+}
 
 useEffect(() => {
   if (isGrabAll === true) {
@@ -67,6 +115,7 @@ useEffect(() => {
     return;
   } else  setSelected([]);
 }, [isGrabAll]);
+
 
 
 useEffect(() => {
@@ -159,16 +208,15 @@ const handleClick = (e, index, name) => {
  
       };
    if (e.detail === 2) {
-    // dispatch(autoUpdate({id: 'rowsToUpdate', str: idRows}))
        handleDoubleClick(e, index, idRows)
       }
   }
   const handleDoubleClick=(event, index, name)=>{
     let id = name.id;
-
-    dispatch(getRowsAfterAdd(id));
     dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
-// dispatch(autoUpdate({id: 'createRows', str: name})) 
+    dispatch(getRowsAfterAdd(id));
+    
+
   }
 
 return (
@@ -191,10 +239,9 @@ return (
                           // onRequestSort={handleRequestSort}
                           rowCount={bodyTableRows?.length}/>
 
-        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor}} >
+        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }} >
               {/* {stableSort(bodyTableRows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) */}
               {bodyTableRows.map((rows, index, arr) => {
-
                   return (
                     <tr 
                     onClick={(e)=>handleClick(e, index, arr[index])}

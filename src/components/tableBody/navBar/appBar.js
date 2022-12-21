@@ -1,7 +1,7 @@
 import { Box, CardMedia, Typography, List, ListItem, } from "@mui/material";
 import imgLogo from '../../../images/logo.png';
 import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { BootstrapTooltip } from '../pages/order/styles';
 import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';

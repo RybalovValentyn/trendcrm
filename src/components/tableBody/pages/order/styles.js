@@ -21,11 +21,12 @@ maxHeight: '95%',
   maxHeight: '96%',
 },
 // maxHeight: 'calc(95% - 70px)', 
- backgroundColor: '#fff',
+ backgroundColor:  colorsRef.boxTableColor,
   minHeight: '100px',
   paddingBottom: '10px',
   overflowY: 'auto',
   overflowX: 'scroll', 
+  height: '100%',
   }
 
 export const paperTableStyle = {position: "relative",

@@ -180,7 +180,7 @@ console.log('getFilteredOrders',column);
           update_date_to: state.ordersAll.searchParams.update_date_to ,
           datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
-          status: state.ordersAll.searchParams.status_name,
+          status: state.ordersAll.searchParams.status_name?state.ordersAll.searchParams.status_name:state.ordersAll.statusName,
           order:[{column: 0, dir: 'desc'}],
           columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: ''}},] ,
            }
@@ -220,7 +220,7 @@ export const getAllOrders = createAsyncThunk(
           update_date_to: state.ordersAll.searchParams.update_date_to ,
           datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
-          status: state.ordersAll.searchParams.status_name,
+          status: state.ordersAll.searchParams.status_name?state.ordersAll.searchParams.status_name:state.ordersAll.statusName,
           order:[{column: 0, dir: 'desc'}],
           columns:[
             {data: 'id', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.id} },

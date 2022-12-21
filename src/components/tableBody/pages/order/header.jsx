@@ -38,7 +38,6 @@ const isAllListProducts =  useSelector((state) => state.ordersAll.isAllListProdu
 let [timer, setTimer] = useState(null);
 
 useEffect(() => {
-
   const searchCount = copyParams.reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
   dispatch(searchCountUpdate(searchCount));
   }, [params]);

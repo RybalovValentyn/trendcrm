@@ -73,7 +73,7 @@ function App(history) {
     {id: 'faq', target: Faq},
     {id: 'purchasing', target: Purchasing},
     {id: 'help', target: Help},
-    {id: 'order', target: CreateRows},
+    // {id: 'order', target: CreateRows},
   ];
 
   return (
@@ -93,9 +93,14 @@ function App(history) {
                                     key={`component_${e.id}`}
                                   />
                                 ))}  
-                   { idRows?  <Route path={`order/${idRows}`} element={<PrivateRoute component={CreateRows} />} />:
+                         <Route path={'order'} element={<PrivateRoute component={CreateRows}/>}>
+                             <Route path={':idRows'} element={<CreateRows/>} />
+                         </Route>
+                         
+                         
+                   {/* { idRows?  <Route path={'order/:idRows'} element={<PrivateRoute component={CreateRows} />} />:
                    <Route  path='/trendcrm'  element={<PrivateRoute component={MiniDrawer}/>} />
-                   }  
+                   }   */}
                     </Route>
                     <Route path="/trendcrm/order/*" element={<ErrorPage/>} />         
                     <Route path="*" element={<Preloader/>} />

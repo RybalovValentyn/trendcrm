@@ -183,6 +183,7 @@ client: {...client},
   page: 0,
   start: 0,
   tableLength: null,
+  statusName: null
   },
 
    reducers: {
@@ -465,7 +466,7 @@ client: {...client},
           
           [getRowsAfterAdd.pending]:handlePending,
           [getRowsAfterAdd.fulfilled](state, action) {    
-            console.log(action.payload);
+            // console.log(action.payload);
             let packer_name = action.payload.delivery.packer_name?action.payload.delivery.packer_name: '0' ;
             let payment_type = action.payload.order.payment_type?action.payload.order.payment_type : '0';
             let delivery_service_type = (action.payload.delivery.delivery_service_type || action.payload.delivery.warehouse_city !== '')?'0' : '1';

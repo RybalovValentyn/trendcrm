@@ -12,13 +12,25 @@ import {ListAutocompliteStatuses} from '../order/forms/listStatuses';
 import {AddStatusForm} from '../modals/modalAddStatus';
 import { ClientForm } from '../order/forms/client';
 import { HeaderOrder } from './headerOrder';
+import {useNavigate, useSearchParams,} from 'react-router-dom';
+import { autoUpdate } from '../../../../redux/ordersReduser';
+import { useEffect } from 'react';
 
 export function CreateRows(){
-   
+    const dispatch = useDispatch();
     const isPay = useSelector((state) => state.ordersAll.createRows.payment_type)
     const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
     const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'};
-    
+    const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
+ 
+
+
+    useEffect(() => {
+        if (isUpdateRows) {
+            dispatch(autoUpdate({id:'isUpdateRows', str: false}));
+        }
+      }, []);
+
     const boxStyle ={
         width: '99%',
         display: 'block', 

@@ -1,49 +1,35 @@
-import {Children, useState, useEffect, Suspense} from 'react';
-// import { styled, useTheme } from '@mui/material/styles';
+import {useState, Suspense} from 'react';
 import Box from '@mui/material/Box';
-import { useDispatch, useSelector } from 'react-redux';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
-// import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-// import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {mainNavBarItem} from './navBarItems';
-import {useNavigate, useParams, Outlet} from 'react-router-dom';
+import {useNavigate,Outlet,} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
 import { AppBarComponent } from './appBar';
-import {openedMixin, closedMixin, AppBar, Drawer} from './styles';
-import { Preloader } from '../../preloader/preloader';
+import { AppBar, Drawer} from './styles';
+
 
 
 
 
 export function MiniDrawer() {
-  const idRows = useSelector((state) => state?.ordersAll?.createRows?.id);
-  const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
-  // const theme = useTheme();
-  const [open, setOpen] = useState(false);
+
+
+
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
 
-
-  useEffect(() => {
-    if (!Number(idRows)) {
-      navigate('/trendcrm/orders')
-    } else if(Number(idRows) && isUpdateRows){
-      navigate(`/trendcrm/order/${idRows}`)
-    }
-      
-}, [idRows]);
 
 const handleNavigate=(text)=>{
   navigate(text);
