@@ -9,7 +9,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { getAllOrders, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { bodyPaginationStyle, dataRowsStyle } from './styles';
 
-export const MyTablePagination =({length, rowsPerPage, page})=>{
+const MyTablePagination =({length, rowsPerPage, page})=>{
 const dispatch = useDispatch();
 const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 const startRows = useSelector((state) => state.ordersAll.start);
@@ -168,3 +168,5 @@ dispatch(autoUpdate({id: 'page', str: Number(num)}));
 
     )
 }
+
+export default MyTablePagination

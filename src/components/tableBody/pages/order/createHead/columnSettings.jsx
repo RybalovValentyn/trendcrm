@@ -110,7 +110,14 @@ const handleFResetFilters =()=>{
     dispatch(tHeadFilteredColumnUpdate([]));
     dispatch(getAllOrders())
     handleClose();
+};
+
+const listItemStyle ={
+  maxWidth: '455px',
+  minWidth: '200px',
+  alignItems: 'center'
 }
+
 
     return(
         <Dialog
@@ -132,19 +139,20 @@ const handleFResetFilters =()=>{
        <List >
       {columnsCopy.map((name, ind)=>{
               return(
-            <ListItem key={ind}>
+            <ListItem key={ind} sx={listItemStyle}>
                 <ListItemText sx={{maxWidth: '30px', marginRight: '20px'}} primary={`№${ind+1}`}/>
              <Checkbox
                   edge="start"
                   onChange={handleToggle}
                   name={name.id}
-                  
+                  sx={{'@media (max-width:477px)': {marginLeft: '10px', marginRight: '5px',},}}
                   id={`${ind}`}
                   tabIndex={-1}
                 checked = {name.checked}
                   disableRipple
                 /> 
             <Autocomplete
+            // sx={{width: '100%'}}
                 name={`${ind}`}
                 id={`${ind}`}                
                 options={columnsCopy}
@@ -165,7 +173,7 @@ const handleFResetFilters =()=>{
       </List>
         </DialogContent>
 
-        <DialogActions sx={{justifyContent: 'center'}}>
+        <DialogActions sx={{justifyContent: 'center', }}>
         <StyledButton
           text={'Застосувати'}
           func= {handleCloseApply}

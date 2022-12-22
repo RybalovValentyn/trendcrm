@@ -1,33 +1,30 @@
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import {Paper,TableSortLabel, Stack, Tab, Checkbox,Divider, 
-    TablePagination, FormControlLabel, Switch, Hidden, Typography} from '@mui/material';
-import {useState, useEffect, useLayoutEffect, useRef} from 'react';
-import {ScrollTabsButton} from './tableInBody';
+import {Paper, Typography} from '@mui/material';
+import {useState, useEffect, useLayoutEffect, useRef, Profiler, lazy, useMemo} from 'react';
 import {useNavigate, useSearchParams, useLocation, createSearchParams} from 'react-router-dom';
 import { colorsRef } from '../../../../consts/colorConstants';
-import { styled } from '@mui/material/styles';
 import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp, getFilteredOrders} from '../../../../redux/asyncThunc';
-import {HeaderContainer} from './header';
 import {GetRowsComparator} from './getRowsComparator';
-import { descendingComparator, getComparator, stableSort} from './functionOrder';
+// import { descendingComparator, getComparator, stableSort} from './functionOrder';
 import { useDispatch, useSelector } from 'react-redux';
 import {dividerStyle, rowPosition, tHeadStyle, tableBoxStyle,
          paperTableStyle, tableContainerStyle, inOrdersBoxStyle} from './styles';
 import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
    getOpenTableCreate, autoUpdate, getFormTable, getClouseTableCreate} from '../../../../redux/ordersReduser';
-import {EnhancedTableHead} from './enhancedTableHead';
 import { Preloader } from '../../../preloader/preloader';
-import { ComentModalMenu } from '../modals/comentmodal';
 
-import {MyTablePagination} from './myPagination';
-
+const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
+const EnhancedTableHead = lazy(() => import("./enhancedTableHead.jsx"));
+const ScrollTabsButton = lazy(() => import("./tableInBody.jsx"));
+const HeaderContainer = lazy(() => import("./header.jsx"));
+const MyTablePagination = lazy(() => import("./myPagination.jsx"));
 
 export  function Order() {
+  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +33,7 @@ export  function Order() {
   const bodyTableRows = useSelector((state) => state.ordersAll.bodyTableRows);
   const isLoading = useSelector((state) => state.ordersAll.isLoading);
   const statuses = useSelector((state) => state.ordersAll.getStatuses);
-  const allOrders = useSelector((state) => state.ordersAll.columns);
+
   const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
   const idRows = useSelector((state) => state.ordersAll.createRows?.id);
@@ -46,12 +43,12 @@ export  function Order() {
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 const [searchParams, setSearchParams] = useSearchParams();
 const statusName = searchParams.get('status');
+const selectedRows = useSelector((state) => state.ordersAll.selectedRows);
 
-  let arrayRows = []
+
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
-    const [selected, setSelected] = useState([]);
-  
+ 
     const page = useSelector((state) => state.ordersAll.page);
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
 
@@ -95,78 +92,61 @@ const getUpdate = ()=>{
   } else dispatch(getAllOrders())
 }
 
-useEffect(() => {
-  if (isGrabAll === true) {
-    const newSelected = bodyTableRows.map((n,ind) => n[0].value);
-    setSelected(newSelected);
-    return;
-  } else  setSelected([]);
-}, [isGrabAll]);
-
 
 
 useEffect(() => {
 if (columns.length > 0 && dataForHeader.length > 0 && filteredColumn.length === 0) {
-  GetRenderRows(dataForHeader, columns)
- dispatch(bodyTableRowsUpdate([...arrayRows.reverse()]))
+  console.log('update rows');
+ dispatch(bodyTableRowsUpdate([...arrayRows]))
 } else if (columns.length > 0 && filteredColumn.length > 0 ) {
-  GetRenderFilteredRows(filteredColumn, columns)
- dispatch(bodyTableRowsUpdate([...arrayRows.reverse()]))
+  console.log(arrayFilteredRows, filteredColumn.length);
+ dispatch(bodyTableRowsUpdate([...arrayFilteredRows]))
 }
 
-}, [columns, dataForHeader, filteredColumn]);
+}, [columns]);
 
 
-const GetRenderFilteredRows =(dataForHeader, columns) =>{   
-  const arrayRow = columns.map((str, ind) =>{
-   let result = []
-    const rowSpan = filteredColumn.reduce((acc,val, ind) =>{
-        return result.push({id:val.data, value: str[val.data], color: str.status_style }
-            )  },[])
-     arrayRows.push(result)
+const arrayFilteredRows = useMemo(() => columns.map((str, ind) =>{
+  return (filteredColumn.reduce((acc,val, ind) =>{    
+    acc.push({id:val.data, value: str[val.data], color: str.status_style })         
+    return [...acc]   
+  },[]))
 
-   })   
+}),[filteredColumn, columns]
+);
 
-};
-  
- const GetRenderRows =(dataForHeader, columns) =>{   
-     const arrayRow = columns.map((str, ind) =>{
-      let result = []
-       const rowSpan = dataForHeader.reduce((acc,val, ind) =>{
-           return result.push({id:val.id, value: str[val.id], color: str.status_style }
-               )  },[])
-        arrayRows.push(result)
-  
-      })   
-   };
-   
-    const handleRequestSort = (event, property) => {
-      const isAsc = orderBy === property && order === 'asc';
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(property);
-    };
 
-    
+const arrayRows = useMemo(() => columns.map((str, ind) =>{
+        return (dataForHeader.reduce((acc,val, ind) =>{
+          acc.push({id:val.id, value: str[val.id], color: str.status_style })         
+          return [...acc]   
+        },[]))
+
+
+    }),[dataForHeader, columns]
+);
 
 
 const handleSelect = (e, id) =>{
   if (isGrabAll === true){
-  dispatch(autoUpdate({id: 'isGrabAll', str: false}))   } 
-    const selectedIndex = selected.indexOf(id);
+  dispatch(autoUpdate({id: 'isGrabAll', str: false}))} 
+    const selectedIndex = selectedRows.indexOf(id);
     let newSelected = [];
 if (selectedIndex === -1 && !e.ctrlKey) {
   newSelected.push(id);
   }  
  if (e.ctrlKey) {
-  // console.log('selected', selected.length, selected, selectedIndex);
   if (selectedIndex === -1) {
-    newSelected = newSelected.concat(selected, id)
+    newSelected = newSelected.concat(selectedRows, id)
   } else if (selectedIndex >= 0) {
-    selected.splice(selectedIndex,1);
-    newSelected = [...selected]
+    let arr = [...selectedRows]
+    arr.splice(selectedIndex,1);
+    newSelected = [...arr]
   }  
 }
-setSelected(newSelected);
+// console.log(selectedRows);
+dispatch(autoUpdate({id: 'selectedRows', str: newSelected}))
+
  } 
 
 const  hexToRgbA = (hex) =>{
@@ -184,10 +164,12 @@ const  hexToRgbA = (hex) =>{
 }
 
 const handleClick = (e, index, name) => { 
+
   let id = name?.find(n=>n.id === 'id').value;
   let idRows = columns.find(n=>n.id === id);
   if (id) {
     handleSelect(e,id)
+
   } 
     if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
       dispatch(autoUpdate({id: 'rowsToUpdate', str: idRows}))
@@ -198,53 +180,49 @@ const handleClick = (e, index, name) => {
        handleDoubleClick(e, index, idRows)
       }
   }
-  const handleDoubleClick=(event, index, name)=>{
+ const handleDoubleClick=(event, index, name)=>{
+
     let id = name.id;
     dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     if (Number(statusName)){
       dispatch(autoUpdate({id:'statusName', str: null}));
       setSearchParams('');
-    }
+    } 
+    dispatch(getRowsAfterAdd(id));   
 
-    dispatch(getRowsAfterAdd(id));
-    
+  };
 
-  }
-
+const rowsForRender = useMemo(
+  () => bodyTableRows,
+  [bodyTableRows]
+);
 return (
 
     <Box sx={tableBoxStyle} >    
- {/* HEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHT */} 
    < HeaderContainer/>
 
       <Paper sx={paperTableStyle}>
       <ScrollTabsButton/> 
-{/* HEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHTHEIGHT */}
          <TableContainer sx={tableContainerStyle} >
-         {isLoading && <Preloader/>}
+         {/* {isLoading && <Preloader/>} */}
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
             <EnhancedTableHead 
-                          props ={bodyTableRows}
-                          // numSelected={selected.length}
-                          // order={order}
-                          // orderBy={orderBy}
-                          // onRequestSort={handleRequestSort}
-                          rowCount={bodyTableRows?.length}/>
-
-        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }} >
-              {/* {stableSort(bodyTableRows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) */}
-              {bodyTableRows.map((rows, index, arr) => {
-                  return (
+                          rowCount={rowsForRender?.length}/>
+    {/* <Profiler id="Navigation" onRender={callback}> */}
+   
+        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }}
+        >
+              {rowsForRender.map((rows, index, arr) => {
+                   return (
                     <tr 
                     onClick={(e)=>handleClick(e, index, arr[index])}
                     tabIndex={-1}
                     key={index}
-                    
-                    // selected={selected.indexOf(rows[0].value) !== -1}
+                    id={index}
                      style={{
-                      // '&:focus': {backgroundColor: '#B0C4FF', color: '#fff'},
-                      backgroundColor: selected.indexOf(rows[0].value) !== -1?'#B0C4FF':hexToRgbA(rows[0]?.color),
-                      color: selected.indexOf(rows[0].value) !== -1?'#fff':'#000', 
+                      // '&:focus': {backgroundColor: '#fff', color: '#fff'},
+                           backgroundColor: selectedRows.indexOf(rows[0].value) !== -1?'#B0C4FF':hexToRgbA(rows[0]?.color),
+                      color: selectedRows.indexOf(rows[0].value) !== -1?'#fff':'#000', 
                       cursor: 'pointer',
                       border: '1px solid #fff'
                   
@@ -253,18 +231,21 @@ return (
             {rows.map((row,ind) => (
               
             <td style={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
-            //  borderRight: '1px solid #fff',
+
              maxWidth: '400px',  overflowX: 'auto', width: '200px',
              color: 'inherit', position: 'relative', borderBottom: '1px solid #fff'
             }}
-            key={ind} align="center" ><GetRowsComparator row={row}/>  </td>
+            key={ind} align="center" >
+              <GetRowsComparator row={row}/> 
+              {/* {row.value} */}
+               </td>
             
             ))} 
              </tr> );
              
                 })}
              </TableBody>
-
+             {/* </Profiler> */}
           </Table>
         </TableContainer> 
 
@@ -279,7 +260,7 @@ return (
   },}}> {`Записів від ${startRows+1} до ${(startRows+rowsPerPage)>tableLength?tableLength:startRows+rowsPerPage} 
             з ${tableLength} записів`}</Typography> 
             <Typography sx={{'@media (max-width:768px)': { display: 'block', textAlign: 'center',marginLeft: '0px'}, fontSize: '14px', marginLeft: '10px' }}>{`Вибрано:
-             ${selected[0]?selected.length: 0}`}</Typography>
+             ${selectedRows[0]?selectedRows.length: 0}`}</Typography>
   </Box>
 {/* <CustomTablePagination length={Number(tableLength)} rowsPerPage={rowsPerPage}  page={page}/> */}
 

@@ -182,7 +182,9 @@ console.log('getFilteredOrders',column);
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name?state.ordersAll.searchParams.status_name:state.ordersAll.statusName,
           order:[{column: 0, dir: 'desc'}],
-          columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: ''}},] ,
+          columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: ''}},
+          {data: 'id', searchable: true, orderable: true, search:{value: ''} },
+        ] ,
            }
 
         try {

@@ -1,23 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import {useState, useEffect, useLayoutEffect, useRef} from 'react';
+import {useState, useEffect, useLayoutEffect, useRef, useMemo} from 'react';
 import { colorsRef } from '../../../../consts/colorConstants';
 import TableCell from '@mui/material/TableCell';
 import {dividerStyle, dividerSecondStyle, rowPosition, tHeadStyle} from './styles';
 import {Divider,TableSortLabel, Box } from '@mui/material';
 import {tHeadColumnUpdate} from '../../../../redux/ordersReduser';
-import { visuallyHidden } from '@mui/utils';
 import {translater} from './translate';
 import {SearchInput} from './tableInBody';
 import { getWidthUpdate, setWidthColumn } from '../../../../redux/ordersReduser';
 import { InputSelector } from './createHead/inputselector';
 
-export function EnhancedTableHead({props}) {
+ function EnhancedTableHead() {
      const columns = useSelector((state) => state.ordersAll.columns);
     const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
     const widthOfColumn = useSelector((state) => state.ordersAll.widthOfColumn);
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =  props;
+    // const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =  props;
     const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
     const [width, setWidth] = useState(null);
     const [deltaWidth, setDeltaWidth] = useState(null);
@@ -25,37 +24,39 @@ export function EnhancedTableHead({props}) {
     const [firstWidth, setFirstWidth] = useState(null)
     const dispatch = useDispatch();
 
-
+    
 useEffect(() => {
-  const result =[]
-  if (columns.length > 0 && filteredColumn.length === 0) {
-    const headerValue = Object.keys(columns[0]).reduce((acc,str, ind) =>{
-        if (translater[str]) {
-           return result.push({id:str, str:translater[str]})
-        }    
-    },[]); 
-
-  dispatch(tHeadColumnUpdate(result));
+  if (columns.length > 0 && filteredColumn.length === 0) {  
+    
+  dispatch(tHeadColumnUpdate(headerValue));
   
 }else  if (columns.length > 0 && filteredColumn.length > 0) {
-  const headerValue =  filteredColumn.reduce((acc,str, ind) =>{
-      if (translater[str.data]) {
-         return result.push({id:str.data, str:translater[str.data]})
-      }    
-  },[]);
-  dispatch(tHeadColumnUpdate(result))
+  dispatch(tHeadColumnUpdate(filteredHeaderValue))
 }
 }, [columns, filteredColumn]); 
     
  
-      
-    const createSortHandler = (property) => (event) => {
-      onRequestSort(event, property);
-    };
+  const headerValue = useMemo(() => Object.entries(translater).reduce((acc,str, ind) =>{
+  if (str.values) {
+    acc.push({id:str[0], str:str[1]})
+  }   
+  return [...acc] 
+    },[]),[dataForHeader]
+); 
+
+const filteredHeaderValue = useMemo(() => filteredColumn.reduce((acc,str, ind) =>{
+  if (translater[str.data]) {
+     acc.push({id:str.data, str:translater[str.data]})
+  }    
+  return [...acc] 
+},[]),[dataForHeader]
+); 
+
+
    
   const getWidthColumnUpdate =(e)=>{
     setIsResize(false);
-dispatch(setWidthColumn(width))
+    dispatch(setWidthColumn(width))
   }
   
   const containerStyle ={
@@ -143,4 +144,6 @@ setFirstWidth(null)
             </TableHead>
       
     );
-  }
+  };
+
+  export default EnhancedTableHead

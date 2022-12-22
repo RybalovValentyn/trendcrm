@@ -15,7 +15,7 @@ import { boxListStyle, navlogoStyle, navListStyle, mediaIconLogoList } from "./s
 import { UserSelectMobil } from "./userSelectMob";
 import { colorsRef } from "../../../consts/colorConstants";
 
-export const AppBarComponent = () =>{
+const AppBarComponent = () =>{
     const dispatch = useDispatch();
 
     const authReduser = useSelector((state) => state.auth);
@@ -80,4 +80,6 @@ const isShowMediaUserList=()=>{
       </Box>
        </Box>
     )
-}
+};
+
+export default AppBarComponent

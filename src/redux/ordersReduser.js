@@ -179,11 +179,12 @@ client: {...client},
   isGrabAll: false,
   isUpdateRows: false,
   isAllListProducts: false,
-  rowsPerPage: 25,
+  rowsPerPage: 100,
   page: 0,
   start: 0,
   tableLength: null,
-  statusName: null
+  statusName: null,
+  selectedRows: [],
   },
 
    reducers: {
@@ -227,6 +228,7 @@ client: {...client},
         getStatuses: [...state.getStatuses,action.payload ] 
     };},
        bodyTableRowsUpdate: (state, action) => {  
+        console.log('is updated tablerows');
         return { ...state,
           bodyTableRows: [...action.payload ] 
       };},
@@ -315,7 +317,7 @@ client: {...client},
           [getFilteredOrders.fulfilled](state, action) {
               return{
              ...state,
-             columns: [...action.payload.data.reverse()],
+             columns: [...action.payload.data],
              tableLength: action.payload.recordsFiltered,
               isLoading: false,
               isError: false,
@@ -328,7 +330,7 @@ client: {...client},
         [getAllOrders.fulfilled](state, action) {
             return{
            ...state,
-           columns: [...action.payload.data.reverse()],
+           columns: [...action.payload.data],
            tableLength: Number(action.payload.recordsTotal),
             isLoading: false,
             isError: false,

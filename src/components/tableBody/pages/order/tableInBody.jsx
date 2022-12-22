@@ -10,7 +10,7 @@ import { getSortDate, autoUpdate } from '../../../../redux/ordersReduser';
 import { getAllOrders } from '../../../../redux/asyncThunc';
 import { useParams, useSearchParams, useLocation,useNavigate, createSearchParams } from "react-router-dom";
 
-export function ScrollTabsButton() {
+function ScrollTabsButton() {
   const [value, setValue] = useState(0);
 const [searchParams, setSearchParams] = useSearchParams();
 
@@ -74,3 +74,4 @@ const handleClick =(e)=>{
     </Box> 
   );
 }
+export default ScrollTabsButton

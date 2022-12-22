@@ -24,7 +24,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   });
 
 
-export const ComentModalMenu = () =>{
+ const ComentModalMenu = () =>{
     const dispatch = useDispatch();
     const openDownComent = useSelector((state) => state.ordersAll.modalControl.comentSettings);
     const rowsToUpdate = useSelector((state) => state.ordersAll.rowsToUpdate);
@@ -100,4 +100,6 @@ const setHandleupdateInfo =()=>{
         </DialogActions>
       </Dialog> 
     )
-}
+};
+
+export default ComentModalMenu

@@ -21,12 +21,12 @@ import { CustomizedCheckboxAll } from '../../../inputs/checkBox';
 import {useNavigate} from 'react-router-dom';
 
 
-export function HeaderContainer() {
+function HeaderContainer() {
 const dispatch = useDispatch();
 const navigate = useNavigate();
 const params = useSelector((state) => state.ordersAll.searchParams);
 const copyParams = Object.values(params);
-
+const bodyTableRows = useSelector((state) => state.ordersAll.bodyTableRows);
 const paramsCount = useSelector((state) => state.ordersAll.searchParamCount);
 const columns = useSelector((state) => state.ordersAll.tHeadColumn);
 const [number, setNumber] = useState('');
@@ -141,8 +141,16 @@ const handleKeyDown=(e)=>{
 }
 
 const onchangeAll=(e)=>{
-  let s = !isGrabAll
+  console.log(e.target.checked);
+  let s = e.target.checked
   dispatch(autoUpdate({id: 'isGrabAll', str: s}))
+  if (s) {
+    const newSelected = bodyTableRows.map((n,ind) => n[0].value);
+    dispatch(autoUpdate({id: 'selectedRows', str: newSelected}))
+    return;
+  } else dispatch(autoUpdate({id: 'selectedRows', str: []}))
+   
+  
 }
 
 
@@ -223,4 +231,6 @@ const onHandleCheckProduct=(e)=>{
     </Box>
     </Box>
   );
-}
+};
+
+export default HeaderContainer

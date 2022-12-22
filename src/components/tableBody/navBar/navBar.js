@@ -1,4 +1,4 @@
-import {useState, Suspense} from 'react';
+import {useState, Suspense, lazy} from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
@@ -12,11 +12,10 @@ import ListItemText from '@mui/material/ListItemText';
 import {mainNavBarItem} from './navBarItems';
 import {useNavigate,Outlet,useLocation} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
-import { AppBarComponent } from './appBar';
+// import { AppBarComponent } from './appBar';
 import { AppBar, Drawer} from './styles';
 import { useEffect } from 'react';
-
-
+const AppBarComponent = lazy(() => import("./appBar.js"));
 
 
 export function MiniDrawer() {
