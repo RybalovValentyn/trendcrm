@@ -14,6 +14,7 @@ import {
   import authReduser from './authReduser.js';
 import statusReduser from './statusReduser.js';
 import ordersReduser from './ordersReduser.js';
+import functionReduser from './funcReduser';
 
   const authPersistConfig = {
     key: 'hash_key',
@@ -34,11 +35,13 @@ import ordersReduser from './ordersReduser.js';
        auth: authReduser,
       addStatus: statusReduser,
       ordersAll: ordersReduser,
+      function: functionReduser,
     },
   //   reducer: {
   //     auth: authPersistReducer,
   //    addStatus: statusReduser,
   //    ordersAll: orderPersistReduser,
+        // function: functionReduser,
   //  },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({

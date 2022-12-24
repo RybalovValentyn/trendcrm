@@ -9,7 +9,7 @@ export function Preloader() {
   const load = useSelector((state) => state.auth.isLoading);
   return (
     <Backdrop
-    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    sx={{ color: '#fff', zIndex: 3, width: '100%', heigth: '100%'}}
     open={load || loading}
       >
     <CircularProgress sx={{color:"#fff" }} disableShrink thickness={6}/>

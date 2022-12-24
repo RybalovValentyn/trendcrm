@@ -19,6 +19,7 @@ import { ColumnSettings } from './createHead/columnSettings';
 import {OtherMenuComponent} from './createHead/menuother';
 import { CustomizedCheckboxAll } from '../../../inputs/checkBox';
 import {useNavigate} from 'react-router-dom';
+import { getselected } from '../../../../redux/funcReduser';
 
 
 function HeaderContainer() {
@@ -146,9 +147,9 @@ const onchangeAll=(e)=>{
   dispatch(autoUpdate({id: 'isGrabAll', str: s}))
   if (s) {
     const newSelected = bodyTableRows.map((n,ind) => n[0].value);
-    dispatch(autoUpdate({id: 'selectedRows', str: newSelected}))
+    dispatch(getselected(newSelected))
     return;
-  } else dispatch(autoUpdate({id: 'selectedRows', str: []}))
+  } else dispatch(getselected([]))
    
   
 }

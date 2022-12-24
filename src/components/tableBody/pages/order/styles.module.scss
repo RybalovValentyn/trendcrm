@@ -3,3 +3,16 @@ fieldset{
     border: 1px solid #d0d0d0!important;
     // border-color: #d0d0d0!important;
    };
+.columnStyle{
+    min-width: '100px';
+     font-size: '12px'; 
+     height: '21px'; 
+     white-space: 'nowrap';
+      padding: '0px 10px';
+    max-width: '400px';
+    overflow-x: 'auto'; 
+     width: '200px';
+     color: 'inherit';
+    position: 'relative';
+    border-bottom: '1px solid #fff'; 
+}

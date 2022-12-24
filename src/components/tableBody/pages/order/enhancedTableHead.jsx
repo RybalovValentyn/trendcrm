@@ -44,6 +44,7 @@ useEffect(() => {
     },[]),[dataForHeader]
 ); 
 
+
 const filteredHeaderValue = useMemo(() => filteredColumn.reduce((acc,str, ind) =>{
   if (translater[str.data]) {
      acc.push({id:str.data, str:translater[str.data]})

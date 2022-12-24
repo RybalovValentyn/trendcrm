@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 export function GetRowsComparator({row}) {
+   
 const {value, id, color} = row
 const dataForSelect = useSelector((state) => state.ordersAll.payment_type);
 

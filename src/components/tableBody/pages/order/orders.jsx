@@ -3,7 +3,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import {Paper, Typography} from '@mui/material';
-import {useState, useEffect, useLayoutEffect, useRef, Profiler, lazy, useMemo} from 'react';
+import {useState, useEffect, useLayoutEffect, useRef, Profiler, lazy, useMemo,Suspense} from 'react';
 import {useNavigate, useSearchParams, useLocation, createSearchParams} from 'react-router-dom';
 import { colorsRef } from '../../../../consts/colorConstants';
 import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp, getFilteredOrders} from '../../../../redux/asyncThunc';
@@ -15,6 +15,9 @@ import {dividerStyle, rowPosition, tHeadStyle, tableBoxStyle,
 import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
    getOpenTableCreate, autoUpdate, getFormTable, getClouseTableCreate} from '../../../../redux/ordersReduser';
 import { Preloader } from '../../../preloader/preloader';
+import { TableRows } from './tableRows';
+import { getselected } from '../../../../redux/funcReduser';
+
 
 const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
 const EnhancedTableHead = lazy(() => import("./enhancedTableHead.jsx"));
@@ -43,9 +46,7 @@ export  function Order() {
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 const [searchParams, setSearchParams] = useSearchParams();
 const statusName = searchParams.get('status');
-const selectedRows = useSelector((state) => state.ordersAll.selectedRows);
-
-
+const selectedRows = useSelector((state) => state.function.selectedRow);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
  
@@ -92,19 +93,14 @@ const getUpdate = ()=>{
   } else dispatch(getAllOrders())
 }
 
-
-
 useEffect(() => {
 if (columns.length > 0 && dataForHeader.length > 0 && filteredColumn.length === 0) {
-  console.log('update rows');
  dispatch(bodyTableRowsUpdate([...arrayRows]))
 } else if (columns.length > 0 && filteredColumn.length > 0 ) {
   console.log(arrayFilteredRows, filteredColumn.length);
  dispatch(bodyTableRowsUpdate([...arrayFilteredRows]))
 }
-
-}, [columns]);
-
+}, [columns, filteredColumn, dataForHeader ]);
 
 const arrayFilteredRows = useMemo(() => columns.map((str, ind) =>{
   return (filteredColumn.reduce((acc,val, ind) =>{    
@@ -114,7 +110,6 @@ const arrayFilteredRows = useMemo(() => columns.map((str, ind) =>{
 
 }),[filteredColumn, columns]
 );
-
 
 const arrayRows = useMemo(() => columns.map((str, ind) =>{
         return (dataForHeader.reduce((acc,val, ind) =>{
@@ -126,57 +121,65 @@ const arrayRows = useMemo(() => columns.map((str, ind) =>{
     }),[dataForHeader, columns]
 );
 
-
-const handleSelect = (e, id) =>{
+const handleSelect = (ctrlKey,shiftKey, id) =>{
   if (isGrabAll === true){
   dispatch(autoUpdate({id: 'isGrabAll', str: false}))} 
     const selectedIndex = selectedRows.indexOf(id);
     let newSelected = [];
-if (selectedIndex === -1 && !e.ctrlKey) {
+if (selectedIndex === -1 && !ctrlKey) {
   newSelected.push(id);
   }  
- if (e.ctrlKey) {
+ if (ctrlKey) {
+  console.log('ctrlKey',selectedRows);
   if (selectedIndex === -1) {
     newSelected = newSelected.concat(selectedRows, id)
   } else if (selectedIndex >= 0) {
     let arr = [...selectedRows]
     arr.splice(selectedIndex,1);
     newSelected = [...arr]
-  }  
-}
-// console.log(selectedRows);
-dispatch(autoUpdate({id: 'selectedRows', str: newSelected}))
+  };
+};
+if (shiftKey) {
+  const lastElement = selectedRows.length - 1;
+  // console.log('shiftKey',selectedRows, selectedIndex,lastElement);
+  
+  if (lastElement >=0) {
+    let newElements=[]
+    const firstElement = columns.findIndex(n=> n.id === selectedRows[lastElement])
+    const lastIndexElement = columns.findIndex(n=> n.id === id);
+    if (firstElement<lastIndexElement) {
+       newElements = columns.slice(firstElement, lastIndexElement+1).map(n=>n.id)
+    } else if (firstElement > lastIndexElement) {
+       newElements = columns.slice(lastIndexElement, firstElement).map(n=>n.id)
+    } else newElements = [id]
+    
+    newSelected = [...selectedRows,...newElements]
 
- } 
+    console.log('firstelement', newElements);
+    } else if (lastElement >= 0) {
+ 
+    let lastSelected = 'selectedRows[],'
+    // console.log(lastSelected, firstElement);
+    // let arr = [...selectedRows]
+    // arr.splice(selectedIndex,1);
+    // newSelected = [...arr]
+  };
+};
+dispatch(getselected(newSelected))
+ }; 
 
-const  hexToRgbA = (hex) =>{
-  // console.log(hex);
-  let c;
-  if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
-      c= hex.substring(1).split('');
-      if(c.length == 3){
-          c= [c[0], c[0], c[1], c[1], c[2], c[2]];
-      }
-      c= '0x'+c.join('');
-      return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',0.25)';
-  }
-  throw new Error('Bad Hex');
-}
-
-const handleClick = (e, index, name) => { 
-
-  let id = name?.find(n=>n.id === 'id').value;
-  let idRows = columns.find(n=>n.id === id);
+const handleClick = (e, index, ref, color) => { 
+  let id = columns[index].id
   if (id) {
-    handleSelect(e,id)
-
+    handleSelect(e.ctrlKey,e.shiftKey, id)     
   } 
     if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
-      dispatch(autoUpdate({id: 'rowsToUpdate', str: idRows}))
+      dispatch(autoUpdate({id: 'rowsToUpdate', str: id}))
         dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
  
       };
    if (e.detail === 2) {
+    let idRows = columns[index]
        handleDoubleClick(e, index, idRows)
       }
   }
@@ -196,6 +199,9 @@ const rowsForRender = useMemo(
   () => bodyTableRows,
   [bodyTableRows]
 );
+const MemoizedChildComponent = useMemo(()=>TableRows, [rowsForRender]);
+
+
 return (
 
     <Box sx={tableBoxStyle} >    
@@ -204,49 +210,21 @@ return (
       <Paper sx={paperTableStyle}>
       <ScrollTabsButton/> 
          <TableContainer sx={tableContainerStyle} >
-         {/* {isLoading && <Preloader/>} */}
+         {isLoading && <Preloader/>}
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
             <EnhancedTableHead 
                           rowCount={rowsForRender?.length}/>
-    {/* <Profiler id="Navigation" onRender={callback}> */}
-   
-        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }}
-        >
-              {rowsForRender.map((rows, index, arr) => {
-                   return (
-                    <tr 
-                    onClick={(e)=>handleClick(e, index, arr[index])}
-                    tabIndex={-1}
-                    key={index}
-                    id={index}
-                     style={{
-                      // '&:focus': {backgroundColor: '#fff', color: '#fff'},
-                           backgroundColor: selectedRows.indexOf(rows[0].value) !== -1?'#B0C4FF':hexToRgbA(rows[0]?.color),
-                      color: selectedRows.indexOf(rows[0].value) !== -1?'#fff':'#000', 
-                      cursor: 'pointer',
-                      border: '1px solid #fff'
-                  
-                    }}
-                  >
-            {rows.map((row,ind) => (
-              
-            <td style={{ minWidth: '100px', fontSize: '12px', height: '21px', whiteSpace: 'nowrap', padding: '0px 10px',
-
-             maxWidth: '400px',  overflowX: 'auto', width: '200px',
-             color: 'inherit', position: 'relative', borderBottom: '1px solid #fff'
-            }}
-            key={ind} align="center" >
-              <GetRowsComparator row={row}/> 
-              {/* {row.value} */}
-               </td>
-            
-            ))} 
-             </tr> );
-             
-                })}
+    
+        <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }}>
+        <Suspense fallback={<Preloader/>}>
+        {rowsForRender.map((rows, index, arr) => {
+         return (<MemoizedChildComponent key={index} 
+         rows ={rows} index={index} arr={arr} click={handleClick} selected = {selectedRows}/>)
+        })}                 
+       
+      </Suspense>
              </TableBody>
-             {/* </Profiler> */}
-          </Table>
+                 </Table>
         </TableContainer> 
 
       </Paper>
@@ -262,8 +240,6 @@ return (
             <Typography sx={{'@media (max-width:768px)': { display: 'block', textAlign: 'center',marginLeft: '0px'}, fontSize: '14px', marginLeft: '10px' }}>{`Вибрано:
              ${selectedRows[0]?selectedRows.length: 0}`}</Typography>
   </Box>
-{/* <CustomTablePagination length={Number(tableLength)} rowsPerPage={rowsPerPage}  page={page}/> */}
-
 <MyTablePagination length={Number(tableLength)} rowsPerPage={rowsPerPage}  page={page}/>
 </Box>
     <ComentModalMenu/>

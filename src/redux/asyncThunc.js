@@ -168,7 +168,7 @@ export const getFilteredOrders = createAsyncThunk(
   'filtered/all',
   async (_, { rejectWithValue, getState }) => { 
     const state = getState();  
-    const patrams =  state.ordersAll.searchParams;
+    const isLoading =  state.ordersAll.isLoading;
     const column = state.ordersAll.tHeadColumnFiltered;
 console.log('getFilteredOrders',column);
           let columns ={ draw: '1',
