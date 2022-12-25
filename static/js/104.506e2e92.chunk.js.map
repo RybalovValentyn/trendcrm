@@ -1,0 +1,1 @@
+{"version":3,"file":"static/js/104.506e2e92.chunk.js","mappings":"+HAQA,UARA,WACI,OACI,wCAIR,C","sources":["components/tableBody/pages/users/users.jsx"],"sourcesContent":["function Users() {\r\n    return(\r\n        <div>\r\n            users psges\r\n        </div>\r\n    )\r\n};\r\n\r\nexport default Users"],"names":[],"sourceRoot":""}
