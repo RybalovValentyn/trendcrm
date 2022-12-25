@@ -1,11 +1,11 @@
 {
   "files": {
     "main.css": "/trendcrm/static/css/main.abfd59ec.css",
-    "main.js": "/trendcrm/static/js/main.113d48d9.js",
+    "main.js": "/trendcrm/static/js/main.ef846d48.js",
     "static/js/371.b190a848.chunk.js": "/trendcrm/static/js/371.b190a848.chunk.js",
     "static/js/252.73ff2658.chunk.js": "/trendcrm/static/js/252.73ff2658.chunk.js",
     "static/js/681.61f5e168.chunk.js": "/trendcrm/static/js/681.61f5e168.chunk.js",
-    "static/js/890.00fdf898.chunk.js": "/trendcrm/static/js/890.00fdf898.chunk.js",
+    "static/js/890.81908784.chunk.js": "/trendcrm/static/js/890.81908784.chunk.js",
     "static/js/786.72cdfd9c.chunk.js": "/trendcrm/static/js/786.72cdfd9c.chunk.js",
     "static/js/886.53a07265.chunk.js": "/trendcrm/static/js/886.53a07265.chunk.js",
     "static/js/605.9e1959db.chunk.js": "/trendcrm/static/js/605.9e1959db.chunk.js",
@@ -13,11 +13,11 @@
     "static/media/logo.png": "/trendcrm/static/media/logo.3802fcbe7457e594311c.png",
     "index.html": "/trendcrm/index.html",
     "main.abfd59ec.css.map": "/trendcrm/static/css/main.abfd59ec.css.map",
-    "main.113d48d9.js.map": "/trendcrm/static/js/main.113d48d9.js.map",
+    "main.ef846d48.js.map": "/trendcrm/static/js/main.ef846d48.js.map",
     "371.b190a848.chunk.js.map": "/trendcrm/static/js/371.b190a848.chunk.js.map",
     "252.73ff2658.chunk.js.map": "/trendcrm/static/js/252.73ff2658.chunk.js.map",
     "681.61f5e168.chunk.js.map": "/trendcrm/static/js/681.61f5e168.chunk.js.map",
-    "890.00fdf898.chunk.js.map": "/trendcrm/static/js/890.00fdf898.chunk.js.map",
+    "890.81908784.chunk.js.map": "/trendcrm/static/js/890.81908784.chunk.js.map",
     "786.72cdfd9c.chunk.js.map": "/trendcrm/static/js/786.72cdfd9c.chunk.js.map",
     "886.53a07265.chunk.js.map": "/trendcrm/static/js/886.53a07265.chunk.js.map",
     "605.9e1959db.chunk.js.map": "/trendcrm/static/js/605.9e1959db.chunk.js.map",
@@ -25,6 +25,6 @@
   },
   "entrypoints": [
     "static/css/main.abfd59ec.css",
-    "static/js/main.113d48d9.js"
+    "static/js/main.ef846d48.js"
   ]
 }
