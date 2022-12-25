@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Backdrop from '@mui/material/Backdrop';
 
 export function Preloader() {
-  // console.log('preloader');
   const loading = useSelector((state) => state.ordersAll.isLoading );
   const load = useSelector((state) => state.auth.isLoading);
   return (

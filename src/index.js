@@ -12,14 +12,14 @@ import { CookiesProvider } from "react-cookie";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Provider store={store} loading={<Preloader/>} basename="/trendcrm" >
-       {/* <PersistGate persistor={persistor}> */}
+    <Provider store={store} loading={<Preloader/>} basename="/auth" >
+       <PersistGate persistor={persistor}>
        <BrowserRouter>
        <CookiesProvider>
          <App />
          </CookiesProvider>
        </BrowserRouter>
-       {/* </PersistGate> */}
+       </PersistGate>
     </Provider>
   </React.StrictMode>
 );

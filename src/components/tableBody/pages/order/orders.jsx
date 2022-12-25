@@ -16,8 +16,7 @@ import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
    getOpenTableCreate, autoUpdate, getFormTable, getClouseTableCreate} from '../../../../redux/ordersReduser';
 import { Preloader } from '../../../preloader/preloader';
 import { TableRows } from './tableRows';
-import { getselected } from '../../../../redux/funcReduser';
-
+import { hexToRgbA } from "./functionOrder";
 
 const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
 const EnhancedTableHead = lazy(() => import("./enhancedTableHead.jsx"));
@@ -46,12 +45,14 @@ export  function Order() {
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 const [searchParams, setSearchParams] = useSearchParams();
 const statusName = searchParams.get('status');
-const selectedRows = useSelector((state) => state.function.selectedRow);
+// const selectedRows = useSelector((state) => state.function.selectedRow);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
- 
+    let selected =  sessionStorage.getItem("selected");
     const page = useSelector((state) => state.ordersAll.page);
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
+    const rowRef = useRef(null);
+    let countSelected = 0;
 
    useEffect(()=>{
     console.log(statusName);
@@ -68,7 +69,7 @@ const selectedRows = useSelector((state) => state.function.selectedRow);
         // console.log('Number(idRows) && isUpdateRows', idRows);
         navigate(`/trendcrm/order/:${idRows}`);        
       } else if (location.pathname === '/trendcrm/orders') {
-        console.log(location.pathname);
+        // console.log(location.pathname);
         dispatch(autoUpdate({id:'statusName', str: null}));
         getUpdate();
       }
@@ -97,7 +98,6 @@ useEffect(() => {
 if (columns.length > 0 && dataForHeader.length > 0 && filteredColumn.length === 0) {
  dispatch(bodyTableRowsUpdate([...arrayRows]))
 } else if (columns.length > 0 && filteredColumn.length > 0 ) {
-  console.log(arrayFilteredRows, filteredColumn.length);
  dispatch(bodyTableRowsUpdate([...arrayFilteredRows]))
 }
 }, [columns, filteredColumn, dataForHeader ]);
@@ -120,61 +120,86 @@ const arrayRows = useMemo(() => columns.map((str, ind) =>{
 
     }),[dataForHeader, columns]
 );
+const addColor =(id)=>{  
+  const element = document.getElementById(id);
+  element.style.backgroundColor = '#B0C4FF'
+}
+const removeColor=(id)=>{
+  let color = columns.find(col=>col.id === id)?.status_style
+  const element = document.getElementById(id);
+  element.style.backgroundColor = hexToRgbA(color)
+}
 
 const handleSelect = (ctrlKey,shiftKey, id) =>{
-  if (isGrabAll === true){
-  dispatch(autoUpdate({id: 'isGrabAll', str: false}))} 
-    const selectedIndex = selectedRows.indexOf(id);
-    let newSelected = [];
+let prevSelected= [];
+if (sessionStorage.getItem("selected")) {
+  prevSelected = sessionStorage.getItem("selected").split(',');
+    if (prevSelected.length === 1 && !ctrlKey && !shiftKey) {
+         removeColor(prevSelected[0])
+    } else if(prevSelected.length > 1 && !ctrlKey && !shiftKey){
+      prevSelected.map(str=>{if (str) { removeColor(str)}})
+    }
+}
+  addColor(id)
+  const selectedIndex = prevSelected.indexOf(id);
+  let newSelected = [];
 if (selectedIndex === -1 && !ctrlKey) {
   newSelected.push(id);
-  }  
+  }  else if (selectedIndex >= 0){
+    removeColor(id)
+  }
  if (ctrlKey) {
-  console.log('ctrlKey',selectedRows);
   if (selectedIndex === -1) {
-    newSelected = newSelected.concat(selectedRows, id)
+    newSelected = prevSelected.concat(id)
+    if (newSelected.length > 1) {
+      newSelected.map(str=>{
+        if (str) {
+          addColor(str)
+        }
+      })
+    }
   } else if (selectedIndex >= 0) {
-    let arr = [...selectedRows]
+    removeColor(id)
+    let arr = [...prevSelected]
     arr.splice(selectedIndex,1);
     newSelected = [...arr]
   };
 };
 if (shiftKey) {
-  const lastElement = selectedRows.length - 1;
-  // console.log('shiftKey',selectedRows, selectedIndex,lastElement);
   
-  if (lastElement >=0) {
+  const lastElement = prevSelected.length-1; 
+  if (lastElement >= 0) {
+    console.log(prevSelected);
     let newElements=[]
-    const firstElement = columns.findIndex(n=> n.id === selectedRows[lastElement])
+    const firstElement = columns.findIndex(n=> n.id === prevSelected[lastElement])
     const lastIndexElement = columns.findIndex(n=> n.id === id);
-    if (firstElement<lastIndexElement) {
+     if (firstElement<lastIndexElement) {
        newElements = columns.slice(firstElement, lastIndexElement+1).map(n=>n.id)
     } else if (firstElement > lastIndexElement) {
        newElements = columns.slice(lastIndexElement, firstElement).map(n=>n.id)
     } else newElements = [id]
-    
-    newSelected = [...selectedRows,...newElements]
+    newSelected = [...prevSelected,...newElements]
+    console.log(prevSelected);
+    if (newSelected.length > 1) {
+      newSelected.map(str=>{
+        if (str) {
+          addColor(str) 
+        }
+      })
+    }
 
-    console.log('firstelement', newElements);
-    } else if (lastElement >= 0) {
- 
-    let lastSelected = 'selectedRows[],'
-    // console.log(lastSelected, firstElement);
-    // let arr = [...selectedRows]
-    // arr.splice(selectedIndex,1);
-    // newSelected = [...arr]
-  };
-};
-dispatch(getselected(newSelected))
+};}
+sessionStorage.setItem("selected", newSelected);
  }; 
 
-const handleClick = (e, index, ref, color) => { 
+const handleClick = (e, index) => { 
   let id = columns[index].id
   if (id) {
-    handleSelect(e.ctrlKey,e.shiftKey, id)     
+    handleSelect(e.ctrlKey,e.shiftKey, id) ;
+    countUpdate()    
   } 
     if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
-      dispatch(autoUpdate({id: 'rowsToUpdate', str: id}))
+      dispatch(autoUpdate({id: 'rowsToUpdate', str: columns[index]}))
         dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
  
       };
@@ -184,7 +209,7 @@ const handleClick = (e, index, ref, color) => {
       }
   }
  const handleDoubleClick=(event, index, name)=>{
-
+  sessionStorage.setItem("selected", '');
     let id = name.id;
     dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     if (Number(statusName)){
@@ -194,7 +219,15 @@ const handleClick = (e, index, ref, color) => {
     dispatch(getRowsAfterAdd(id));   
 
   };
+const countUpdate = ()=>{
+  const element = rowRef
+  if (sessionStorage.getItem("selected").length) {
+    let count = sessionStorage.getItem("selected")?.split(',')?.filter((str,ind,arr)=>arr.indexOf(str) === ind).length    
+    countSelected = count
+    element.current.textContent = `${countSelected}`
+  } else element.current.textContent = `${0}`
 
+}
 const rowsForRender = useMemo(
   () => bodyTableRows,
   [bodyTableRows]
@@ -210,19 +243,19 @@ return (
       <Paper sx={paperTableStyle}>
       <ScrollTabsButton/> 
          <TableContainer sx={tableContainerStyle} >
-         {isLoading && <Preloader/>}
+         {/* {isLoading && <Preloader/>} */}
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
             <EnhancedTableHead 
                           rowCount={rowsForRender?.length}/>
     
         <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }}>
-        <Suspense fallback={<Preloader/>}>
+
         {rowsForRender.map((rows, index, arr) => {
          return (<MemoizedChildComponent key={index} 
-         rows ={rows} index={index} arr={arr} click={handleClick} selected = {selectedRows}/>)
+         rows ={rows} index={index} arr={arr} click={handleClick} />)
         })}                 
        
-      </Suspense>
+
              </TableBody>
                  </Table>
         </TableContainer> 
@@ -237,8 +270,9 @@ return (
 
   },}}> {`Записів від ${startRows+1} до ${(startRows+rowsPerPage)>tableLength?tableLength:startRows+rowsPerPage} 
             з ${tableLength} записів`}</Typography> 
-            <Typography sx={{'@media (max-width:768px)': { display: 'block', textAlign: 'center',marginLeft: '0px'}, fontSize: '14px', marginLeft: '10px' }}>{`Вибрано:
-             ${selectedRows[0]?selectedRows.length: 0}`}</Typography>
+            <Typography  sx={{'@media (max-width:768px)': { display: 'block', textAlign: 'center',marginLeft: '0px'}, fontSize: '14px', marginLeft: '10px' }}>
+              Вибрано: <span ref={rowRef}>{countSelected}</span>
+             </Typography>
   </Box>
 <MyTablePagination length={Number(tableLength)} rowsPerPage={rowsPerPage}  page={page}/>
 </Box>

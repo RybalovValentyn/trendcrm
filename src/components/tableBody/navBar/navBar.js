@@ -1,4 +1,4 @@
-import {useState, Suspense, lazy} from 'react';
+import {useState, Suspense,useEffect, lazy} from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
@@ -12,29 +12,30 @@ import ListItemText from '@mui/material/ListItemText';
 import {mainNavBarItem} from './navBarItems';
 import {useNavigate,Outlet,useLocation} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
-// import { AppBarComponent } from './appBar';
 import { AppBar, Drawer} from './styles';
-import { useEffect } from 'react';
+import { Preloader } from '../../preloader/preloader';
+
 const AppBarComponent = lazy(() => import("./appBar.js"));
 
 
+
 export function MiniDrawer() {
+  
   const location = useLocation();
-
-
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-
+  
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
 
     useEffect(() => {
 if (location.pathname === '/trendcrm') {
+  console.log('appBar2');
   navigate(`/trendcrm/orders`)
 }       
       
-}, []);
+},[]);
 
 const handleNavigate=(text)=>{
   navigate(text);
@@ -64,8 +65,10 @@ const drawerStyle = {
           >
             <MenuIcon sx={{fill: colorsRef.svgColor}}/>
           </IconButton>
+              <Suspense fallback={null}>
+              <AppBarComponent/>
+              </Suspense>
 
-          <AppBarComponent/>
         </Toolbar>
 
 
@@ -88,8 +91,7 @@ const drawerStyle = {
 
       </Drawer>
 
-      {/* <Suspense fallback={<Preloader/>}> */}
-      <Suspense fallback={null}>
+      <Suspense fallback={<Preloader/>}>
         <Outlet />
       </Suspense>
  

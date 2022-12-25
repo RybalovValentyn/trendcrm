@@ -4,7 +4,7 @@ import { currentThunk, loginThunk} from './asyncThunc';
 
 // axios.defaults.baseURL = 'https://react.trendcrm.biz/';
 
-axios.defaults.baseURL = 'http://localhost:5000/';
+// axios.defaults.baseURL = 'http://localhost:5000/';
 
 const hashKey = Object.freeze({
   set(token) {
@@ -48,10 +48,10 @@ const authSlice = createSlice({
   },
 
   reducers: {
-    initUser: (state, action) => {
-      hashKey.set(action.payload.user.hashKey);
-      return { ...state, ...action.payload.user, isAuth: true };
-    },
+    // initUser: (state, action) => {
+    //   hashKey.set(action.payload.user.hashKey);
+    //   return { ...state, ...action.payload.user, isAuth: true };
+    // },
     ExitUser: (state, action) => {
       hashKey.set('');
       return { ...state, ...action.payload, isAuth: false, name: '', login: '', hashKey: null };
@@ -68,6 +68,7 @@ const authSlice = createSlice({
       };
     },
     [loginThunk.fulfilled](state, action) {
+      console.log(action.payload);
       return {
         ...state,
         id : action.payload.id,
@@ -112,7 +113,6 @@ const authSlice = createSlice({
        };
     },
     [currentThunk.fulfilled](state, action) {
-
       return {
         ...state,
          isLoading: false,

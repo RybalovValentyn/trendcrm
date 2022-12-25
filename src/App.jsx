@@ -26,40 +26,43 @@ import { CreateRows } from './components/tableBody/pages/orderCreate/order';
 import {useNavigate} from 'react-router-dom';
 import {ErrorPage} from './components/errorPage/ErrorPage'
 
-function App(history) {
+function App() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const hashKey = useSelector(state => state.auth.hashKey);
   const currentUser = useSelector(state => state.auth.id);
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isLoading = useSelector(state => state.auth.isLoading);
   const ontableLoad = useSelector(state => state.ordersAll.isLoading);
   const idRows = useSelector((state) => state.ordersAll.createRows?.id);
-  
+  const isAuth = useSelector(state => state.auth.isAuth)
 
   const [cookies, setCookie] = useCookies(['user_id=1']);
-  setCookie('user_id', '1', { path: '/' });
+  
+ 
   useEffect(() => {
     if (hashKey) {
       dispatch(currentThunk());
     }
   }, [hashKey]);
 
+
   useEffect(() => {
       if (currentUser) {
-        console.log('current user ');
-        handleReload()  
+        // console.log('current user ');
+        setCookie('user_id', '1', { path: '/' });
+        // handleReload()
     }
   }, [currentUser]);
 
   const handleReload =()=>{
-    console.log('reload');
+    // console.log('reload');
     dispatch(getAllStatuses())
     if (filteredRows?.length > 0) {
       dispatch(getFilteredOrders())
     } else dispatch(getAllOrders())
   }
-  
+
+
   const wildcards = [
     {id: 'homeBar', target: Home},
     {id: 'users', target: Users},
@@ -73,7 +76,6 @@ function App(history) {
     {id: 'faq', target: Faq},
     {id: 'purchasing', target: Purchasing},
     {id: 'help', target: Help},
-    // {id: 'order', target: CreateRows},
   ];
 
   return (
@@ -83,11 +85,11 @@ function App(history) {
 
         <Routes >      
 
-                      <Route loader={<Preloader/>} errorElement={<Preloader/>}  path='/auth' element={<PublicRoute component={SignIn}  />}/>
-                       <Route loader={<Preloader/>} errorElement={<Preloader/>} path='/trendcrm'  element={<PrivateRoute component={MiniDrawer} />}> 
+                      <Route loader={<Preloader/>} errorElement={<ErrorPage/>}  path='/auth' element={<PublicRoute component={SignIn}  />}/>
+                       {isAuth ? <Route loader={<Preloader/>} errorElement={<ErrorPage/>} path='/trendcrm'  element={<PrivateRoute component={MiniDrawer} />}>
                            
                            {wildcards.map(e => (
-                                  <Route loader={<Preloader/>}
+                                  <Route 
                                     path={`${e.id}`}
                                     element={<PrivateRoute component={e.target}/>}
                                     key={`component_${e.id}`}
@@ -95,31 +97,15 @@ function App(history) {
                                 ))}  
                          <Route path={'order'} element={<PrivateRoute component={CreateRows}/>}>
                              <Route path={':idRows'} element={<CreateRows/>} />
-                         </Route>
+                         </Route>                        
                          
-                         
-                   {/* { idRows?  <Route path={'order/:idRows'} element={<PrivateRoute component={CreateRows} />} />:
-                   <Route  path='/trendcrm'  element={<PrivateRoute component={MiniDrawer}/>} />
-                   }   */}
-                    </Route>
+
+                    </Route>:
+                    <Route loader={<Preloader/>} errorElement={<ErrorPage/>}  path='/auth' element={<PublicRoute component={SignIn}  />}/>
+                    }
                     <Route path="/trendcrm/order/*" element={<ErrorPage/>} />         
                     <Route path="*" element={<Preloader/>} />
-                  {/* <Route path='/trendcrm' element={<PrivateRoute component={MiniDrawer}/>}> 
-                           <Route path='auth'  element={<PublicRoute component={SignIn} />}/>
-                          <Route path={Router.HOMEBAR} element={<PrivateRoute component={Home}/>} />
-                          <Route path={Router.USERS} element={<PrivateRoute component={Users} />} />
-                          <Route path='orders' element={<Outlet component={Order} />} />
-                          <Route path={Router.PRODUCTS} element={<PrivateRoute component={Products} />} />
-                          <Route path={Router.DELIVERY} element={<PrivateRoute component={Delivery} />} />
-                          <Route path={Router.CALLS} element={<PrivateRoute component={Calls} />} />
-                          <Route path={Router.MESSAGE} element={<PrivateRoute component={Messages} />} />
-                          <Route path={Router.ANALITICS} element={<PrivateRoute component={Analytics} />} />
-                          <Route path={Router.SETTINGS} element={<PrivateRoute component={Settings} />} />
-                          <Route path={Router.FAQ} element={<PrivateRoute component={Faq} />} />
-                          <Route path={Router.PURCH} element={<PrivateRoute component={Purchasing} />} />
-                          <Route path={Router.HELP} element={<PrivateRoute component={Help} />} />
-                          <Route path="*" element={<PublicRoute component={SignIn} />} />
-                    </Route>  */}
+
       </Routes>
 
     </div>

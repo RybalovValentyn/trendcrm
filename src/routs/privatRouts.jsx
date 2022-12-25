@@ -1,14 +1,15 @@
-import { Navigate } from "react-router";
+import {useNavigate} from 'react-router-dom';
 import { useSelector } from "react-redux";
 
 
 export function PrivateRoute({ component: C, }) {
-    const idRows = useSelector((state) => state.ordersAll.rowsToUpdate.id);
-    // const isAuth = useSelector(state => state.auth.isAuth)
-    const isAuth=true
+    const navigate = useNavigate();
+   
+    const isAuth = useSelector(state => state.auth.isAuth)
+    // const isAuth=true
     return (<>
 
-        {isAuth ? <C /> : <Navigate to='/auth' />}
+        {isAuth ? <C /> : navigate('/auth')}
 
     </>)
 }

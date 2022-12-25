@@ -19,7 +19,9 @@ import functionReduser from './funcReduser';
   const authPersistConfig = {
     key: 'hash_key',
     storage,
-    whiteList: ['hash_key'],
+    whiteList: ['hash_key', 'isAuth'],
+    blacklist: ['isAuth']
+    
   };
   const orderPersistConfig = {
     key: 'orderAll',
@@ -31,18 +33,18 @@ import functionReduser from './funcReduser';
   const orderPersistReduser = persistReducer(orderPersistConfig, ordersReduser);
 
   export const store = configureStore({
+    // reducer: {
+    //    auth: authReduser,
+    //   addStatus: statusReduser,
+    //   ordersAll: ordersReduser,
+    //   function: functionReduser,
+    // },
     reducer: {
-       auth: authReduser,
-      addStatus: statusReduser,
-      ordersAll: ordersReduser,
-      function: functionReduser,
-    },
-  //   reducer: {
-  //     auth: authPersistReducer,
-  //    addStatus: statusReduser,
-  //    ordersAll: orderPersistReduser,
-        // function: functionReduser,
-  //  },
+      auth: authPersistReducer,
+     addStatus: statusReduser,
+     ordersAll: orderPersistReduser,
+        function: functionReduser,
+   },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: {

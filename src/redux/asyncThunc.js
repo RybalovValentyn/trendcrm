@@ -61,7 +61,7 @@ export const currentThunk = createAsyncThunk(
           },
           })
           const data = await response
-        console.log('currentThunk',data);
+        // console.log('currentThunk',data);
         return data.status;
       } catch (error) {
         return rejectWithValue({
@@ -170,7 +170,7 @@ export const getFilteredOrders = createAsyncThunk(
     const state = getState();  
     const isLoading =  state.ordersAll.isLoading;
     const column = state.ordersAll.tHeadColumnFiltered;
-console.log('getFilteredOrders',column);
+// console.log('getFilteredOrders',column);
           let columns ={ draw: '1',
           start: state.ordersAll.start?state.ordersAll.start:0,
           length: state.ordersAll.rowsPerPage,
@@ -270,8 +270,8 @@ export const getAllOrders = createAsyncThunk(
            url:  REBASE_URL+orders,
            data: columns
           })
-          console.log(data);
-          // console.log('getAllOrders', Object.keys(data?.data[0])?.length);
+          // console.log(data);
+          console.log('getAllOrders', Object.keys(data?.data[0])?.length);
          return data
       } catch (error) {
         return rejectWithValue({
@@ -285,13 +285,13 @@ export const getRowsAfterAdd = createAsyncThunk(
   'rows/post',
   async (id, { rejectWithValue, getState }) => {
   
-    console.log(id);
+    // console.log(id);
             try {
         const { data } = await axios({
           method: "get",
            url:  REBASE_URL+addOrder+`/${id}`,
           });
-        console.log(data);
+        // console.log(data);
         if (data.order) {
           return data;
         } else throw new Error('Неможливо, пусто');

@@ -1,23 +1,10 @@
 import { GetRowsComparator } from "./getRowsComparator";
-import { useRef, useLayoutEffect} from "react";
+import { hexToRgbA } from "./functionOrder";
 
-export const TableRows=({rows, index, arr, click, selected} )=>{
+export const TableRows=({rows, index, arr, click} )=>{
+    
 
-    const rowRef = useRef(null);
 
- const  hexToRgbA = (hex) =>{
-        // console.log(hex);
-        let c;
-        if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
-            c= hex.substring(1).split('');
-            if(c.length == 3){
-                c= [c[0], c[0], c[1], c[1], c[2], c[2]];
-            }
-            c= '0x'+c.join('');
-            return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',0.25)';
-        }
-        throw new Error('Bad Hex');
-      }
     const columnStyle ={
         minWidth: '100px',
          fontSize: '12px', 
@@ -44,30 +31,12 @@ const rowStyle={
 }
 }
 
-useLayoutEffect(() => {
-
-    if (selected.includes(rows[0].value)) {
-        rowRef.current.style.backgroundColor = '#B0C4FF'
-    } else rowRef.current.style.backgroundColor = hexToRgbA(`${rows[0]?.color}`)   
-
-    }, [selected]);
-    
-const handleClick=()=>{
-    rowRef.current.style.backgroundColor = '#B0C4FF'
-}
-
-
     return (      
          <tr 
-         ref={rowRef}
-        //  onMouseUp={handleClick}
-         onClick ={(e)=>click(e,index, rowRef, hexToRgbA(`${rows[0]?.color}`))} 
-        onMouseDown={handleClick}
+         onClick ={(e)=>click(e,index)} 
          tabIndex={-1}
-
          key={index}
          id={rows[0].value}
-        //  style={selected?focusRowStyle:rowStyle}
         style={rowStyle}
        >
            {rows.map((row, ind)=><td key={ind} style={columnStyle}><GetRowsComparator row={row}/></td>)  } 
