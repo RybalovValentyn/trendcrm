@@ -30,6 +30,7 @@ export function MiniDrawer() {
   };
 
     useEffect(() => {
+      navigate('/trendcrm/orders')
 if (location.pathname === '/trendcrm') {
   console.log('appBar2');
   navigate(`/trendcrm/orders`)

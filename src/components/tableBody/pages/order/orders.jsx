@@ -45,7 +45,7 @@ export  function Order() {
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 const [searchParams, setSearchParams] = useSearchParams();
 const statusName = searchParams.get('status');
-// const selectedRows = useSelector((state) => state.function.selectedRow);
+const selectedRows = useSelector((state) => state.function.selectedRow);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
     let selected =  sessionStorage.getItem("selected");
@@ -102,6 +102,25 @@ if (columns.length > 0 && dataForHeader.length > 0 && filteredColumn.length === 
 }
 }, [columns, filteredColumn, dataForHeader ]);
 
+useEffect(() => {
+ let prevSelected = sessionStorage.getItem("selected").split(',');
+if (isGrabAll) {    
+  prevSelected.map(str=>{
+    if (str) {
+      addColor(String(str))
+    }
+  }) 
+  countUpdate()  
+}else if (!isGrabAll) {
+  sessionStorage.setItem("selected", '');
+  prevSelected.map(str=>{
+    if (str) {
+      removeColor(str)
+    }
+})};
+countUpdate()  
+  }, [isGrabAll]);
+
 const arrayFilteredRows = useMemo(() => columns.map((str, ind) =>{
   return (filteredColumn.reduce((acc,val, ind) =>{    
     acc.push({id:val.data, value: str[val.data], color: str.status_style })         
@@ -121,12 +140,12 @@ const arrayRows = useMemo(() => columns.map((str, ind) =>{
     }),[dataForHeader, columns]
 );
 const addColor =(id)=>{  
-  const element = document.getElementById(id);
+  const element = document.getElementById(`${id}+rows`);
   element.style.backgroundColor = '#B0C4FF'
 }
 const removeColor=(id)=>{
   let color = columns.find(col=>col.id === id)?.status_style
-  const element = document.getElementById(id);
+  const element = document.getElementById(`${id}+rows`);
   element.style.backgroundColor = hexToRgbA(color)
 }
 
@@ -203,6 +222,7 @@ const handleClick = (e, index) => {
         dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
  
       };
+      dispatch(autoUpdate({id: 'isGrabAll', str: false}))
    if (e.detail === 2) {
     let idRows = columns[index]
        handleDoubleClick(e, index, idRows)

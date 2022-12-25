@@ -142,11 +142,11 @@ const handleKeyDown=(e)=>{
 }
 
 const onchangeAll=(e)=>{
-  console.log(e.target.checked);
-  let s = e.target.checked
+  let s = e.target.checked;
   dispatch(autoUpdate({id: 'isGrabAll', str: s}))
   if (s) {
     const newSelected = bodyTableRows.map((n,ind) => n[0].value);
+    sessionStorage.setItem("selected", newSelected);
     dispatch(getselected(newSelected))
     return;
   } else dispatch(getselected([]))
