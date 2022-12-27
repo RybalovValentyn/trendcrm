@@ -1,4 +1,4 @@
-export function Analytics() {
+function Analytics() {
     console.log('Analytics');
     return(
         <div >
@@ -16,3 +16,4 @@ export function Analytics() {
         </div>
     )
 };
+export default Analytics

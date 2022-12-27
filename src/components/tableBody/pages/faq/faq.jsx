@@ -1,4 +1,4 @@
-export function Faq() {
+function Faq() {
     console.log('Faq');
     return(
         <div >
@@ -16,3 +16,5 @@ export function Faq() {
         </div>
     )
 };
+
+export default Faq

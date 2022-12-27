@@ -1,4 +1,4 @@
-export function Settings() {
+function Settings() {
     console.log('Settings');
     return(
         <div >
@@ -16,3 +16,4 @@ export function Settings() {
         </div>
     )
 };
+export default Settings

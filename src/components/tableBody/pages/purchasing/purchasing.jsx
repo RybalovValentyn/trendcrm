@@ -1,4 +1,4 @@
-export function Purchasing() {
+function Purchasing() {
     console.log('Purchasing');
     return(
         <div >
@@ -16,3 +16,4 @@ export function Purchasing() {
         </div>
     )
 };
+export default Purchasing

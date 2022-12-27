@@ -17,6 +17,7 @@ import {bodyTableRowsUpdate, getWidthUpdate, setWidthColumn,
 import { Preloader } from '../../../preloader/preloader';
 import { TableRows } from './tableRows';
 import { hexToRgbA } from "./functionOrder";
+import { getLoading } from '../../../../redux/funcReduser';
 
 const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
 const EnhancedTableHead = lazy(() => import("./enhancedTableHead.jsx"));
@@ -36,16 +37,17 @@ export  function Order() {
   const isLoading = useSelector((state) => state.ordersAll.isLoading);
   const statuses = useSelector((state) => state.ordersAll.getStatuses);
 
-  const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+  const bodyTableSearchRows = useSelector((state) => state.ordersAll.bodyTableSearchRows);
+
   const isGrabAll = useSelector((state) => state.ordersAll.isGrabAll);
   const idRows = useSelector((state) => state.ordersAll.createRows?.id);
   const tableLength = useSelector((state) => state.ordersAll.tableLength);
   const startRows = useSelector((state) => state.ordersAll.start);
   const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-const [searchParams, setSearchParams] = useSearchParams();
-const statusName = searchParams.get('status');
-const selectedRows = useSelector((state) => state.function.selectedRow);
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const statusName = searchParams.get('status');
+  const selectedRows = useSelector((state) => state.function.selectedRow);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('calories');
     let selected =  sessionStorage.getItem("selected");
@@ -53,57 +55,63 @@ const selectedRows = useSelector((state) => state.function.selectedRow);
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
     const rowRef = useRef(null);
     let countSelected = 0;
+const seachStatus = useSelector((state) => state.ordersAll.statusName);
 
-   useEffect(()=>{
-    console.log(statusName);
-       if (Number(statusName)) {
-        // console.log('filter status_name');
-      dispatch(autoUpdate({id:'statusName', str: statusName}));
-      getUpdate();      
-      } else if (!statusName && !idRows) {
-        // console.log('orders');
-        dispatch(autoUpdate({id:'statusName', str: null}));
-        navigate('/trendcrm/orders')
-        getUpdate()
-      } else if(Number(idRows) && isUpdateRows){      
-        // console.log('Number(idRows) && isUpdateRows', idRows);
-        navigate(`/trendcrm/order/:${idRows}`);        
-      } else if (location.pathname === '/trendcrm/orders') {
-        // console.log(location.pathname);
-        dispatch(autoUpdate({id:'statusName', str: null}));
-        getUpdate();
-      }
-   
+  //  useEffect(()=>{
+  //   // console.log(seachStatus);
+  //   //    if (Number(seachStatus)) {
+        
+  //   //     console.log('filter status_name');
+  //   //  setSearchParams(createSearchParams({ status: seachStatus }));
+  //   //   dispatch(autoUpdate({id:'statusName', str: seachStatus}));
+  //   //   // getUpdate();      
+  //   //   }
+  //   //    else
 
-  },[statusName, idRows])  
+  //       if (!seachStatus && !idRows && location.pathname !== '/trendcrm/orders') {
+  //       console.log('orders');
+  //       dispatch(autoUpdate({id:'statusName', str: null}));
+  //       navigate('/trendcrm/orders')
+  //       getUpdate()
+  //     } else if(Number(idRows) && isUpdateRows){      
+  //       console.log('Number(idRows) && isUpdateRows', idRows);
+  //       navigate(`/trendcrm/order/:${idRows}`);        
+  //     } else if (location.pathname === '/trendcrm/orders') {
+  //       console.log(location.pathname, Number(idRows), Number(seachStatus));       
+  //       if (Number(seachStatus) || Number(idRows) !== 0) {
+  //         console.log(Number(idRows) !== 0);
+  //         // dispatch(autoUpdate({id:'statusName', str: null}));
+  //         getUpdate();
+  //       }
+        
+  //     }  
+
+  // },[seachStatus, idRows])  
+  
 
   useEffect(() => {
+dispatch(getLoading(false))
 if (statuses.length === 0) {
   dispatch(getAllStatuses());
-}
-// if (!allOrders[0]) {
-//   getUpdate()
-// }
-  
-        
+}   
+// getUpdate() 
 }, []);
 
 const getUpdate = ()=>{
   if (filteredRows?.length > 0) {
     dispatch(getFilteredOrders())
   } else dispatch(getAllOrders())
+  // removeAllColor()
 }
 
-useEffect(() => {
-if (columns.length > 0 && dataForHeader.length > 0 && filteredColumn.length === 0) {
- dispatch(bodyTableRowsUpdate([...arrayRows]))
-} else if (columns.length > 0 && filteredColumn.length > 0 ) {
- dispatch(bodyTableRowsUpdate([...arrayFilteredRows]))
-}
-}, [columns, filteredColumn, dataForHeader ]);
+
 
 useEffect(() => {
- let prevSelected = sessionStorage.getItem("selected").split(',');
+  let prevSelected =[]
+  if (sessionStorage.getItem("selected")?.split(',').length > 1) {
+    prevSelected = sessionStorage.getItem("selected")?.split(',');
+  } else return
+ 
 if (isGrabAll) {    
   prevSelected.map(str=>{
     if (str) {
@@ -112,33 +120,22 @@ if (isGrabAll) {
   }) 
   countUpdate()  
 }else if (!isGrabAll) {
-  sessionStorage.setItem("selected", '');
-  prevSelected.map(str=>{
-    if (str) {
-      removeColor(str)
-    }
-})};
+  removeAllColor()
+sessionStorage.setItem("selected", '');
+};
 countUpdate()  
   }, [isGrabAll]);
 
-const arrayFilteredRows = useMemo(() => columns.map((str, ind) =>{
-  return (filteredColumn.reduce((acc,val, ind) =>{    
-    acc.push({id:val.data, value: str[val.data], color: str.status_style })         
-    return [...acc]   
-  },[]))
-
-}),[filteredColumn, columns]
-);
-
-const arrayRows = useMemo(() => columns.map((str, ind) =>{
-        return (dataForHeader.reduce((acc,val, ind) =>{
-          acc.push({id:val.id, value: str[val.id], color: str.status_style })         
-          return [...acc]   
-        },[]))
+const removeAllColor = ()=>{
+  const newSelected = columns.flatMap(n => n.id);
+  newSelected.map(str=>{
+    if (str) {
+      removeColor(str)
+    }
+})
+}
 
 
-    }),[dataForHeader, columns]
-);
 const addColor =(id)=>{  
   const element = document.getElementById(`${id}+rows`);
   element.style.backgroundColor = '#B0C4FF'
@@ -146,7 +143,10 @@ const addColor =(id)=>{
 const removeColor=(id)=>{
   let color = columns.find(col=>col.id === id)?.status_style
   const element = document.getElementById(`${id}+rows`);
+ if (element) {
   element.style.backgroundColor = hexToRgbA(color)
+ } else removeAllColor()
+  
 }
 
 const handleSelect = (ctrlKey,shiftKey, id) =>{
@@ -214,6 +214,7 @@ sessionStorage.setItem("selected", newSelected);
 const handleClick = (e, index) => { 
   let id = columns[index].id
   if (id) {
+    console.log(id);
     handleSelect(e.ctrlKey,e.shiftKey, id) ;
     countUpdate()    
   } 
@@ -222,24 +223,25 @@ const handleClick = (e, index) => {
         dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
  
       };
-      dispatch(autoUpdate({id: 'isGrabAll', str: false}))
+      if (isGrabAll) {
+        dispatch(autoUpdate({id: 'isGrabAll', str: false}))
+      }      
    if (e.detail === 2) {
-    let idRows = columns[index]
-       handleDoubleClick(e, index, idRows)
+       handleDoubleClick(e, index, id)
       }
   }
- const handleDoubleClick=(event, index, name)=>{
+ const handleDoubleClick=(event, index, id)=>{
   sessionStorage.setItem("selected", '');
-    let id = name.id;
-    dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
-    if (Number(statusName)){
-      dispatch(autoUpdate({id:'statusName', str: null}));
-      setSearchParams('');
-    } 
-    dispatch(getRowsAfterAdd(id));   
-
+  console.log('id', id);
+       dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
+    // if (Number(statusName)){
+    //   dispatch(autoUpdate({id:'statusName', str: null}));
+    //   setSearchParams('');
+    // } 
+    dispatch(getRowsAfterAdd(id));  
+    navigate(`/trendcrm/order/:${idRows}`); 
   };
-const countUpdate = ()=>{
+const countUpdate = ()=>{  
   const element = rowRef
   if (sessionStorage.getItem("selected").length) {
     let count = sessionStorage.getItem("selected")?.split(',')?.filter((str,ind,arr)=>arr.indexOf(str) === ind).length    
@@ -248,32 +250,28 @@ const countUpdate = ()=>{
   } else element.current.textContent = `${0}`
 
 }
-const rowsForRender = useMemo(
-  () => bodyTableRows,
-  [bodyTableRows]
-);
-const MemoizedChildComponent = useMemo(()=>TableRows, [rowsForRender]);
 
+const MemoizedChildComponent = useMemo(()=>TableRows, [bodyTableRows]);
 
 return (
 
-    <Box sx={tableBoxStyle} >    
+    <Box sx={tableBoxStyle} > 
    < HeaderContainer/>
-
       <Paper sx={paperTableStyle}>
       <ScrollTabsButton/> 
          <TableContainer sx={tableContainerStyle} >
-         {/* {isLoading && <Preloader/>} */}
+
+         {isLoading && <Preloader/>}
+
                 <Table sx={{ minWidth: 550}} aria-labelledby="tableTitle">
             <EnhancedTableHead 
-                          rowCount={rowsForRender?.length}/>
-    
+                          rowCount={bodyTableRows?.length}/>
         <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }}>
 
-        {rowsForRender.map((rows, index, arr) => {
+        {bodyTableRows.map((rows, index, arr) => {
          return (<MemoizedChildComponent key={index} 
          rows ={rows} index={index} arr={arr} click={handleClick} />)
-        })}                 
+        })}              
        
 
              </TableBody>

@@ -32,7 +32,7 @@ const MenuProps = {
   },
 };
 
-export const  InputSelector =({name}) => {
+const  InputSelector =({name}) => {
 
     const dispatch = useDispatch();
     const value = useSelector((state) => state.ordersAll.searchParams);
@@ -363,5 +363,5 @@ if (name === 'payment_name') {
 }
 
 
-
+export default  InputSelector
 

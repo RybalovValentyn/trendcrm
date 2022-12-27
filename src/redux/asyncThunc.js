@@ -49,7 +49,7 @@ export const currentThunk = createAsyncThunk(
   'users/current',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();   
-
+// console.log('currentThunk');
           try {
         const response = await axios({
           method: "get",

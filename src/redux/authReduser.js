@@ -78,7 +78,7 @@ const authSlice = createSlice({
         name: action.payload.name,
         sip_login: action.payload.sip_login,
          isLoading: false,
-         isAuth: (action.payload.hashKey!== '' && action.payload.hashKey)?true:false,
+        //  isAuth: (action.payload.hashKey!== '' && action.payload.hashKey)?true:false,
          menu_list_access: action.payload.menu_list_access,
          order_statuses_access: action.payload.order_statuses_access,
          payment_received: action.payload.payment_received,

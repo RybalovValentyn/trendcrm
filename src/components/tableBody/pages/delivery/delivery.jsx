@@ -1,4 +1,4 @@
-export function Delivery() {
+function Delivery() {
     console.log('Delivery');
     return(
         <div >
@@ -16,3 +16,4 @@ export function Delivery() {
         </div>
     )
 };
+export default Delivery

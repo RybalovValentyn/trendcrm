@@ -5,8 +5,8 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
          getAllOrders, getAllStatuses, getFilteredOrders, setCommentAdd } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
-
-
+import { useMemo } from 'react';
+import { translater } from '../components/tableBody/pages/order/translate';
 
 const table = tableParse.data
 
@@ -185,6 +185,7 @@ client: {...client},
   tableLength: null,
   statusName: null,
   selectedRows: [],
+  translater: {...translater}
   },
 
    reducers: {
@@ -227,15 +228,15 @@ client: {...client},
       return { ...state,
         getStatuses: [...state.getStatuses,action.payload ] 
     };},
-       bodyTableRowsUpdate: (state, action) => {  
-        console.log('is updated tablerows');
-        return { ...state,
-          bodyTableRows: [...action.payload ] 
-      };},
-       tHeadColumnUpdate: (state, action) => {  
-          return { ...state,
-            tHeadColumn: [...action.payload ] 
-        };},
+      //  bodyTableRowsUpdate: (state, action) => {  
+      //   console.log('is updated tablerows');
+      //   return { ...state,
+      //     bodyTableRows: [...action.payload ] 
+      // };},
+      //  tHeadColumnUpdate: (state, action) => {  
+      //     return { ...state,
+      //       tHeadColumn: [...action.payload ] 
+      //   };},
         getWidthUpdate: (state, action) => {  
           return { ...state,
             widthOfColumn: [...action.payload ] 
@@ -315,27 +316,58 @@ client: {...client},
 
           [getFilteredOrders.pending]: handlePending,
           [getFilteredOrders.fulfilled](state, action) {
+         const filteredHeaderValue = state.tHeadColumnFiltered.reduce((acc,str, ind) =>{
+              if (translater[str.data]) {
+                 acc.push({id:str.data, str:translater[str.data]})
+              }    
+              return [...acc] 
+            },[]);
+            const tHeadColumnFiltered = state.tHeadColumnFiltered
+           const arrayFilteredRows = action.payload.data?.map((str, ind) =>{
+              return (tHeadColumnFiltered.reduce((acc,val, ind) =>{    
+                acc.push({id:val.data, value: str[val.data], color: str.status_style })         
+                return [...acc]   
+              },[]));
+            
+            })
+
               return{
              ...state,
              columns: [...action.payload.data],
              tableLength: action.payload.recordsFiltered,
               isLoading: false,
               isError: false,
-   
+              tHeadColumn: filteredHeaderValue,
+              bodyTableRows: arrayFilteredRows ,
             }
           },
           [getFilteredOrders.rejected]:handleRejected,
 
         [getAllOrders.pending]:handlePending,
+
         [getAllOrders.fulfilled](state, action) {
+  
+                 const headerValue = Object.entries(translater).reduce((acc,str, ind) =>{
+            if (str.values) {
+              acc.push({id:str[0], str:str[1]})
+            }   
+            return [...acc] 
+              },[]);
+          const arrayRows = action.payload.data?.map((str, ind) =>{
+            return (headerValue.reduce((acc,val, ind) =>{
+              acc.push({id:val.id, value: str[val.id], color: str.status_style })         
+              return [...acc]   
+            },[]));
+          });
             return{
            ...state,
            columns: [...action.payload.data],
            tableLength: Number(action.payload.recordsTotal),
             isLoading: false,
             isError: false,
- 
-          }
+            tHeadColumn: headerValue,
+            bodyTableRows: arrayRows,
+            }
         },
         [getAllOrders.rejected]:handleRejected,
     

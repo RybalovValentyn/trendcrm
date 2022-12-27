@@ -1,4 +1,4 @@
-export function Help() {
+function Help() {
     console.log('Help');
     return(
         <div >
@@ -16,3 +16,4 @@ export function Help() {
         </div>
     )
 };
+export default Help

@@ -87,7 +87,8 @@ return (  <Box sx={phoneBoxStyle}> {value && <CardMedia component="img" image= {
 break;
 case 'store_url':
     if (value) {
-        return ( <Link style={{color: '##1E88E5', width: '100%', alignContent: 'left'}}  rel="noreferrer" target="_blank" underline="none" href={value}>{value}</Link>)    
+        return ( <a style={{color: '#1E88E5', width: '100%', alignContent: 'left'}}  
+        rel="noreferrer" target="_blank" underline="none" href={`https://${value}`}>{value}</a>)    
     };
     break;
 case 'comment':

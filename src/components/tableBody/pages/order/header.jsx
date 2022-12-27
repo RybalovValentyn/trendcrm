@@ -149,7 +149,7 @@ const onchangeAll=(e)=>{
     sessionStorage.setItem("selected", newSelected);
     dispatch(getselected(newSelected))
     return;
-  } else dispatch(getselected([]))
+  } else return
    
   
 }

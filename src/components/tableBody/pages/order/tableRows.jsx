@@ -1,8 +1,7 @@
 import { GetRowsComparator } from "./getRowsComparator";
 import { hexToRgbA } from "./functionOrder";
 
-export const TableRows=({rows, index, arr, click} )=>{
-    
+export const TableRows=({rows, index, arr, click} )=>{  
 
 
     const columnStyle ={

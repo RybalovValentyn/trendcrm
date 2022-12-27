@@ -1,4 +1,4 @@
-export function Calls() {
+function Calls() {
     console.log('Calls');
     return(
         <div >
@@ -16,3 +16,4 @@ export function Calls() {
         </div>
     )
 };
+export default Calls

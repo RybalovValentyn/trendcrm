@@ -4,4 +4,5 @@ export function Products(params) {
             Products pages
         </div>
     )
-}
+};
+export default Products

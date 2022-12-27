@@ -57,9 +57,7 @@ const inputStyle ={
       },
 
   };
-const handleSelect =()=>{
 
-}
 const handleNextClick=()=>{
     if (Number(page) === lengtTable-1) {
         console.log("endTable");

@@ -1,4 +1,4 @@
-export const Home = function Home() {
+const Home = function Home() {
     console.log('homepage');
     return(
         <div >
@@ -16,3 +16,5 @@ export const Home = function Home() {
         </div>
     )
 };
+
+export default Home

@@ -14,29 +14,22 @@ import {useNavigate,Outlet,useLocation} from 'react-router-dom';
 import {colorsRef} from '../../../consts/colorConstants';
 import { AppBar, Drawer} from './styles';
 import { Preloader } from '../../preloader/preloader';
+import {useSelector } from 'react-redux';
 
 const AppBarComponent = lazy(() => import("./appBar.js"));
 
 
 
 export function MiniDrawer() {
-  
-  const location = useLocation();
+  // console.log('MiniDrawer');
+  // const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  
+  const isLoading = useSelector((state) => state.function.isLoading);
+
   const handleDrawerOpen = () => {
     setOpen(!open);
   };
-
-    useEffect(() => {
-      navigate('/trendcrm/orders')
-if (location.pathname === '/trendcrm') {
-  console.log('appBar2');
-  navigate(`/trendcrm/orders`)
-}       
-      
-},[]);
 
 const handleNavigate=(text)=>{
   navigate(text);
@@ -66,10 +59,7 @@ const drawerStyle = {
           >
             <MenuIcon sx={{fill: colorsRef.svgColor}}/>
           </IconButton>
-              <Suspense fallback={null}>
-              <AppBarComponent/>
-              </Suspense>
-
+          <AppBarComponent/>
         </Toolbar>
 
 
@@ -92,8 +82,9 @@ const drawerStyle = {
 
       </Drawer>
 
-      <Suspense fallback={<Preloader/>}>
-        <Outlet />
+      <Suspense fallback={null}>
+      {isLoading && <Preloader/>}
+        <Outlet/>
       </Suspense>
  
     </Box>

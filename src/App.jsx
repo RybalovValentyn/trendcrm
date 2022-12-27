@@ -1,33 +1,33 @@
 import {SignIn} from './components/signIn/signIn';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Router} from './routs/routs';
 import {PublicRoute} from './routs/publikRouts';
-import { Route, Routes} from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation} from 'react-router-dom';
 import {PrivateRoute} from './routs/privatRouts';
-import {Home} from './components/tableBody/pages/home/home';
-import {Users} from './components/tableBody/pages/users/users';
 import {Order} from './components/tableBody/pages/order/orders';
-import {Products} from './components/tableBody/pages/products/products';
-import {Delivery} from './components/tableBody/pages/delivery/delivery';
-import {Calls} from './components/tableBody/pages/calls/calls';
-import {Messages} from './components/tableBody/pages/message/message';
-import {Analytics} from './components/tableBody/pages/analytics/analytics';
-import {Settings} from './components/tableBody/pages/settings/settings';
-import {Faq} from './components/tableBody/pages/faq/faq';
-import {Purchasing} from './components/tableBody/pages/purchasing/purchasing';
-import {Help} from './components/tableBody/pages/help/help';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, Suspense } from 'react';
+import { useEffect, lazy } from 'react';
 import { currentThunk, getAllStatuses, getAllOrders, getSitysFromNp, getFilteredOrders,getRowsAfterAdd } from './redux/asyncThunc';
 import {MiniDrawer} from './components/tableBody/navBar/navBar';
 import { Preloader } from './components/preloader/preloader';
 import { useCookies } from 'react-cookie';
 import { CreateRows } from './components/tableBody/pages/orderCreate/order';
-import {useNavigate} from 'react-router-dom';
 import {ErrorPage} from './components/errorPage/ErrorPage'
+const Home = lazy(() => import("./components/tableBody/pages/home/home"));
+const Users = lazy(() => import("./components/tableBody/pages/users/users"));
+const Products = lazy(() => import("./components/tableBody/pages/products/products"));
+const Delivery = lazy(() => import("./components/tableBody/pages/delivery/delivery"));
+const Calls = lazy(() => import("./components/tableBody/pages/calls/calls"));
+const Messages = lazy(() => import("./components/tableBody/pages/message/message"));
+const Analytics = lazy(() => import("./components/tableBody/pages/analytics/analytics"));
+const Settings = lazy(() => import("./components/tableBody/pages/settings/settings"));
+const Faq = lazy(() => import("./components/tableBody/pages/faq/faq"));
+const Purchasing = lazy(() => import("./components/tableBody/pages/purchasing/purchasing"));
+const Help = lazy(() => import("./components/tableBody/pages/help/help"));
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const hashKey = useSelector(state => state.auth.hashKey);
   const currentUser = useSelector(state => state.auth.id);
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
@@ -38,8 +38,18 @@ function App() {
 
   const [cookies, setCookie] = useCookies(['user_id=1']);
   
+
+  useEffect(()=>{
+    sessionStorage.setItem("selected", '');
+if (location.pathname === '/trendcrm' && isAuth) {
+  navigate('/trendcrm/orders')
+}  else navigate('/auth')
+   
+
+  },[])  
  
   useEffect(() => {
+    // console.log('currentThunk');
     if (hashKey) {
       dispatch(currentThunk());
     }
@@ -50,7 +60,7 @@ function App() {
       if (currentUser) {
         // console.log('current user ');
         setCookie('user_id', '1', { path: '/' });
-        // handleReload()
+        handleReload()
     }
   }, [currentUser]);
 
@@ -86,7 +96,7 @@ function App() {
         <Routes >      
 
                       <Route loader={<Preloader/>} errorElement={<ErrorPage/>}  path='/auth' element={<PublicRoute component={SignIn}  />}/>
-                       {isAuth ? <Route loader={<Preloader/>} errorElement={<ErrorPage/>} path='/trendcrm'  element={<PrivateRoute component={MiniDrawer} />}>
+                       <Route loader={<Preloader/>} errorElement={<ErrorPage/>} path='/trendcrm'  element={<PrivateRoute component={MiniDrawer} />}>
                            
                            {wildcards.map(e => (
                                   <Route 
@@ -100,9 +110,7 @@ function App() {
                          </Route>                        
                          
 
-                    </Route>:
-                    <Route loader={<Preloader/>} errorElement={<ErrorPage/>}  path='/auth' element={<PublicRoute component={SignIn}  />}/>
-                    }
+                    </Route>
                     <Route path="/trendcrm/order/*" element={<ErrorPage/>} />         
                     <Route path="*" element={<Preloader/>} />
 

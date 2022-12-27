@@ -8,22 +8,24 @@ const functionReduser = createSlice({
     initialState: {
 
   selectedRow: [],
-
+  isLoading: true,
     },
       reducers: {
       
         getselected: (state, action) => {
-            console.log(action.payload);
+            // console.log(action.payload);
             state.selectedRow = action.payload
         },
-
+        getLoading: (state, action) => {
+          state.isLoading = action.payload
+      },
 
 
   },
   extraReducers: {},
 });
 
-export const { getselected
+export const { getselected, getLoading
 
     } = functionReduser.actions;
 export default functionReduser.reducer;

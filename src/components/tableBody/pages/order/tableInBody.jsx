@@ -7,16 +7,21 @@ import {colorsRef} from '../../../../consts/colorConstants';
 import {AddStatusForm} from '../modals/modalAddStatus';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSortDate, autoUpdate } from '../../../../redux/ordersReduser';
-import { getAllOrders } from '../../../../redux/asyncThunc';
+import { getAllOrders, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { useParams, useSearchParams, useLocation,useNavigate, createSearchParams } from "react-router-dom";
 
-function ScrollTabsButton() {
-  const [value, setValue] = useState(0);
-const [searchParams, setSearchParams] = useSearchParams();
 
+function ScrollTabsButton() {
+  const navigate = useNavigate();
+  
+const [searchParams, setSearchParams] = useSearchParams();
+const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 const statuses = useSelector((state) => state.ordersAll.getStatuses);
 const dispatch = useDispatch();
-
+const statusName = searchParams.get('status');
+const seachStatus = useSelector((state) => state.ordersAll.statusName);
+const initStatusSelect = seachStatus?statuses.findIndex(n=>n.id === seachStatus):0
+const [value, setValue] = useState(Number(initStatusSelect));
 
   const boxStyles={
     flexGrow: 1,
@@ -39,29 +44,51 @@ const dispatch = useDispatch();
    }
 
 const handleClick =(e)=>{
-  let str = e.target.id;
-  let id = 'status_name';  
   dispatch(autoUpdate({id: 'start', str: 0}));
-  setSearchParams(createSearchParams({ status: str }));
+  dispatch(autoUpdate({id: 'page', str: 0}))
+  let str = e.target.id;
+  if (e.target.id === '0' || e.target.id === 0) {
+    dispatch(autoUpdate({id:'statusName', str: null}));
+    navigate('/trendcrm/orders');
+  } else if (Number(str)) {
+    dispatch(autoUpdate({id:'statusName', str: str}));
+    setSearchParams(createSearchParams({ status: str }));
+  }
+  getUpdate()
 }
+
+
+const getUpdate = ()=>{
+  sessionStorage.setItem("selected", '');
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
+  // removeAllColor()
+}
+const handleChange = (event, newValue) => {
+   setValue(newValue);
+};
 
   return (
     <Box sx={boxStyles} >
       <Tabs
         value={value}
-        // onChange={handleChange}
+        onChange={handleChange}
         variant="scrollable"
         scrollButtons
+        allowScrollButtonsMobile
         aria-label="visible arrows tabs example"
         sx={tabsStyles}
+       
       >
           
        {statuses.map((tab, ind) =>(        
         <Tab onClick={handleClick} id={tab.id}
         sx={{ borderTop: `6px solid ${tab.style}`, padding: '0px 10px',fontSize: '12px',color: colorsRef.tabHeaderTextColor,
-        backgroundColor: colorsRef.tableHeaderBgColor, minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px', 
+         minWidth: 'min-content', minHeight: '32px',  maxHeight: '32px', 
         margin: '0px 1px 0px 1px', textTransform: 'none',
-      '&.Mui-selected': {backgroundColor: '#fff',color: colorsRef.tabHeaderTextColor,
+        backgroundColor: colorsRef.tableHeaderBgColor,
+      '&.Mui-selected': {color: colorsRef.tabHeaderTextColor,backgroundColor:'#fff'
          }
       }}
         key={ind} label= {`${tab.name}: ${tab.count}`} />

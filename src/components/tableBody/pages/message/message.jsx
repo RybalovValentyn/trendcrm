@@ -1,4 +1,4 @@
-export function Messages() {
+function Messages() {
     console.log('Messages');
     return(
         <div >
@@ -16,3 +16,4 @@ export function Messages() {
         </div>
     )
 };
+export default Messages
