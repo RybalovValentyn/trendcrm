@@ -33,9 +33,9 @@ const rowStyle={
     return (      
          <tr 
          onClick ={(e)=>click(e,index)} 
-         tabIndex={-1}
+        //  tabIndex={-1}
          key={index}
-         id={`${rows[0].value}+rows`}
+         id={rows[0].value?`${rows[0].value}+rows`:`${index+1}+rows`}
         style={rowStyle}
        >
            {rows.map((row, ind)=><td key={ind} style={columnStyle}><GetRowsComparator row={row}/></td>)  } 

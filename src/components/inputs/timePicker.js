@@ -8,10 +8,13 @@ import { useDispatch, useSelector  } from 'react-redux';
 import {getFormTable} from '../../redux/ordersReduser';
 import { ValidationTextField } from './stylesInputs';
 import { useState } from 'react';
+import 'dayjs/locale/ru';
+import 'dayjs/locale/uk';
 
 export  function BasicTimePicker({label, name, func, val, type}) {
     const dispatch = useDispatch();
     const client = useSelector((state) => state.ordersAll.createRows);
+    const [locale, setLocale] = useState('uk');
 
   const timeChange =(newValue) =>{
 let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString();
@@ -26,8 +29,7 @@ let str = dayjs().format('YYYY-MM-DD T HH:mm:ss');
 
   return (
     <Box sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-    <LocalizationProvider   dateAdapter={AdapterDayjs}>
-
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
     <TimePicker
           value={client[name]}
           onChange={timeChange}

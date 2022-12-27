@@ -10,10 +10,12 @@ import { modalOpenUpdate } from '../../../../../redux/statusReduser';
 
 import { ValidationTextField } from '../../../../inputs/stylesInputs';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+import 'dayjs/locale/uk';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import { useState } from 'react';
 
 export const ListAutocompliteStatuses =()=>{
     const dispatch = useDispatch();
@@ -21,7 +23,7 @@ export const ListAutocompliteStatuses =()=>{
     const statusCreate = {name: 'створити статус', statusId: '0'};
     const renderStatuses = statuses.concat(statusCreate).reverse()
     const defaultStatus = renderStatuses.find(str=> str.id === '4'); 
-
+    const [locale, setLocale] = useState('uk');
     const renderFilteredStatus = renderStatuses.reduce((acc, status, index, array)=>{
         let el = array.filter(option => option.name === status.name)
         if (el.length > 1 ) {
@@ -168,8 +170,8 @@ const paperStyle={
              variant="outlined" />
      </ListItem>
      <ListItem sx={listItemStyles} >
-        <LocalizationProvider   dateAdapter={AdapterDayjs}>
-             <DatePicker
+     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
+            <DatePicker
              id={'date_create'}            
             inputFormat="YYYY-MM-DD"
              value={clientDate}

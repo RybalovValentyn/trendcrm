@@ -101,6 +101,7 @@ export const ColumnSettings=()=>{
  const handleCloseApply =()=>{
         let filter = columnsCopy.filter(n=>n.checked === true).map((col, i)=>({num:`${i}`,
                      data: col.id, searchable: true, orderable: true, search:{value: ''}}));
+        sessionStorage.setItem("selected", '');
       dispatch(tHeadFilteredColumnUpdate(filter));
       dispatch(getFilteredOrders());
       handleClose();
@@ -126,7 +127,7 @@ const listItemStyle ={
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
-        sx={{overflow: 'hidden', '& .MuiPaper-root': {width: '520px', }}}
+        sx={{overflow: 'hidden', '& .MuiPaper-root': {width: '500px', },}}
       >
         <DialogTitle sx={{display: 'flex',justifyContent: 'space-between'}}>{"Відображення на сторінці замовлень"}
         <IconButton onClick={handleClose} aria-label="delete">
@@ -134,25 +135,32 @@ const listItemStyle ={
       </IconButton>
         
         </DialogTitle>
-        <DialogContent sx={{height: '600px', borderTop: '2px solid #d0d0d0', borderBottom:'2px solid #d0d0d0', }}>
+         <DialogContent sx={{height: '600px', borderTop: '2px solid #d0d0d0', borderBottom:'2px solid #d0d0d0', '@media (max-width: 520px)': {
+          padding: 0
+           },}}>
 
        <List >
       {columnsCopy.map((name, ind)=>{
               return(
             <ListItem key={ind} sx={listItemStyle}>
-                <ListItemText sx={{maxWidth: '30px', marginRight: '20px'}} primary={`№${ind+1}`}/>
+                <ListItemText sx={{ maxWidth: '30px', marginRight: '10px'}} primary={`№${ind+1}`}/>
              <Checkbox
                   edge="start"
                   onChange={handleToggle}
                   name={name.id}
-                  sx={{'@media (max-width:477px)': {marginLeft: '10px', marginRight: '5px',},}}
+                  sx={{'@media (max-width:320px)': {marginLeft: '5px',},}}
                   id={`${ind}`}
                   tabIndex={-1}
                 checked = {name.checked}
                   disableRipple
                 /> 
             <Autocomplete
-            // sx={{width: '100%'}}
+            sx={{ '@media (max-width: 520px)': {
+              width: '100%',
+              maxWidth: '250px',
+
+            alignItems: 'center',
+            }}}
                 name={`${ind}`}
                 id={`${ind}`}                
                 options={columnsCopy}
@@ -161,8 +169,10 @@ const listItemStyle ={
                   option.checked === true
                 }
                 value={name}
+                // readOnly={ind === 0}
+                disableClearable
                 getOptionLabel={(option) => option.str}
-                renderInput={(params) => <TextField onChange={(e)=>setSearch(e.target.value)} disabled={name.checked}
+                renderInput={(params) => <TextField  onChange={(e)=>setSearch(e.target.value)} disabled={name.checked}
                    sx={textFieldStyles} 
                     {...params}/>}
               />
@@ -173,7 +183,7 @@ const listItemStyle ={
       </List>
         </DialogContent>
 
-        <DialogActions sx={{justifyContent: 'center', }}>
+        <DialogActions sx={{justifyContent: 'center', '@media (max-width: 520px)': {flexWrap: 'wrap' } }}>
         <StyledButton
           text={'Застосувати'}
           func= {handleCloseApply}

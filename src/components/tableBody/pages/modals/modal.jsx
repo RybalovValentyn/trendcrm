@@ -54,7 +54,7 @@ const handleSelectChange =(e)=>{
         keepMounted
         onClose={handleClouse}
         aria-describedby="alert-dialog-slide-description"
-        sx={{overflow: 'hidden', '& .MuiPaper-root': {width: '520px', bottom: '200px' }}}
+        sx={{overflow: 'hidden', '& .MuiPaper-root': {width: '520px', bottom: '10%' }}}
           >
             <Box onClick={handleClouse} sx={{display: 'flex', justifyContent: 'space-between'}}>
             <DialogTitle >{"Завантажити Exel "}</DialogTitle>

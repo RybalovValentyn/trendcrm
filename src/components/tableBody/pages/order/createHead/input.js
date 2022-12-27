@@ -55,13 +55,13 @@ export const StyledextField = styled(TextField)({
         top: 0
 
     },
-    '& .MuiSvgIcon-root':{
-        width: 0,
-        height: 0,
-        position: 'absolute',
-        zIndex: -2,
-        top: 0
-    },
+    // '& .MuiSvgIcon-root':{
+    //     width: 0,
+    //     height: 0,
+    //     position: 'absolute',
+    //     zIndex: -2,
+    //     top: 0
+    // },
 
   });
 
@@ -105,15 +105,15 @@ export const StyledInput = styled(InputBase)(({ theme }) => ({
 
   export const selectStyles = {
     '& .MuiInputBase-input': {     
-      maxHeight: '32px',
-      height: '32px',
+      // maxHeight: '32px',
+      // height: '32px',
       lineHeight: 1.5,
     borderRadius: '4px',
     color: colorsRef.inputTextColor,
     position: 'relative',
     backgrounColor: '#fff',
     fontSize: '12px',
-    padding: '7px 32px 7px 12px',
+    padding: '3px 32px 3px 12px',
     minWidth: '135px',
    
   },

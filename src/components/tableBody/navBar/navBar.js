@@ -59,10 +59,10 @@ const drawerStyle = {
           >
             <MenuIcon sx={{fill: colorsRef.svgColor}}/>
           </IconButton>
+          <Suspense>
           <AppBarComponent/>
+          </Suspense>
         </Toolbar>
-
-
       </AppBar>
 
       <Drawer  variant="permanent" open={open} sx={drawerStyle}>

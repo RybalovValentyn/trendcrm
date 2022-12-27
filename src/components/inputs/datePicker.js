@@ -7,12 +7,16 @@ import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector  } from 'react-redux';
 import {getFormTable} from '../../redux/ordersReduser';
 import { ValidationTextField } from './stylesInputs';
+import { useState } from 'react';
+import 'dayjs/locale/ru';
+import 'dayjs/locale/uk';
+
 
 export  function BasicDateTimePicker({label, name, func, val, type}) {
     const dispatch = useDispatch();
     const client = useSelector((state) => state.ordersAll.createRows);
     let initDate = dayjs().format('YYYY-MM-DD T HH:mm:ss');
-   
+    const [locale, setLocale] = useState('uk');
 
   const daateChange =(newValue) =>{
 let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString();
@@ -27,7 +31,7 @@ dispatch(getFormTable({id: name, str }))
 
   return (
     <Box sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-    <LocalizationProvider   dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
       <DatePicker
       id={name}
       inputFormat="YYYY-MM-DD"

@@ -127,12 +127,15 @@ countUpdate()
   }, [isGrabAll]);
 
 const removeAllColor = ()=>{
+if (columns.length > 0) {
   const newSelected = columns.flatMap(n => n.id);
   newSelected.map(str=>{
     if (str) {
+      console.log(str);
       removeColor(str)
     }
 })
+}
 }
 
 
@@ -220,7 +223,7 @@ const handleClick = (e, index) => {
   } 
     if (e.target.nodeName === 'path' || e.target.nodeName === 'svg') {
       dispatch(autoUpdate({id: 'rowsToUpdate', str: columns[index]}))
-        dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));       
+        dispatch(getOpenTableCreate({id: 'comentSettings', str: true}));    
  
       };
       if (isGrabAll) {
@@ -234,10 +237,6 @@ const handleClick = (e, index) => {
   sessionStorage.setItem("selected", '');
   console.log('id', id);
        dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
-    // if (Number(statusName)){
-    //   dispatch(autoUpdate({id:'statusName', str: null}));
-    //   setSearchParams('');
-    // } 
     dispatch(getRowsAfterAdd(id));  
     navigate(`/trendcrm/order/:${idRows}`); 
   };

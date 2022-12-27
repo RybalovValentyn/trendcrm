@@ -10,10 +10,12 @@ export const openedMixin = (theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    overflowX: 'hidden',
+    overflowX: 'hidden',   
+    direction:'rtl',
+    overflowY:'auto', 
     '@media (max-width:768px)': {
        width: '100%',
-    },
+     },
   });
   
   export const closedMixin = (theme) => ({
@@ -22,6 +24,8 @@ export const openedMixin = (theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
+    direction:'rtl',
+    overflowY:'auto',
     width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
       width: `calc(${theme.spacing(8)} + 1px)`,

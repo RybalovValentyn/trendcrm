@@ -62,9 +62,6 @@ const inputFocus =(e)=>{
     let str = '+38(0'
    return dispatch(getFormTable({id, str}));
   }
-
-    // let str = ''
-  // return  dispatch(getFormTable({id, str}))
   
 }
 const keyCodeInput = (e) =>{ 
@@ -79,7 +76,6 @@ const keyCodeInput = (e) =>{
         let id = e.target.id;
         let str = e.target.value
         let name = e.target.name
-        // console.log(str);
  if (id === 'backward_delivery_summ' || id === 'weight' || id ==='volume_general' || id === 'seats_amount' || id ==='backward_summ') {
           if (Number(str)) {
             console.log(str);
@@ -129,7 +125,6 @@ if (id ) {
     dispatch(getFormTable({id, str})) 
 }
 }
-// console.log(sityValue);
 if (type === 'text' || type === 'num' || type === 'e-mail') {
      return (
     <Box sx={boxStyle} autoComplete="off" >

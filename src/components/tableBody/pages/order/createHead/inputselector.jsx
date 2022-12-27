@@ -4,21 +4,18 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
-import AddIcon from '@mui/icons-material/Add';
-import TextField from '@mui/material/TextField';
-import { colorsRef } from '../../../../../consts/colorConstants';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { StyledextField, selectStylesCheck } from './input';
 import { useDispatch, useSelector } from 'react-redux';
 import {getSortDate} from '../../../../../redux/ordersReduser';
 import { getAllOrders } from '../../../../../redux/asyncThunc';
 import { StyledInput } from './input';
-import { OutlinedInput, InputBase } from '@mui/material';
+import { InputBase } from '@mui/material';
 import { listStyle } from './style';
+import 'dayjs/locale/ru';
+import 'dayjs/locale/uk';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -51,8 +48,8 @@ const  InputSelector =({name}) => {
     const [group, setGroup] = useState('');
     const [packer, setPacker] = useState('');
     const [payType, setPaytype] = useState('');
-
-
+    const [locale, setLocale] = useState('uk');
+    const inputEl1 = useRef(null);
 // console.log(statuses[0].name);
 
 const handleChangeFor = (newValue) => {  
@@ -66,9 +63,10 @@ const handleChangeFor = (newValue) => {
 const handleChangeTo=(newValue)=>{
     let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
     let id = 'create_date_to'
+    setOpenTo(false)
     dispatch(getSortDate({id, str}))   
     dispatch(getAllOrders())  
-    setOpenTo(false)
+    
 }
 
 const handleChangeUpdateFor=(newValue)=>{
@@ -117,6 +115,15 @@ const handleInputchange =(e)=>{
     dispatch(getSortDate({id, str}))
   } 
 };
+
+const handleClick=()=>{
+setOpenSentFor(false);
+setOpenSentTo(false);
+setOpenUdateFor(false);
+setOpenUdateTo(false);
+setOpenFor(false);
+setOpenTo(false);
+}
 
 const keyCodeInput = (e) =>{ 
   let id = e.target.id
@@ -246,19 +253,23 @@ if (name === 'payment_name') {
  if (name === 'datetime_sent') {
   return (
       <Box component="form" key={name} sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-      <LocalizationProvider   dateAdapter={AdapterDayjs}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
       <Box sx={{position: 'relative'}}>
        <span style={{position: 'absolute', display: 'block',
         width: '80px', height: '100%', border: `${value.datetime_sent_from? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
         top: '-1px', left: 10, borderRadius: '4px',  backgroundColor: `${value.datetime_sent_from? '#f0f0f0' : '#fff' } `,
         }}></span>
       <DesktopDatePicker
-                open={openSentFor}                                                
+                id='datetime_sent_for'
+               open={openSentFor} 
+               onClose={handleClick}
+                disableFuture  
+                 disableOpenPicker                     
                 inputFormat="MM-DD-YYYY"
-                value={value.datetime_sent_from}
+                value={value.datetime_sent_from?value.datetime_sent_from:null}
                 label={`${value.datetime_sent_from? '' : 'з' } `}
                 maxDate={value.datetime_sent_to}
-                 onChange={handleChangeSentFor}
+                onChange={handleChangeSentFor}
                 renderInput={(params) => <StyledextField color="success" onClick={()=>setOpenSentFor(true)} {...params} />}
               />
       </Box >
@@ -268,10 +279,13 @@ if (name === 'payment_name') {
         width: '80px', height: '100%', border: `${value.datetime_sent_to? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
         top: '-1px', left: 10, borderRadius: '4px', backgroundColor: `${value.datetime_sent_to? '#f0f0f0' : '#fff' } `}}></span>
       <DesktopDatePicker
+             id='datetime_sent_to'
               open={openSentTo}
-              label={`${value.datetime_sent_to? '' : 'по' } `}
+              disableOpenPicker 
+              onClose={handleClick}
+               label={`${value.datetime_sent_to? '' : 'по' } `}
                 inputFormat="MM-DD-YYYY"
-                value={value.datetime_sent_to}
+                value={value.datetime_sent_to?value.datetime_sent_to:null}
                 minDate={value.datetime_sent_from}
                 onChange={handleChangeSentTo}
                 renderInput={(params) => <StyledextField   onClick={()=>setOpenSentTo(true)} {...params} />}
@@ -284,16 +298,18 @@ if (name === 'payment_name') {
 } else if (name === 'update_at') {
   return (
       <Box component="form" key={name} sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-      <LocalizationProvider   dateAdapter={AdapterDayjs}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
       <Box sx={{position: 'relative'}}>
        <span style={{position: 'absolute', display: 'block',
         width: '80px', height: '100%', border: `${value.update_date_from? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
         top: '-1px', left: 10, borderRadius: '4px',  backgroundColor: `${value.update_date_from? '#f0f0f0' : '#fff' } `,
         }}></span>
       <DesktopDatePicker
-                open={openUpdateFor}                                                
+                open={openUpdateFor}  
+                onClose={handleClick}                                              
                 inputFormat="MM-DD-YYYY"
-                value={value.update_date_from}
+                disableOpenPicker 
+                value={value.update_date_from?value.update_date_from:null}
                 label={`${value.update_date_from? '' : 'з' } `}
                 maxDate={value.update_date_to}
                  onChange={handleChangeUpdateFor}
@@ -307,9 +323,11 @@ if (name === 'payment_name') {
         top: '-1px', left: 10, borderRadius: '4px', backgroundColor: `${value.update_date_to? '#f0f0f0' : '#fff' } `}}></span>
       <DesktopDatePicker
               open={openUpdateTo}
+              onClose={handleClick}
               label={`${value.update_date_to? '' : 'по' } `}
                 inputFormat="MM-DD-YYYY"
-                value={value.update_date_to}
+                disableOpenPicker 
+                value={value.update_date_to?value.update_date_to:null}
                 minDate={value.update_date_from}
                 onChange={handleChangeUpdateTo}
                 renderInput={(params) => <StyledextField   onClick={()=>setOpenUdateTo(true)} {...params} />}
@@ -322,16 +340,18 @@ if (name === 'payment_name') {
 } else if (name === 'datetime') {
     return (
         <Box component="form" key={name} sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <LocalizationProvider   dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
         <Box sx={{position: 'relative'}}>
          <span style={{position: 'absolute', display: 'block',
           width: '80px', height: '100%', border: `${value.create_date_from? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
           top: '-1px', left: 10, borderRadius: '4px',  backgroundColor: `${value.create_date_from? '#f0f0f0' : '#fff' } `,
           }}></span>
         <DesktopDatePicker
-                  open={openFor}                                  
+                  open={openFor} 
+                  onClose={handleClick}
+                  disableOpenPicker                                  
                   inputFormat="MM-DD-YYYY"
-                  value={value.create_date_from}
+                  value={value.create_date_from?value.create_date_from:null}
                   label={`${value.create_date_from? '' : 'з' } `}
                   maxDate={value.create_date_to}
                    onChange={handleChangeFor}
@@ -345,9 +365,11 @@ if (name === 'payment_name') {
           top: '-1px', left: 10, borderRadius: '4px', backgroundColor: `${value.create_date_to? '#f0f0f0' : '#fff' } `}}></span>
         <DesktopDatePicker
                 open={openTo}
+                disableOpenPicker 
+                onClose={handleClick}
                 label={`${value.create_date_from? '' : 'по' } `}
                   inputFormat="MM-DD-YYYY"
-                  value={value.create_date_to}
+                  value={value.create_date_to?value.create_date_to:null}
                   minDate={value.create_date_from}
                   onChange={handleChangeTo}
                   renderInput={(params) => <StyledextField   onClick={()=>setOpenTo(true)} {...params} />}

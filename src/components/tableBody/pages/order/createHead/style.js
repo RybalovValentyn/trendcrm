@@ -32,7 +32,13 @@ export  const svgStyle = {
   };
 
   export const textFieldStyles={
-    width: '250px',
+    '@media (max-width: 520px)': {
+      maxWidth: '100%',
+     minWidth: '100px'
+    },
+    '@media (min-width: 520px)': {
+      width: '250px',
+    },
     paddingTop: 0,
     paddingBottom: 0,
     '& .MuiInputBase-root':{
@@ -41,8 +47,11 @@ export  const svgStyle = {
       maxHeight: '30px',
       '& input.MuiAutocomplete-input':{
         padding: '4px 10px 5px 10px',
-        maxHeight: '30px',
-    
+        maxHeight: '30px',    
+      },
+      '& .MuiAutocomplete-root':{
+        padding: '0px',
+        maxHeight: '30px',    
       }
     },
   
