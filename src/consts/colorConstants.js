@@ -39,7 +39,9 @@ labelTextColor: '#232323',
     inputHeadTextColor: '#777777',
     inputHeadBorderColor: '#d0d0d0',
     inputHoverBorderCOlor: "",
-    iconColor: '#d0d0d0'
+    iconColor: '#d0d0d0',
+
+    drawerTextColor: '#777777',
 }
 
 // height: 30px;

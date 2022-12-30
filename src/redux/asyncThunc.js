@@ -168,9 +168,17 @@ export const getFilteredOrders = createAsyncThunk(
   'filtered/all',
   async (_, { rejectWithValue, getState }) => { 
     const state = getState();  
-    const isLoading =  state.ordersAll.isLoading;
-    const column = state.ordersAll.tHeadColumnFiltered;
-// console.log('getFilteredOrders',column);
+    const params =  state.ordersAll.searchParams
+const searchColumn = state.ordersAll.tHeadColumnFiltered
+// const columnAll = searchColumn.map((col, ind)=>{
+// let newSearch = params[col.data]
+// return {...col, search:{value: newSearch}} 
+// })
+// console.log(columnAll, searchColumn);
+    const column =searchColumn.map((col, ind)=>{
+      let newSearch = params[col.data]
+      return {...col, search:{value: newSearch}} 
+      })
           let columns ={ draw: '1',
           start: state.ordersAll.start?state.ordersAll.start:0,
           length: state.ordersAll.rowsPerPage,
@@ -182,20 +190,20 @@ export const getFilteredOrders = createAsyncThunk(
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name?state.ordersAll.searchParams.status_name:state.ordersAll.statusName,
           order:[{column: 0, dir: 'desc'}],
-          columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: ''}},
+          columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: params.status_name}},
           {data: 'id', searchable: true, orderable: true, search:{value: ''} },
         ] ,
            }
 
         try {
-        const { data } = await axios({
+        const response = await axios({
           method: "post",
            url:  REBASE_URL+orders,
            data: columns
           })
-          console.log('getFilteredOrders', Object.keys(data?.data[0])?.length);
-         return data
-        // return columns
+          // console.log('getFilteredOrders', Object.keys(response.data?.data[0])?.length);
+          // console.log(response.data);
+       return response.data
       } catch (error) {
         return rejectWithValue({
          error: error.message
@@ -209,9 +217,6 @@ export const getAllOrders = createAsyncThunk(
   'orders/all',
   async (_, { rejectWithValue, getState }) => { 
     const state = getState();  
-    const patrams =  state.ordersAll.searchParams
-// let order = {order:[{dir:'desc'}]};
-
       let columns ={ draw: '1',
           start: state.ordersAll.start?state.ordersAll.start:0,
           length: state.ordersAll.rowsPerPage,
@@ -265,14 +270,13 @@ export const getAllOrders = createAsyncThunk(
            }
 // console.log(columns);
         try {
-        const { data } = await axios({
+        const response = await axios({
           method: "post",
            url:  REBASE_URL+orders,
            data: columns
           })
-          // console.log(data);
-          console.log('getAllOrders', Object.keys(data?.data[0])?.length);
-         return data
+          // console.log(response.data);
+         return response.data
       } catch (error) {
         return rejectWithValue({
          error: error.message

@@ -10,7 +10,7 @@ import { useState, useRef } from 'react';
 import { StyledextField, selectStylesCheck } from './input';
 import { useDispatch, useSelector } from 'react-redux';
 import {getSortDate} from '../../../../../redux/ordersReduser';
-import { getAllOrders } from '../../../../../redux/asyncThunc';
+import { getAllOrders, getFilteredOrders } from '../../../../../redux/asyncThunc';
 import { StyledInput } from './input';
 import { InputBase } from '@mui/material';
 import { listStyle } from './style';
@@ -37,7 +37,7 @@ const  InputSelector =({name}) => {
     const groups = useSelector((state)=> state.addStatus.groups);
     const packerName = useSelector((state)=> state.ordersAll.packer_name);
     const paymentType =  useSelector((state)=> state.ordersAll.payment_name);
-
+    const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
     const [openFor, setOpenFor] = useState(false);
     const [openTo, setOpenTo] = useState(false);
     const [openUpdateFor, setOpenUdateFor] = useState(false);
@@ -56,7 +56,7 @@ const handleChangeFor = (newValue) => {
         let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
         let id ='create_date_from'
         dispatch(getSortDate({id, str}))  
-        dispatch(getAllOrders())    
+        getUpdate()   
       setOpenFor(false)
     };    
 
@@ -65,7 +65,7 @@ const handleChangeTo=(newValue)=>{
     let id = 'create_date_to'
     setOpenTo(false)
     dispatch(getSortDate({id, str}))   
-    dispatch(getAllOrders())  
+    getUpdate()  
     
 }
 
@@ -75,7 +75,7 @@ const handleChangeUpdateFor=(newValue)=>{
   setOpenUdateFor(false)
   dispatch(getSortDate({id, str}))  
  
-  dispatch(getAllOrders())    
+  getUpdate()    
   
 }
 
@@ -84,7 +84,7 @@ const handleChangeUpdateTo =(newValue)=>{
   let id ='update_date_to'
   setOpenUdateTo(false)  
   dispatch(getSortDate({id, str}))
-  dispatch(getAllOrders())    
+  getUpdate()    
   
 }
 const handleChangeSentFor =(newValue) =>{
@@ -92,14 +92,14 @@ const handleChangeSentFor =(newValue) =>{
   let id ='datetime_sent_from'
   setOpenSentFor(false)  
   dispatch(getSortDate({id, str}))
-  dispatch(getAllOrders())  
+  getUpdate()  
 }
 const handleChangeSentTo =(newValue) =>{
   let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
   let id ='datetime_sent_to'
   setOpenSentTo(false)  
   dispatch(getSortDate({id, str}))
-  dispatch(getAllOrders())  
+  getUpdate()  
 }
 
 const handleInputchange =(e)=>{
@@ -128,12 +128,21 @@ setOpenTo(false);
 const keyCodeInput = (e) =>{ 
   let id = e.target.id
 if (e.key === 'Enter') {   
-  dispatch(getAllOrders())  
+  getUpdate()
   }else if (e.key === 'Backspace') {
     let str = ''
     dispatch(getSortDate({id, str}))
   }
 };
+
+const getUpdate = ()=>{
+  sessionStorage.setItem("selected", '');
+  console.log(filteredRows?.length);
+  if (filteredRows?.length > 0) {
+    console.log(filteredRows?.length);
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
+}
 
 const handleSelectChange = (e) => {
   let id = e.target.name
@@ -159,7 +168,7 @@ if (str === 0 || str === undefined || e.target.value === '') {
   str = ''
 }
   dispatch(getSortDate({id, str}))
-  dispatch(getAllOrders())
+  getUpdate()
 };
 
 

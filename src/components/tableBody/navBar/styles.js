@@ -5,15 +5,14 @@ import { colorsRef } from "../../../consts/colorConstants";
 
 const drawerWidth = 200;
 export const openedMixin = (theme) => ({
-    width: drawerWidth,
+    width: drawerWidth,    
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: 200,      
     }),
-    overflowX: 'hidden',   
-    direction:'rtl',
-    overflowY:'auto', 
-    '@media (max-width:768px)': {
+    overflowX: 'hidden',
+       
+       '@media (max-width:768px)': {
        width: '100%',
      },
   });
@@ -24,11 +23,9 @@ export const openedMixin = (theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    direction:'rtl',
-    overflowY:'auto',
-    width: `calc(${theme.spacing(7)} + 1px)`,
+    width: `calc(${theme.spacing(5)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
-      width: `calc(${theme.spacing(8)} + 1px)`,
+      width: `calc(${theme.spacing(6)} + 1px)`,
     },
   });
   
@@ -52,13 +49,12 @@ export const openedMixin = (theme) => ({
   export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
       width: drawerWidth,
-
-      flexShrink: 0,
+      flexShrink: 0,      
       whiteSpace: 'nowrap',
       boxSizing: 'border-box',
       ...(open && {
         ...openedMixin(theme),
-        '& .MuiDrawer-paper': openedMixin(theme),
+        '& .MuiDrawer-paper': openedMixin(theme),        
       }),
       ...(!open && {
         ...closedMixin(theme),

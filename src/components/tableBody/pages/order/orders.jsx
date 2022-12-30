@@ -131,7 +131,7 @@ if (columns.length > 0) {
   const newSelected = columns.flatMap(n => n.id);
   newSelected.map(str=>{
     if (str) {
-      console.log(str);
+      // console.log(str);
       removeColor(str)
     }
 })
@@ -217,7 +217,7 @@ sessionStorage.setItem("selected", newSelected);
 const handleClick = (e, index) => { 
   let id = columns[index].id
   if (id) {
-    console.log(id);
+    // console.log(id);
     handleSelect(e.ctrlKey,e.shiftKey, id) ;
     countUpdate()    
   } 
@@ -238,7 +238,7 @@ const handleClick = (e, index) => {
   console.log('id', id);
        dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     dispatch(getRowsAfterAdd(id));  
-    navigate(`/trendcrm/order/:${idRows}`); 
+    navigate(`/trendcrm/order/:${id}`); 
   };
 const countUpdate = ()=>{  
   const element = rowRef
@@ -267,10 +267,12 @@ return (
                           rowCount={bodyTableRows?.length}/>
         <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }}>
 
-        {bodyTableRows.map((rows, index, arr) => {
+        {bodyTableRows.length > 0 ? bodyTableRows.map((rows, index, arr) => {
          return (<MemoizedChildComponent key={index} 
          rows ={rows} index={index} arr={arr} click={handleClick} />)
-        })}              
+        }): 
+        <tr><td colSpan={filteredRows.length?filteredRows.length:dataForHeader.length} align='center'>Нема даних</td></tr>
+        }              
        
 
              </TableBody>

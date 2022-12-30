@@ -190,7 +190,7 @@ client: {...client},
 
    reducers: {
     autoUpdate: (state, action) => {  
-      console.log(action.payload);
+      // console.log(action.payload);
          return { ...state, [action.payload.id]: action.payload.str}
     },
         tHeadFilteredColumnUpdate: (state, action) => {  
