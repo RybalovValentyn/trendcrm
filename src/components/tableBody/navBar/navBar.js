@@ -1,4 +1,4 @@
-import {useState, Suspense,useEffect, lazy} from 'react';
+import {useState, Suspense,useEffect, lazy, useRef} from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
@@ -19,22 +19,32 @@ import AddIcon from '@mui/icons-material/Add';
 import SimpleCollapse from './listDrawer';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-const AppBarComponent = lazy(() => import("./appBar.js"));
 
+
+const AppBarComponent = lazy(() => import("./appBar.js"));
+const ListItemCategories = lazy(()=> import("./listItem.jsx"))
 
 
 export function MiniDrawer() {
-  // console.log('MiniDrawer');
-  // const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const isLoading = useSelector((state) => state.function.isLoading);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [colorLink, setColorLink] = useState('')
+  const [name, setName] = useState(''); 
+ const [menuOpen, setMenuOpen] = useState(false)
+const [currentLocation, setCurrentLocation] = useState(null)
+const [menuHover, setMenuHover] = useState(null)
 
-  const handleDrawerOpen = () => {
+useEffect(()=>{
+  let current = location.pathname.split('/')
+if (current) {
+  setCurrentLocation(current[current.length-1])
+}
+},[location])
+
+const handleDrawerOpen = () => {
     setOpen(!open);
   };
 
@@ -42,7 +52,9 @@ const handleNavigate=(text)=>{
   if (open) {
     setIsOpen(!isOpen);
     setName(text);
-  } else navigate(text);
+  } else if (menuOpen) {
+return
+  } else return
 
   return text
 }
@@ -107,14 +119,31 @@ padding: '5px 0 5px 5px',
 
 const handleItemClick=(route)=>{
   if (route) {
+    handleMouseRemove()
    return navigate(route);
-  } else return
-  
+   
+  } else return 
 
 };
 
-const handleMouse=(id)=>{
-  console.log(open);
+const handleMouse=(e,id)=>{
+  if (!open) {  
+    setMenuHover(id)
+    setMenuOpen(true)
+
+  }
+};
+const handleMouseRemove=()=>{
+  if (!open && menuHover) {
+    setMenuOpen(false)
+    setMenuHover(null)
+  }
+
+}
+const handleItemClickMenu=(route)=>{
+  if (route) {
+    return navigate(route);
+   } else return 
 }
   return (
     <Box sx={{ display: 'flex','& .MuiAppBar-root': {boxShadow: 'none !important'}, height: '100vh' }}>
@@ -140,20 +169,28 @@ const handleMouse=(id)=>{
 
       <Drawer  variant="permanent" open={open} sx={drawerStyle}>
 
-         <List sx={{paddingTop: '50px', overflowX: 'hidden', }} >
+         <List sx={{paddingTop: '50px', overflowX: 'hidden', }}  >
           {mainNavBarItem.map((text, index) => (
-            <ListItem onClick={() =>{!text.child?handleItemClick(text.route):handleNavigate(text.route)}} key={text.id} disablePadding 
-            sx={{ display: 'block  ', overflowX: 'hidden' }}>  
+            <ListItem onClick={() =>{!text.child?handleItemClick(text.route):handleNavigate(text.route)}} key={text.id} id={text.id} disablePadding 
+            sx={{ display: 'block  ', overflowX: 'hidden', position: 'relative' }} onMouseEnter ={(e)=>handleMouse(e,text.id)}
+            onMouseLeave ={(e)=>handleMouseRemove(e,text.id)} 
+                   >  
 
               <ListItemButton sx={buttonStyle}>  
              {text.child ? (name===text.route&&isOpen?<RemoveIcon  sx={addStyleIcon} fontSize='small'/>:<AddIcon sx={addStyleIcon} fontSize='small'/>): null}
               <ListItemText primary={text.label} sx={textStyle} />
-                <ListItemIcon sx={{minWidth: '30px',}} onMouseMove={()=>handleMouse(text.id)}  >
+                <ListItemIcon sx={{minWidth: '30px',}}   >
                   {text.item}
                 </ListItemIcon>
                 
               </ListItemButton>
-              <SimpleCollapse name={name} id={text.route} isOpen={isOpen} child={text.child} onFunc={handleItemClick} wrawOpen={open}/>
+              {open && <SimpleCollapse name={name} id={text.route} isOpen={isOpen} child={text.child} onFunc={handleItemClick} wrawOpen={open} location={currentLocation}/>}
+
+            <Suspense>
+            {menuHover===text.id?<ListItemCategories text={text.child?text.child:[{id: text.id, text: text.label, route: text.route}]}
+             open={menuOpen} id={menuHover} onFunc={handleItemClickMenu} location={currentLocation}/>:null}
+            </Suspense>
+
               
               {/* <ListItemButton sx={{padding: '2px 0 2px 5px'}}>
               <ListItemText primary={text.label} sx={{ opacity: open ? 1 : 0, marginLeft: '10px',  }} />

@@ -23,13 +23,13 @@ export const mainNavBarItem = [
         item: <PeopleAltOutlinedIcon/>,
         label: 'Користувачі',
         route: 'users',
-        child:[{id: 'users',text: 'Користувачі', route: 'users',}, {id: 'stores', text:'Магазини', route: 'users',} ]
+        child:[{id: 'users',text: 'Користувачі', route: 'users',}, {id: 'stores', text:'Магазини', route: 'stores',} ]
     },    {
         id: 'orders',
         item: <BookmarksOutlinedIcon/>,
         label: 'Замовлення',
         route: 'orders',
-        child:[{id: 'orders', text: 'Замовлення', route: 'orders',}, {id: 'clients', text:'Клієнти', route: 'orders',} , {id: 'basket', text:'Корзина', route: 'orders',}]
+        child:[{id: 'orders', text: 'Замовлення', route: 'orders',}, {id: 'clients', text:'Клієнти', route: 'clients',} , {id: 'basket', text:'Корзина', route: 'basket',}]
     },    {
         id: 'products',
         item:  <UnarchiveOutlinedIcon/>,

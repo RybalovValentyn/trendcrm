@@ -49,7 +49,7 @@ export  function Order() {
   // const statusName = searchParams.get('status');
   const selectedRows = useSelector((state) => state.function.selectedRow);
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('calories');
+ 
     let selected =  sessionStorage.getItem("selected");
     const page = useSelector((state) => state.ordersAll.page);
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
