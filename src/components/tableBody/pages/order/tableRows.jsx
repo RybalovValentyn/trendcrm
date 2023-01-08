@@ -2,7 +2,7 @@ import { GetRowsComparator } from "./getRowsComparator";
 import { hexToRgbA } from "./functionOrder";
 
 export const TableRows=({rows, index, arr, click} )=>{  
-
+// console.log(rows);
 
     const columnStyle ={
         minWidth: '100px',
@@ -25,9 +25,6 @@ const rowStyle={
    cursor: 'pointer',
    border: '1px solid #fff',
    outline:'none',
-   "& :focus": {
-    backgroundColor: '#fff' ,
-}
 }
 
     return (      
@@ -38,7 +35,7 @@ const rowStyle={
          id={rows[0].value?`${rows[0].value}+rows`:`${index+1}+rows`}
         style={rowStyle}
        >
-           {rows.map((row, ind)=><td key={ind} style={columnStyle}><GetRowsComparator row={row}/></td>)  } 
+           {rows.map((row, ind)=><td key={ind} align='center' style={columnStyle}><GetRowsComparator row={row}/></td>)  } 
 
   </tr> 
   )

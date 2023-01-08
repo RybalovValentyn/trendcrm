@@ -69,6 +69,10 @@ export const StyledextField = styled(TextField)({
 
 
 export const StyledInput = styled(InputBase)(({ theme }) => ({
+  "& .Mui-disabled":{
+    backgroundColor: '#EEEEEE',
+    cursor: 'not-allowed'
+  },
     '& .MuiInputBase-input': {
       borderRadius: '4px',
       position: 'relative',
@@ -78,10 +82,9 @@ export const StyledInput = styled(InputBase)(({ theme }) => ({
       color: colorsRef.inputHeadTextColor, 
       width: '100%', 
       minWidth: '85px',
-      // maxWidth: '85px',
-      // margin: '0px 20px' 
-      // marginLeft: '10px'
+
     },
+
 
   }));
 
@@ -107,13 +110,13 @@ export const StyledInput = styled(InputBase)(({ theme }) => ({
     '& .MuiInputBase-input': {     
       // maxHeight: '32px',
       // height: '32px',
-      lineHeight: 1.5,
+    lineHeight: 1.5,
     borderRadius: '4px',
     color: colorsRef.inputTextColor,
     position: 'relative',
     backgrounColor: '#fff',
     fontSize: '12px',
-    padding: '3px 32px 3px 12px',
+    padding: '6px 32px 6px 12px',
     minWidth: '135px',
    
   },

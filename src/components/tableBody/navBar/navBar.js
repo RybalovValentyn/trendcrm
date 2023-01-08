@@ -20,9 +20,9 @@ import SimpleCollapse from './listDrawer';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 
-
 const AppBarComponent = lazy(() => import("./appBar.js"));
-const ListItemCategories = lazy(()=> import("./listItem.jsx"))
+const ListItemCategories = lazy(()=> import("./listItem.jsx"));
+const CustomizedSnackbars = lazy(()=> import("../../alerts/notification.jsx"));
 
 
 export function MiniDrawer() {
@@ -169,7 +169,7 @@ const handleItemClickMenu=(route)=>{
 
       <Drawer  variant="permanent" open={open} sx={drawerStyle}>
 
-         <List sx={{paddingTop: '50px', overflowX: 'hidden', }}  >
+         <List sx={{marginTop: '50px', overflowX: 'hidden', }}  >
           {mainNavBarItem.map((text, index) => (
             <ListItem onClick={() =>{!text.child?handleItemClick(text.route):handleNavigate(text.route)}} key={text.id} id={text.id} disablePadding 
             sx={{ display: 'block  ', overflowX: 'hidden', position: 'relative' }} onMouseEnter ={(e)=>handleMouse(e,text.id)}
@@ -191,14 +191,6 @@ const handleItemClickMenu=(route)=>{
              open={menuOpen} id={menuHover} onFunc={handleItemClickMenu} location={currentLocation}/>:null}
             </Suspense>
 
-              
-              {/* <ListItemButton sx={{padding: '2px 0 2px 5px'}}>
-              <ListItemText primary={text.label} sx={{ opacity: open ? 1 : 0, marginLeft: '10px',  }} />
-                <ListItemIcon sx={{minWidth: '30px',}}  >
-                  {text.item}
-                </ListItemIcon>
-                
-              </ListItemButton> */}
             </ListItem>
           ))}
         </List>
@@ -209,7 +201,9 @@ const handleItemClickMenu=(route)=>{
       {isLoading && <Preloader/>}
         <Outlet/>
       </Suspense>
- 
+ <Suspense>
+  <CustomizedSnackbars/>
+ </Suspense>
     </Box>
   )
 }

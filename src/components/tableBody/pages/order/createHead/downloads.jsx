@@ -5,6 +5,7 @@ import { useState, forwardRef } from 'react';
 import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
 import { selectStyles, svgStyle, listStyle } from './style';
 import { calculateNewValue } from '@testing-library/user-event/dist/utils';
+import { setOrderReturn, getFilteredOrders, getAllOrders, setOrderPayment } from '../../../../../redux/asyncThunc';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -22,6 +23,8 @@ const MenuProps = {
 export const DownloadComponent=()=>{
 const dispatch = useDispatch();
 const [open, setOpen] = useState(false);
+const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+let selected =  sessionStorage.getItem("selected").split(',');
 
 const handleClickOpen = () => {
   setOpen(!open);
@@ -31,12 +34,50 @@ const handleClickExel = ()=>{
   dispatch(getOpenTableCreate({id: 'opendownload', str: true}));
 };
 
-
-
 const handleChange = ()=>{    
 setOpen(!open);
 };
+const handleReturnProduct =(value)=>{
+  let length = selected.length
+  if (length === 1 && selected[0] !== '') {
+    dispatch(setOrderReturn({id: selected[0], value}));  
+  } else if (length > 1) {
+    selected.map((id)=>{
+      if (id !== '') {
+        dispatch(setOrderReturn({id,value}))
+      }  
+    })
+  }else if (length === 0) {
+    return
+  }
+getUpdate()
+}
 
+const handlePaymentReceived=(value)=>{
+  let length = selected.length
+  if (length === 1 && selected[0] !== '') {
+    dispatch(setOrderPayment({id: selected[0], value}));  
+  } else if (length > 1) {
+    selected.map((id)=>{
+      if (id !== '') {
+        dispatch(setOrderPayment({id,value}))
+      }  
+    })
+  }else if (length === 0) {
+    return
+  }
+getUpdate()
+}
+
+const handleCancelled =()=>{
+  handleReturnProduct('0')
+  handlePaymentReceived('0')
+}
+const getUpdate = ()=>{
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
+ }
 
 return(
     <Select 
@@ -57,13 +98,13 @@ return(
      
       </MenuItem>
       <MenuItem value={'back'} sx={listStyle} >
-        <ListItemText primary={'Повернення товару'} />
+        <ListItemText onClick={()=>handleReturnProduct('1')} primary={'Повернення товару'} />
       </MenuItem>
       <MenuItem value={'cost'} sx={listStyle} >
-        <ListItemText primary={'Кошти отримано'} />
+        <ListItemText onClick ={()=>handlePaymentReceived('1')} primary={'Кошти отримано'} />
       </MenuItem>
       <MenuItem value={'cancel'} sx={listStyle} >
-        <ListItemText primary={'Відміна'} />
+        <ListItemText onClick ={handleCancelled} primary={'Відміна'} />
       </MenuItem>
 
   </Select>

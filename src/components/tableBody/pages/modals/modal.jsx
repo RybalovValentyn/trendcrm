@@ -16,6 +16,7 @@ import { MenuItem, Select, Box, ListItemText, InputBase, Typography, OutlinedInp
 import { useState } from 'react';
 import { selectStyles } from '../order/createHead/input';
 
+
 const Transition = forwardRef(function Transition(props, ref) {       
     return <Slide direction="down" ref={ref} {...props} />;
   });
@@ -46,7 +47,9 @@ const handleSelectChange =(e)=>{
   setGroup(e.target.value)
 }
 
+const handleSendFile=()=>{
 
+}
     return(
         <Dialog
         open={openDownExel}
@@ -65,7 +68,7 @@ const handleSelectChange =(e)=>{
 
         <DialogContent>
         
-        <Box sx={{display: 'flex', justifyContent: 'space-between', width: '470px'}}>
+        <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
         <Typography>{'Дія:'}</Typography>
 
         <Select 
@@ -86,7 +89,7 @@ const handleSelectChange =(e)=>{
         </Box >
         <InputFile/>
         </DialogContent>
-        <DialogActions sx={{width: '500px'}}>
+        <DialogActions sx={{width: '100%'}}>
 
         <StyledButton
         text={'Закрити'}
@@ -96,7 +99,7 @@ const handleSelectChange =(e)=>{
 
       <StyledButton            
         text={'Відправити'}
-        func= {handleClouse}
+        func= {handleSendFile}
         border= {colorsRef.btnAddBorderColor}
                
            />

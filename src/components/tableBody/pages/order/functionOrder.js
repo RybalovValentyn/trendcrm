@@ -27,9 +27,12 @@ export function descendingComparator(a, b, orderBy) {
     });
     return stabilizedThis.map((el) => el[0]);
   };
-
+  
 
 export  const  hexToRgbA = (hex) =>{
+  if (hex?.includes("rgba")) {
+       return hex
+  }
   let c;
   if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
       c= hex.substring(1).split('');
@@ -38,7 +41,7 @@ export  const  hexToRgbA = (hex) =>{
       }
       c= '0x'+c.join('');
       return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',0.25)';
-  }
+  } else return hex
   throw new Error('Bad Hex');
 }
 

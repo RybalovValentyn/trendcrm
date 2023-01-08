@@ -274,7 +274,7 @@ if (name === 'payment_name') {
                onClose={handleClick}
                 disableFuture  
                  disableOpenPicker                     
-                inputFormat="MM-DD-YYYY"
+                inputFormat="YYYY-MM-DD"
                 value={value.datetime_sent_from?value.datetime_sent_from:null}
                 label={`${value.datetime_sent_from? '' : 'з' } `}
                 maxDate={value.datetime_sent_to}
@@ -293,7 +293,7 @@ if (name === 'payment_name') {
               disableOpenPicker 
               onClose={handleClick}
                label={`${value.datetime_sent_to? '' : 'по' } `}
-                inputFormat="MM-DD-YYYY"
+                inputFormat="YYYY-MM-DD"
                 value={value.datetime_sent_to?value.datetime_sent_to:null}
                 minDate={value.datetime_sent_from}
                 onChange={handleChangeSentTo}
@@ -316,7 +316,7 @@ if (name === 'payment_name') {
       <DesktopDatePicker
                 open={openUpdateFor}  
                 onClose={handleClick}                                              
-                inputFormat="MM-DD-YYYY"
+                inputFormat="YYYY-MM-DD"
                 disableOpenPicker 
                 value={value.update_date_from?value.update_date_from:null}
                 label={`${value.update_date_from? '' : 'з' } `}
@@ -334,7 +334,7 @@ if (name === 'payment_name') {
               open={openUpdateTo}
               onClose={handleClick}
               label={`${value.update_date_to? '' : 'по' } `}
-                inputFormat="MM-DD-YYYY"
+                inputFormat="YYYY-MM-DD"
                 disableOpenPicker 
                 value={value.update_date_to?value.update_date_to:null}
                 minDate={value.update_date_from}
@@ -359,7 +359,7 @@ if (name === 'payment_name') {
                   open={openFor} 
                   onClose={handleClick}
                   disableOpenPicker                                  
-                  inputFormat="MM-DD-YYYY"
+                  inputFormat="YYYY-MM-DD"
                   value={value.create_date_from?value.create_date_from:null}
                   label={`${value.create_date_from? '' : 'з' } `}
                   maxDate={value.create_date_to}
@@ -377,7 +377,7 @@ if (name === 'payment_name') {
                 disableOpenPicker 
                 onClose={handleClick}
                 label={`${value.create_date_from? '' : 'по' } `}
-                  inputFormat="MM-DD-YYYY"
+                  inputFormat="YYYY-MM-DD"
                   value={value.create_date_to?value.create_date_to:null}
                   minDate={value.create_date_from}
                   onChange={handleChangeTo}

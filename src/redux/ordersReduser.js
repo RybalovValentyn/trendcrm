@@ -2,11 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
 import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
-         getAllOrders, getAllStatuses, getFilteredOrders, setCommentAdd } from './asyncThunc';
+         getAllOrders, getAllStatuses, getFilteredOrders, setCommentAdd, setOrderReturn,
+          setOrderPayment, setOrderUpdatestatusPrepay,setOrderStatusUpdate } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { useMemo } from 'react';
-import { translater } from '../components/tableBody/pages/order/translate';
+import { translater, messages } from '../components/tableBody/pages/order/translate';
 
 const table = tableParse.data
 
@@ -113,6 +114,16 @@ const handleRejected = (state, action) => {
   state.isError = true;
 };
 
+const colorUpdate=(str)=>{
+  let color = '';
+  if (str?.order_return === '1' && str?.payment_received === '0') {              
+   return color = "rgba(255, 0, 0, 0.5)"
+    } else if (str?.payment_received === '1') {
+     return color = "rgba(28, 173, 34, 0.5)"
+  } else return color = str.status_style
+
+}
+
 const ordersReduser = createSlice({
     name: 'orders',
     initialState: {
@@ -134,11 +145,14 @@ const ordersReduser = createSlice({
     isError: false,
     widthOfColumn:{},
     modalControl:{
-
       opendownload: false,
       columnSettings: false,
       comentSettings: false,
-
+      send_sms: false,
+      justin_create: false,
+      prepay_update: false,
+      status_update: false,
+      date_send_update: false,
   },
  
 ttn_status: {},
@@ -170,6 +184,8 @@ client: {...client},
                 {name: 'admin', id:'1'}],
   responsible: [{name: 'Admins', id: '1'}, {name: 'Admin', id: '0'}],
   payment_status: [{name: 'Ні', id: '0'}, {name:'Так', id: '1'}],
+  sms_templates: [{name: 'Не вибрано', id: '0', value: ''},{name: 'Доставлено', id: '1', value: 'Shanovnij klient! Vidpravlennya pribulo. TTN №{ttn}'},
+                  {name: 'Відправлено', id: '2', value: 'Уважаемый клиент! Ваш товар успешно отправлен. ТТН №{ttn}'}],
   doors_city: [],
   doors_address:[],
   doors_flat: [],
@@ -185,7 +201,10 @@ client: {...client},
   tableLength: null,
   statusName: null,
   selectedRows: [],
-  translater: {...translater}
+  translater: {...translater},
+  message: [],
+  isStatusUpdated: false,
+
   },
 
    reducers: {
@@ -249,7 +268,7 @@ client: {...client},
         };
         }, 
         getOpenTableCreate:  (state, action) => {  
-          console.log(action.payload, 'getOpenTableCreate' );
+          // console.log(action.payload, 'getOpenTableCreate' );
           return { ...state  ,
             modalControl:{...state.modalControl, [action.payload.id]: action.payload.str}
         };
@@ -271,11 +290,6 @@ client: {...client},
         getFormTable: (state, action) => { 
           console.log(action.payload);
           switch (action.payload.id) {
-
-          //   case ('payment_name'):            
-          //   return { ...state,
-          //     createRows:{ ...state.createRows, payment_name:action.payload.str, backward_delivery_summ: '0.00'}
-          // };
         case ('warehouse_city'):               
         return { ...state,
           createRows:{ ...state.createRows, warehouse_city:action.payload.str,warehouse_address: '' }
@@ -292,6 +306,46 @@ client: {...client},
 
 
       extraReducers: {
+
+        [setOrderStatusUpdate.pending]:handlePending,
+        [setOrderStatusUpdate.fulfilled](state, action) { 
+            
+          if (action.payload?.data?.message) {
+            state.message = [action.payload?.data?.message]
+          } else if (action.payload?.data?.sending) {
+            state.isStatusUpdated=true;
+            state.message = [`${messages.countOrder} ${action.payload?.data?.sending.length?action.payload?.data?.sending:1}`, messages.statusPrepay]  
+          } else if (action.payload?.data) {
+            state.message = [messages.dateUpdate] 
+          }  
+          
+          state.isError = false;
+          state.isLoading = false;
+        },
+        [setOrderStatusUpdate.rejected]:handleRejected,
+
+        [setOrderUpdatestatusPrepay.pending]:handlePending,
+        [setOrderUpdatestatusPrepay.fulfilled](state, action) { 
+          state.message = [`${messages.countOrder} ${action.payload?.data?.update}`, messages.statusPrepay]         
+          state.isError = false;
+          state.isLoading = false;
+        },
+        [setOrderUpdatestatusPrepay.rejected]:handleRejected,
+
+        [setOrderPayment.pending]:handlePending,
+        [setOrderPayment.fulfilled](state, action) {            
+          state.isError = false;
+          state.isLoading = false;
+        },
+        [setOrderPayment.rejected]:handleRejected,
+
+        [setOrderReturn.pending]:handlePending,
+        [setOrderReturn.fulfilled](state, action) {    
+          state.isError = false;
+          state.isLoading = false;
+        },
+        [setOrderReturn.rejected]:handleRejected,
+        
         [setCommentAdd.pending]:handlePending,
         [setCommentAdd.fulfilled](state, action) {    
           const updatedRows = state.columns?.findIndex(n=>n.id===action.payload.idComent);
@@ -303,7 +357,6 @@ client: {...client},
 
           [getAllStatuses.pending]: handlePending,
         [getAllStatuses.fulfilled](state, action) {
-    
           return{
            ...state,
            getStatuses: [...action.payload],
@@ -324,8 +377,9 @@ client: {...client},
             },[]);
             const tHeadColumnFiltered = state.tHeadColumnFiltered
            const arrayFilteredRows = action.payload.data?.map((str, ind) =>{
+            let color = colorUpdate(str)
               return (tHeadColumnFiltered.reduce((acc,val, ind) =>{    
-                acc.push({id:val.data, value: str[val.data], color: str.status_style })         
+                acc.push({id:val.data, value: str[val.data], color: color !== ''?color:str.status_style })         
                 return [...acc]   
               },[]));
             
@@ -347,15 +401,16 @@ client: {...client},
 
         [getAllOrders.fulfilled](state, action) {
   
-                 const headerValue = Object.entries(translater).reduce((acc,str, ind) =>{
+         const headerValue = Object.entries(translater).reduce((acc,str, ind) =>{
             if (str.values) {
               acc.push({id:str[0], str:str[1]})
             }   
             return [...acc] 
               },[]);
           const arrayRows = action.payload.data?.map((str, ind) =>{
-            return (headerValue.reduce((acc,val, ind) =>{
-              acc.push({id:val.id, value: str[val.id], color: str.status_style })         
+            let color = colorUpdate(str)
+            return (headerValue.reduce((acc,val, ind) =>{               
+              acc.push({id:val.id, value: str[val.id], color: color !== ''?color:str.status_style })         
               return [...acc]   
             },[]));
           });

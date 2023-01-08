@@ -77,5 +77,10 @@ export const translater = {
     // "doubl_client":1,
     marketing: 'Маркетинг',
 
-    }
-    
+    };
+
+export const messages={
+   countOrder: 'Оновлено замовлень:',
+    statusPrepay: 'Статус передплати змінено',
+    dateUpdate: 'Дату відправки встановлено'
+}

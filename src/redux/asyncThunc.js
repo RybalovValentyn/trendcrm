@@ -5,6 +5,7 @@ import axios from 'axios';
 // axios.defaults.baseURL = 'https://react.trendcrm.biz';
 // axios.defaults.baseURL = 'http://localhost:5000/api';
 
+// https://react.trendcrm.biz/api/order/66/order_return
 
 const login = "/auth";
 const auth = '/auth';
@@ -19,6 +20,9 @@ const adress = '/adress';
 const addOrder = '/order';
 const orders = '/orders';
 const getStatus = '/count_status_orders';
+const orderReturn = 'order_return';
+const payment = 'payment_received';
+const prepayStatus = '/update/prepay_status'
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -125,11 +129,8 @@ export const getAllStatuses = createAsyncThunk(
         const { data } = await axios({
           method: "get",
           url:  REBASE_URL,
-          // url: 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function',
-          // url: 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function',
            params:{ cookie: document.cookie}
           })
-        //  console.log(data);
          return data.orders_status_count
       } catch (error) {
         // console.log(error.message);
@@ -376,11 +377,86 @@ export const setCommentAdd = createAsyncThunk(
     
   },
 );
-// {orders: ["33"], values: {status: 32}}
-// orders
-// : 
-// ["33"]
-// values
-// : 
-// {status: 32}
 
+
+export const setOrderReturn = createAsyncThunk(
+  'return/post',
+  async ({id, value }, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  REBASE_URL+addOrder+`/${id}/${orderReturn}`,
+           data: {order_return: value},
+          });
+        return {data, id}
+      } catch (error) {
+        console.log(error);
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+export const setOrderPayment = createAsyncThunk(
+  'payment/post',
+  async ({id, value }, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  REBASE_URL+addOrder+`/${id}/${payment}`,
+           data: {payment_received: value},
+          });
+        return {data, id}
+      } catch (error) {
+        console.log(error);
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+export const setOrderUpdatestatusPrepay = createAsyncThunk(
+  'prepay/post',
+  async ({selected, value }, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  REBASE_URL+orders+prepayStatus,
+           data: {orders: selected, value: value},
+          });
+        return {data}
+       
+      } catch (error) {
+        console.log(error);
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+export const setOrderStatusUpdate = createAsyncThunk(
+  'status/post',
+  async ({id, status, sent }, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  REBASE_URL+addOrder+`/${id}`,
+           data: status?{status: status, sent: sent?sent:''}:{sent: sent?sent:''},
+          });
+         return {data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// {status: "6", sent: ""}

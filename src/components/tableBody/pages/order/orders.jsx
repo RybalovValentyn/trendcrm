@@ -18,13 +18,17 @@ import { Preloader } from '../../../preloader/preloader';
 import { TableRows } from './tableRows';
 import { hexToRgbA } from "./functionOrder";
 import { getLoading } from '../../../../redux/funcReduser';
+import DateSendUpdate from '../modals/datesendUpdate';
 
 const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
 const EnhancedTableHead = lazy(() => import("./enhancedTableHead.jsx"));
 const ScrollTabsButton = lazy(() => import("./tableInBody.jsx"));
 const HeaderContainer = lazy(() => import("./header.jsx"));
 const MyTablePagination = lazy(() => import("./myPagination.jsx"));
-
+const SmsSend = lazy(()=> import('../modals/smsSend.jsx'));
+const JustinCreate = lazy(()=>import('../modals/justincreate.jsx'));
+const PrepayUpdate = lazy(()=>import('../modals/prepayupdate.jsx'));
+const StatusUpdate = lazy(()=>import('../modals/statusupdate.jsx'));
 export  function Order() {
   
 
@@ -131,7 +135,6 @@ if (columns.length > 0) {
   const newSelected = columns.flatMap(n => n.id);
   newSelected.map(str=>{
     if (str) {
-      // console.log(str);
       removeColor(str)
     }
 })
@@ -143,9 +146,16 @@ const addColor =(id)=>{
   const element = document.getElementById(`${id}+rows`);
   element.style.backgroundColor = '#B0C4FF'
 }
-const removeColor=(id)=>{
-  let color = columns.find(col=>col.id === id)?.status_style
+const removeColor=(id)=>{ 
+  let rows = columns.find(col=>col.id === id)
+  let color = '';
+  if (rows?.order_return === '1' && rows?.payment_received === '0') {              
+    color = "rgba(255, 0, 0, 0.5)"
+    } else if (rows?.payment_received === '1') {
+    color = "rgba(28, 173, 34, 0.5)"
+  } else color = rows?.status_style
   const element = document.getElementById(`${id}+rows`);
+  // console.log(element);
  if (element) {
   element.style.backgroundColor = hexToRgbA(color)
  } else removeAllColor()
@@ -235,7 +245,7 @@ const handleClick = (e, index) => {
   }
  const handleDoubleClick=(event, index, id)=>{
   sessionStorage.setItem("selected", '');
-  console.log('id', id);
+  // console.log('id', id);
        dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     dispatch(getRowsAfterAdd(id));  
     navigate(`/trendcrm/order/:${id}`); 
@@ -268,7 +278,7 @@ return (
         <TableBody sx={{backgroundColor: colorsRef.tabsBgColor, }}>
 
         {bodyTableRows.length > 0 ? bodyTableRows.map((rows, index, arr) => {
-         return (<MemoizedChildComponent key={index} 
+          return (<MemoizedChildComponent key={index} 
          rows ={rows} index={index} arr={arr} click={handleClick} />)
         }): 
         <tr><td colSpan={filteredRows.length?filteredRows.length:dataForHeader.length} align='center'>Нема даних</td></tr>
@@ -295,7 +305,27 @@ return (
   </Box>
 <MyTablePagination length={Number(tableLength)} rowsPerPage={rowsPerPage}  page={page}/>
 </Box>
+<DateSendUpdate/>
+
+    <Suspense>
+    <StatusUpdate/>
+    </Suspense>
+
+    <Suspense>
+    <PrepayUpdate/>
+    </Suspense>
+
+    <Suspense>
     <ComentModalMenu/>
+    </Suspense>
+
+    <Suspense>
+    <SmsSend/>
+    </Suspense>
+
+    <Suspense>
+     <JustinCreate/>
+    </Suspense>
     </Box>
   );
 }

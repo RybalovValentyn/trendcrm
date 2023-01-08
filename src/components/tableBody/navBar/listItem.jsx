@@ -5,10 +5,6 @@ const ListItemCategories =({text, open, id, onFunc, location})=>{
 
     const el = document.getElementById(id)
 
-    console.log(text);
-const handleClick=(route)=>{
-    console.log(route);
-}
 return(    
         <Popper
         sx={{zIndex: 6}}
@@ -32,7 +28,7 @@ return(
     </MenuItem>: null}
         {text?.map((option, index) => (
           <MenuItem
-          sx={{fontSize: '14px', borderRight: location === option.route?'5px solid #1a09fa':null,
+          sx={{fontSize: '14px', borderRight: location === option.route?'5px solid #1a09fa':null,backgroundColor: '#fff'
          }}
             key={index}            
             selected={location === option.route}

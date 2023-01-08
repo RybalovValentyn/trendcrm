@@ -16,7 +16,7 @@ import { MenuItem, Select, Box, ListItemText, InputBase, Typography, OutlinedInp
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { autoUpdate, autoUpdateRowsReupdate } from '../../../../redux/ordersReduser';
-import { setCommentAdd } from '../../../../redux/asyncThunc';
+import { setCommentAdd,getFilteredOrders,getAllOrders   } from '../../../../redux/asyncThunc';
 
 
 const Transition = forwardRef(function Transition(props, ref) {       
@@ -30,7 +30,7 @@ const Transition = forwardRef(function Transition(props, ref) {
     const rowsToUpdate = useSelector((state) => state.ordersAll.rowsToUpdate);
     const [coment, setComent]= useState('');
     const [idComent, setIdComent]= useState('');
-
+    const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 
  useEffect(()=>{
 if (rowsToUpdate?.id) {
@@ -51,6 +51,12 @@ const handleChange = (e)=>{
 const setHandleupdateInfo =()=>{
   dispatch(setCommentAdd({coment, idComent}));
    dispatch(getOpenTableCreate({id: 'comentSettings', str: false}));
+   getUpdate()
+};
+const getUpdate = ()=>{
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
 }
     return(
         <Dialog

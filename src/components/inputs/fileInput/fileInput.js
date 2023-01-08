@@ -9,18 +9,19 @@ export const InputFile = ()=>{
 
   const handleChange =(e) =>{
 
-setLabelText(e.target.value)
+setLabelText(e.target.value?e.target.value:'Вибаріть файл:')
   }
 
     return (
         <FormControl >
-          <Box sx={{ display: 'flex', width: '100%', alignItems: 'center',    }} >
+          <Box sx={{ display: 'flex', width: '100%', alignItems: 'center',   }} >
 
-          <Typography sx={{display: 'block',marginRight: '100px' }}>{labelText}</Typography>
-          <FormLabel  sx={{border: '1px solid #d0d0d0',
-                     padding: '5px 10px', maxWidth: '200px' ,
-                      borderRadius: '8px', display: 'block',
-                      marginLeft: '100px', cursor: 'pointer'
+          <Typography sx={{display: 'block',  }}>{labelText}</Typography>
+          <FormLabel  sx={{border: '1px solid #c0c0c0',
+                     padding: '4px 10px', maxWidth: '200px' ,
+                      borderRadius: '4px', display: 'block',
+                       cursor: 'pointer', marginLeft: 'auto',
+                      minWidth: '180px' , fontSize: '13px', color: '#383838'
                       
                       }}  htmlFor="uploads">{'Додати файл .xls'}</FormLabel>
 
