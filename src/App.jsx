@@ -57,9 +57,9 @@ if (location.pathname === '/trendcrm' && isAuth) {
 
 
   useEffect(() => {
-    console.log('current user ');
-    setCookie('user_id', '1', { path: '/' });
-    handleReload()
+    // console.log('current user ');
+    // setCookie('user_id', '1', { path: '/' });
+    // handleReload()
       if (currentUser) {
         console.log('current user ');
         setCookie('user_id', '1', { path: '/' });

@@ -9,6 +9,9 @@ import { useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content';
 
+import * as fileSaver from 'file-saver';
+import *as XLSX from 'sheetjs-style';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
 const MenuProps = {
@@ -25,6 +28,8 @@ const MenuProps = {
 
 
 export const OtherMenuComponent=()=>{
+  const columns = useSelector((state) => state.ordersAll.columns);
+  const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
 const navigate = useNavigate();
 const dispatch = useDispatch();
 const [open, setOpen] = useState(false);
@@ -34,6 +39,8 @@ const [openNp, setOpenNp] = useState(false);
 const newPostRef = useRef(null);
 const [openPrint, setOpenPrint]= useState(false);
 const printRef = useRef(null);
+const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+const fileExtension = '.xlsx';
 
 const handleClickOpen = () => {
 if (!open) {
@@ -103,8 +110,47 @@ const handleDateSendUpdate =()=>{
   dispatch(getOpenTableCreate({id: 'date_send_update', str: true}));  
 }
 
+const isFirstElement = (row)=>{
+  if (row.length === 2 &&row[1] === '1' && !row[2]) {
+    return true
+  } else if (row.length === 3&&row[2] === '1' && !Number(row[1]) ) {
+    return true
+  } else return false
+}
+
 const handleExportExcel=()=>{
-  console.log('handleExportExcel');
+  let selected =  sessionStorage.getItem("selected").split(',').filter(
+    (id, index, array) => array.indexOf(id) === index);
+  let column = [];
+  if (selected[0]) {
+ column = selected.map((id, ind)=>{ 
+if (Number(id)) {
+  let col = columns.find(n=>n.id === id)
+  let dataForFile = dataForHeader.map(str=>{
+    return[ str.str, col[str.id]]
+      })
+   return Object.fromEntries(dataForFile)
+}
+ })
+  }
+      const ws = XLSX.utils.json_to_sheet(column);
+      let width = []
+      for (const key in ws) {       
+        if (isFirstElement(key.split(''))) {
+          ws[key].s = {font: {name: '*', sz: 12, bold: true, color: { rgb: "333" }},
+          border: {top:{style:'medium'},bottom:{style:'medium'},left:{style:'medium'},right:{style:'medium'}},
+          alignment:{wrapText:false}         
+        }  
+        const max_width = ws[key].v?.length+6 
+       width.push({ wch: max_width })
+        }        
+      }
+      ws["!cols"] = width;
+      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const data = new Blob([excelBuffer], {type: fileType});
+      fileSaver.saveAs(data, 'export' + fileExtension);
+
 }
 
 const successAlert = () => {
