@@ -8,9 +8,9 @@ import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
 import { useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content';
-
 import * as fileSaver from 'file-saver';
 import *as XLSX from 'sheetjs-style';
+import { getRowsAfterAdd } from '../../../../../redux/asyncThunc';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -47,6 +47,11 @@ if (!open) {
   setOpen(true);
 } 
 };
+const handleHover =()=>{
+  setOpenjustin(false);
+  setOpenNp(false)
+  setOpenPrint(false)
+}
 
 const handleClicSms = ()=>{    
   setOpen(false);
@@ -96,6 +101,8 @@ const handleUpdateOrders=()=>{
   handleClickJustinItem()
   let selected =  sessionStorage.getItem("selected").split(',');
   if (selected[0]) {
+    let id = selected[0]
+    dispatch(getRowsAfterAdd(id));  
     navigate(`/trendcrm/order/:${selected[0]}`);   
   }
 }
@@ -176,6 +183,10 @@ const successAlert = () => {
       }); 
 }
 
+const handleImportExcel=()=>{
+  handleClickJustinItem()
+  dispatch(getOpenTableCreate({id: 'open_modal_component', str: true})); 
+}
 return(
 
     <Select 
@@ -190,14 +201,14 @@ return(
     }  sx={selectStyles}/>}
     MenuProps={MenuProps}
   >   
-      <MenuItem value={'sms'} sx={listStyle} onMouseEnter={handleJustinClosed} >
+      <MenuItem value={'sms'} sx={listStyle} onMouseEnter={handleHover}>
         <ListItemText onClick={handleClicSms}  primary={'Відправити SMS'} />      
       </MenuItem>
 
       <MenuItem ref={justinRef} onMouseEnter={handleMouseEnter} value={'justin'} sx={listStyle} id={'justin'} key={'justin'} >
         <ListItemText  primary={'Justin'} />
         <KeyboardArrowRightOutlinedIcon fontSize='small' sx={{color: '#a0a0a0'}} />
-{ open? <Popper
+        {open? <Popper
           open={openJustin}
           anchorEl={justinRef.current}
           role={undefined}
@@ -270,25 +281,25 @@ return(
               </Paper>
            </Popper>:null}
       </MenuItem>
-      <MenuItem onMouseEnter={()=>setOpenNp(false)} onClick={handleUpdateOrders} value={'fixed'} sx={listStyle}  >
+      <MenuItem onMouseEnter={handleHover} onClick={handleUpdateOrders} value={'fixed'} sx={listStyle}  >
         <ListItemText  primary={'Редагувати'} />
       </MenuItem>
-      <MenuItem value={'prepay'} onClick={handlePrepayStatus} sx={listStyle}>
+      <MenuItem value={'prepay'} onClick={handlePrepayStatus} onMouseEnter={handleHover} sx={listStyle}>
         <ListItemText  primary={'Передплата'} />
       </MenuItem>
-       <MenuItem value={'chnge_ststus'} onClick = {handleStatusUpdate} sx={listStyle} >
+       <MenuItem value={'chnge_ststus'} onClick = {handleStatusUpdate} onMouseEnter={handleHover} sx={listStyle} >
         <ListItemText  primary={'Змінити статуси'} />
       </MenuItem>
-      <MenuItem value={'schange_date'} onClick={handleDateSendUpdate} sx={listStyle} >
+      <MenuItem value={'schange_date'} onClick={handleDateSendUpdate} onMouseEnter={handleHover} sx={listStyle} >
         <ListItemText  primary={'Змінити дату відправлення'} />
       </MenuItem>
-      <MenuItem value={'export_exel'} onClick={successAlert} sx={listStyle}>
+      <MenuItem value={'export_exel'} onClick={successAlert} onMouseEnter={handleHover} sx={listStyle}>
         <ListItemText  primary={'Експотр Exel'} />
       </MenuItem>
-      <MenuItem value={'import_exel'} sx={listStyle} >
+      <MenuItem value={'import_exel'} onClick={handleImportExcel}  sx={listStyle} onMouseEnter={handleHover} >
         <ListItemText  primary={'Імпорт Exel'} />
       </MenuItem>
-      <MenuItem value={'delete'} sx={listStyle} >
+      <MenuItem value={'delete'} sx={listStyle} onMouseEnter={handleHover}>
         <ListItemText  primary={'Видалити'} />
       </MenuItem>
 

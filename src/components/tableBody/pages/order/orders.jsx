@@ -18,17 +18,19 @@ import { Preloader } from '../../../preloader/preloader';
 import { TableRows } from './tableRows';
 import { hexToRgbA } from "./functionOrder";
 import { getLoading } from '../../../../redux/funcReduser';
-import DateSendUpdate from '../modals/datesendUpdate';
 
+
+const ExportExcelComponent= lazy(() => import("../modals/modalcomponent/exportExel.jsx"));
 const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
 const EnhancedTableHead = lazy(() => import("./enhancedTableHead.jsx"));
 const ScrollTabsButton = lazy(() => import("./tableInBody.jsx"));
 const HeaderContainer = lazy(() => import("./header.jsx"));
 const MyTablePagination = lazy(() => import("./myPagination.jsx"));
 const SmsSend = lazy(()=> import('../modals/smsSend.jsx'));
-const JustinCreate = lazy(()=>import('../modals/justincreate.jsx'));
-const PrepayUpdate = lazy(()=>import('../modals/prepayupdate.jsx'));
-const StatusUpdate = lazy(()=>import('../modals/statusupdate.jsx'));
+const JustinCreate = lazy(()=>import('../modals/modalcomponent/justincreate.jsx'));
+const PrepayUpdate = lazy(()=>import('../modals/modalcomponent/prepayupdate.jsx'));
+const StatusUpdate = lazy(()=>import('../modals/modalcomponent/statusupdate.jsx'));
+const DateSendUpdate= lazy(()=>import('../modals/modalcomponent/datesendUpdate.jsx'));
 export  function Order() {
   
 
@@ -53,8 +55,10 @@ export  function Order() {
   // const statusName = searchParams.get('status');
   const selectedRows = useSelector((state) => state.function.selectedRow);
     const [order, setOrder] = useState('asc');
- 
-    let selected =  sessionStorage.getItem("selected");
+    let selected =  [];
+    if (sessionStorage.getItem("selected")) {
+        selected =  sessionStorage.getItem("selected")?.split(',');
+    }
     const page = useSelector((state) => state.ordersAll.page);
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
     const rowRef = useRef(null);
@@ -94,6 +98,7 @@ const seachStatus = useSelector((state) => state.ordersAll.statusName);
   
 
   useEffect(() => {
+    // dispatch(getAllStatuses());
 dispatch(getLoading(false))
 if (statuses.length === 0) {
   dispatch(getAllStatuses());
@@ -155,7 +160,6 @@ const removeColor=(id)=>{
     color = "rgba(28, 173, 34, 0.5)"
   } else color = rows?.status_style
   const element = document.getElementById(`${id}+rows`);
-  // console.log(element);
  if (element) {
   element.style.backgroundColor = hexToRgbA(color)
  } else removeAllColor()
@@ -194,7 +198,8 @@ if (selectedIndex === -1 && !ctrlKey) {
     removeColor(id)
     let arr = [...prevSelected]
     arr.splice(selectedIndex,1);
-    newSelected = [...arr]
+    newSelected = [...arr].filter(
+      (id, index, array) => array.indexOf(id) === index);
   };
 };
 if (shiftKey) {
@@ -206,11 +211,12 @@ if (shiftKey) {
     const firstElement = columns.findIndex(n=> n.id === prevSelected[lastElement])
     const lastIndexElement = columns.findIndex(n=> n.id === id);
      if (firstElement<lastIndexElement) {
-       newElements = columns.slice(firstElement, lastIndexElement+1).map(n=>n.id)
+       newElements = columns.slice(firstElement+1, lastIndexElement+1).map(n=>n.id)
     } else if (firstElement > lastIndexElement) {
-       newElements = columns.slice(lastIndexElement, firstElement).map(n=>n.id)
+       newElements = columns.slice(lastIndexElement, firstElement+1).map(n=>n.id)
     } else newElements = [id]
-    newSelected = [...prevSelected,...newElements]
+    newSelected = [...prevSelected,...newElements].filter(
+      (id, index, array) => array.indexOf(id) === index);
     console.log(prevSelected);
     if (newSelected.length > 1) {
       newSelected.map(str=>{
@@ -227,7 +233,7 @@ sessionStorage.setItem("selected", newSelected);
 const handleClick = (e, index) => { 
   let id = columns[index].id
   if (id) {
-    // console.log(id);
+    // console.log(selected.length);
     handleSelect(e.ctrlKey,e.shiftKey, id) ;
     countUpdate()    
   } 
@@ -245,7 +251,6 @@ const handleClick = (e, index) => {
   }
  const handleDoubleClick=(event, index, id)=>{
   sessionStorage.setItem("selected", '');
-  // console.log('id', id);
        dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     dispatch(getRowsAfterAdd(id));  
     navigate(`/trendcrm/order/:${id}`); 
@@ -305,7 +310,15 @@ return (
   </Box>
 <MyTablePagination length={Number(tableLength)} rowsPerPage={rowsPerPage}  page={page}/>
 </Box>
-<DateSendUpdate/>
+
+
+    <Suspense>
+    <ExportExcelComponent/>
+    </Suspense> 
+
+    <Suspense>
+    <DateSendUpdate/>
+    </Suspense>
 
     <Suspense>
     <StatusUpdate/>
@@ -320,7 +333,7 @@ return (
     </Suspense>
 
     <Suspense>
-    <SmsSend/>
+    <SmsSend/>   \\no modalComponent
     </Suspense>
 
     <Suspense>

@@ -24,7 +24,7 @@ export const DownloadComponent=()=>{
 const dispatch = useDispatch();
 const [open, setOpen] = useState(false);
 const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-let selected =  sessionStorage.getItem("selected").split(',');
+let selected =  sessionStorage.getItem("selected")?.split(',');
 
 const handleClickOpen = () => {
   setOpen(!open);

@@ -12,7 +12,7 @@ import { getOpenTableCreate } from '../../../../redux/ordersReduser';
 import { InputFile } from '../../../inputs/fileInput/fileInput';
 import { StyledButton } from '../../../buttons/buttons'; 
 import { colorsRef } from '../../../../consts/colorConstants';
-import { MenuItem, Select, Box, ListItemText, InputBase, Typography, OutlinedInput, IconButton } from '@mui/material';
+import { MenuItem, Select, Box, Typography, OutlinedInput, IconButton } from '@mui/material';
 import { useState } from 'react';
 import { selectStyles } from '../order/createHead/input';
 

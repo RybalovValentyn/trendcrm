@@ -153,6 +153,7 @@ const ordersReduser = createSlice({
       prepay_update: false,
       status_update: false,
       date_send_update: false,
+      open_modal_component: false,
   },
  
 ttn_status: {},
