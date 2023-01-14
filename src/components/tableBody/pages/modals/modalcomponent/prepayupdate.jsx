@@ -2,7 +2,7 @@ import DialogContent from '@mui/material/DialogContent';
 import Slide from '@mui/material/Slide';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { forwardRef } from 'react';
-import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate, alertMessageUpdate } from '../../../../../redux/ordersReduser';
 import { MenuItem, Select, Box,Typography, OutlinedInput} from '@mui/material';
 import { useState } from 'react';
 import { selectStyles } from '../../order/createHead/input';
@@ -38,7 +38,7 @@ const handleClouse =(e)=>{
 const handleClick=()=>{ 
   if (selected[0]) {
   dispatch(setOrderUpdatestatusPrepay({selected, value: String(status)}))
-  }
+  }  dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'warn'}))
   dispatch(getOpenTableCreate({id: 'prepay_update', str: false}));
 }
 

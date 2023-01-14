@@ -7,7 +7,7 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { useMemo } from 'react';
-import { translater, messages } from '../components/tableBody/pages/order/translate';
+import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
 
 const table = tableParse.data
 
@@ -204,13 +204,18 @@ client: {...client},
   selectedRows: [],
   translater: {...translater},
   message: [],
+  typeMessage: '',
   isStatusUpdated: false,
-
+  // selected: 0
   },
 
    reducers: {
+    alertMessageUpdate: (state, action) => {  
+      return { ...state,
+        message: [messages[action.payload.message]] ,
+        typeMessage: typeMessage[action.payload.type]
+    };},
     autoUpdate: (state, action) => {  
-      // console.log(action.payload);
          return { ...state, [action.payload.id]: action.payload.str}
     },
         tHeadFilteredColumnUpdate: (state, action) => {  
@@ -315,8 +320,10 @@ client: {...client},
             state.message = [action.payload?.data?.message]
           } else if (action.payload?.data?.sending) {
             state.isStatusUpdated=true;
+            state.typeMessage= typeMessage.success;
             state.message = [`${messages.countOrder} ${action.payload?.data?.sending.length?action.payload?.data?.sending:1}`, messages.statusPrepay]  
           } else if (action.payload?.data) {
+            state.typeMessage= typeMessage.success;
             state.message = [messages.dateUpdate] 
           }  
           
@@ -327,6 +334,7 @@ client: {...client},
 
         [setOrderUpdatestatusPrepay.pending]:handlePending,
         [setOrderUpdatestatusPrepay.fulfilled](state, action) { 
+          state.typeMessage= typeMessage.success;
           state.message = [`${messages.countOrder} ${action.payload?.data?.update}`, messages.statusPrepay]         
           state.isError = false;
           state.isLoading = false;
@@ -598,7 +606,7 @@ client: {...client},
 
 export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, searchCountUpdate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
    getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel, setOpenRowsCreator,
-   autoUpdateRowsReupdate, setClientForm, isAll
+   autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate
   } = ordersReduser.actions;
 export default ordersReduser.reducer;
 

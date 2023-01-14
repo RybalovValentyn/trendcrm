@@ -1,25 +1,12 @@
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useDispatch, useSelector,  } from 'react-redux';
-import { forwardRef } from 'react';
 import { getOpenTableCreate } from '../../../../redux/ordersReduser';
 import { InputFile } from '../../../inputs/fileInput/fileInput';
-import { StyledButton } from '../../../buttons/buttons'; 
-import { colorsRef } from '../../../../consts/colorConstants';
-import { MenuItem, Select, Box, Typography, OutlinedInput, IconButton } from '@mui/material';
+import { MenuItem, Select, Box, Typography, OutlinedInput } from '@mui/material';
 import { useState } from 'react';
 import { selectStyles } from '../order/createHead/input';
+import { ModalComponent } from './modalComponent';
 
-
-const Transition = forwardRef(function Transition(props, ref) {       
-    return <Slide direction="down" ref={ref} {...props} />;
-  });
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 4;
   const MenuProps = {
@@ -50,61 +37,35 @@ const handleSelectChange =(e)=>{
 const handleSendFile=()=>{
 
 }
-    return(
-        <Dialog
-        open={openDownExel}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClouse}
-        aria-describedby="alert-dialog-slide-description"
-        sx={{overflow: 'hidden', '& .MuiPaper-root': {width: '520px', bottom: '10%' }}}
-          >
-            <Box onClick={handleClouse} sx={{display: 'flex', justifyContent: 'space-between'}}>
-            <DialogTitle >{"Завантажити Exel "}</DialogTitle>
-          <IconButton  component="label">
-            <HighlightOffIcon />
-          </IconButton>
-            </Box>
-
-        <DialogContent>
+const Component =()=>(
+  <DialogContent>
         
-        <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-        <Typography>{'Дія:'}</Typography>
+  <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+  <Typography>{'Дія:'}</Typography>
 
-        <Select 
-          id="3"
-           value={group}
-          onChange={handleSelectChange}
-          input={<OutlinedInput  sx={selectStyles}/>}
-          MenuProps={MenuProps}
-          >          
-        {data.map((name, ind)=>(
-        <MenuItem sx={{fontSize: '14px' }} id={name.id} key ={ind} value={name.name} >      
-        {name.name}
-      </MenuItem>
+  <Select 
+    id="3"
+     value={group}
+    onChange={handleSelectChange}
+    input={<OutlinedInput  sx={selectStyles}/>}
+    MenuProps={MenuProps}
+    >          
+  {data.map((name, ind)=>(
+  <MenuItem sx={{fontSize: '14px' }} id={name.id} key ={ind} value={name.name} >      
+  {name.name}
+</MenuItem>
 
 ))}
 
-       </Select>
-        </Box >
-        <InputFile/>
-        </DialogContent>
-        <DialogActions sx={{width: '100%'}}>
+ </Select>
+  </Box >
+  <InputFile/>
+  </DialogContent>
+)
+    return(
 
-        <StyledButton
-        text={'Закрити'}
-        func= {handleClouse}
-        border= {'#7bb31a'} 
-           />
+      <ModalComponent Component={Component} funcOnClouse={handleClouse} open={openDownExel} closeButtonText={'Закрити'} sendButtonText={'Завантаити'} titleText={"Завантажити Exel "}
+      funcOnSend={handleSendFile} borderHeader={true} borderAction={false} alignAction={false}/>
 
-      <StyledButton            
-        text={'Відправити'}
-        func= {handleSendFile}
-        border= {colorsRef.btnAddBorderColor}
-               
-           />
-
-        </DialogActions>
-      </Dialog> 
     )
 }

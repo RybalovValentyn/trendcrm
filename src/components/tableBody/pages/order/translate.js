@@ -82,5 +82,15 @@ export const translater = {
 export const messages={
    countOrder: 'Оновлено замовлень:',
     statusPrepay: 'Статус передплати змінено',
-    dateUpdate: 'Дату відправки встановлено'
+    dateUpdate: 'Дату відправки встановлено',
+    idSelectedWarn: 'Потрібно вибрати хоч одне замовлення',
+    idSelectedOne: 'Потрібно вибрати тільки одне замовлення',
+    idSelectedFile: 'Потрібно вибрати файл для відправки',
+}
+
+export const typeMessage={
+    error: "error",
+    warn: "warning",
+    info: "info",
+    success: "success",
 }

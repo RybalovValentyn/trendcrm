@@ -1,6 +1,6 @@
 import DialogContent from '@mui/material/DialogContent';
 import { useDispatch, useSelector,  } from 'react-redux';
-import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate, alertMessageUpdate } from '../../../../../redux/ordersReduser';
 import {Box, Switch, Typography } from '@mui/material';
 import { useState } from 'react';
 import HelpOutlinedIcon from '@mui/icons-material/HelpOutlined';
@@ -16,11 +16,16 @@ const JustinCreate = () =>{
     const openjustinCreate = useSelector((state) => state.ordersAll.modalControl.justin_create);
     const [disabled, setDisabled] = useState(false);
     const [value, setValue] = useState('');
-    const [alertOpen, setAlertOpen] = useState(false)
+    const [alertOpen, setAlertOpen] = useState(false);
+    let selected =  [];
+    if (sessionStorage.getItem("selected")) {
+        selected =  sessionStorage.getItem("selected")?.split(',');
+    }
 
 const MySwal = withReactContent(Swal)
 
 const successAlert = () => {
+  dispatch(getOpenTableCreate({id: 'justin_create', str: false}));
     Swal.fire({  
         title: 'Увага!',  
         text: 'Ви дійсно хочете створити ЕН Justin',
@@ -52,8 +57,11 @@ const handleClouse =(e)=>{
 
 
 const handleCreateEN=()=>{
-    successAlert()
+  if (!selected || selected.length === 0) {
     dispatch(getOpenTableCreate({id: 'justin_create', str: false}));
+    dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'warn'}))
+  } else successAlert()    
+    
 
 }
 const handleInputChange=(e)=>{
@@ -92,7 +100,7 @@ const Component = ()=>(
   </DialogContent>
 )
     return(
-      <ModalComponent Component={Component} open={openjustinCreate} sendButtonText={'Створити'} titleText={"Створити ЕН Justin для замовлень"}
+      <ModalComponent Component={Component} open={openjustinCreate} sendButtonText={'Створити'} titleText={"Створити ЕН УкрПошта для замовлень"}
       funcOnSend={handleCreateEN} funcOnClouse={handleClouse} borderHeader={true} borderAction={false} alignAction={true} />
     
     )

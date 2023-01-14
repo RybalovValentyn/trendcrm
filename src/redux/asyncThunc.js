@@ -22,7 +22,9 @@ const orders = '/orders';
 const getStatus = '/count_status_orders';
 const orderReturn = 'order_return';
 const payment = 'payment_received';
-const prepayStatus = '/update/prepay_status'
+const prepayStatus = '/update/prepay_status';
+const excel = '/excel';
+const imp = '/import'
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -459,4 +461,33 @@ export const setOrderStatusUpdate = createAsyncThunk(
   },
 );
 
-// {status: "6", sent: ""}
+export const setFileExcelSend = createAsyncThunk(
+  'file/post',
+  async (file, { rejectWithValue}) => {
+    const formData = new FormData();
+  formData.append('file', file);
+    console.log(formData);
+
+          try {
+        const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+imp+orders+excel, 
+           data: {file: file},
+           headers: {"Content-Type": "multipart/form-data"}
+          });
+console.log(resp);
+        //  return {data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/import/orders/from/excel
+
+// https://react.trendcrm.biz/api/select/orders/ttn/from/excel
+
+// https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function/import/orders/excel

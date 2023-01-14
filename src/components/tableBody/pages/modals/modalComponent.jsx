@@ -29,7 +29,7 @@ export const ModalComponent = ({Component, open, closeButtonText, sendButtonText
         TransitionComponent={Transition}
         onClose={funcOnClouse}
         aria-describedby="alert-dialog-slide-description"
-        sx={{'& .MuiPaper-root': {width: '600px', bottom: '10%'}}}
+        sx={{'& .MuiPaper-root': {width: '600px'}}}
           >
     <Box  sx={{display: 'flex',alignItems: 'center',width: '100%',  justifyContent: 'space-between', borderBottom: borderHeader?`1px solid ${colorsRef.modalInputBorderColor}`:null}}>
         <DialogTitle sx={{'@media (max-width: 650px)': {

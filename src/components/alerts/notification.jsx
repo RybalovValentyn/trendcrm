@@ -15,13 +15,15 @@ export default function CustomizedSnackbars() {
     const dispatch=useDispatch();
   const [open, setOpen] = useState(false);
   const message = useSelector((state) => state.ordersAll.message);
+  const type = useSelector((state) => state.ordersAll.typeMessage);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    dispatch(autoUpdate({id: 'message', str: ''}));
-    setOpen(false);
+    // dispatch(autoUpdate({id: 'message', str: ''}));
+    
+      setOpen(false);
   };
  
   useEffect(()=>{
@@ -38,7 +40,7 @@ export default function CustomizedSnackbars() {
          onClose={handleClose}
          anchorOrigin={{  vertical: 'bottom', horizontal: 'right',}}
          >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%', alignItems:'center' }}>
+        <Alert onClose={handleClose} severity={type!==''?type:"success"} sx={{ width: '100%', alignItems:'center' }}>
         {message[0]?<Typography sx={{display: 'block'}}>{message[0]}</Typography>:null}
         {message[1]?<Typography sx={{display: 'block'}}>{message[1]}</Typography>:null}
          </Alert>

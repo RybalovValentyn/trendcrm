@@ -1,15 +1,17 @@
 
 import { Box, FormControl, Input , FormLabel, Typography  } from '@mui/material'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 
-export const InputFile = ()=>{
+export const InputFile = ({func})=>{
 
   const [labelText, setLabelText] =useState('Вибаріть файл:');
+  const fileInput = useRef();
 
   const handleChange =(e) =>{
-
-setLabelText(e.target.value?e.target.value:'Вибаріть файл:')
+    e.preventDefault();
+  setLabelText(e.target.value?e.target.value:'Вибаріть файл:');
+ 
   }
 
     return (
@@ -25,7 +27,7 @@ setLabelText(e.target.value?e.target.value:'Вибаріть файл:')
                       
                       }}  htmlFor="uploads">{'Додати файл .xls'}</FormLabel>
 
-          <Input onChange={handleChange}  sx={{ width: '0', height: '0', opasity: 1}} type="file" id="uploads" name="uploads" accept=".xls"/>
+          <Input onChange={handleChange} ref={fileInput}  sx={{ width: '0', height: '0', opasity: 1}} type="file" id="uploads" name="uploads" accept=".xls"/>
  
           
           </Box>

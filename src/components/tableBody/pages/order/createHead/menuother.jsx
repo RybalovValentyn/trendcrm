@@ -4,7 +4,7 @@ import { useState, forwardRef, useRef } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { selectStyles, svgStyle, listStyle } from './style';
 import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
-import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate, alertMessageUpdate } from '../../../../../redux/ordersReduser';
 import { useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content';
@@ -28,6 +28,7 @@ const MenuProps = {
 
 
 export const OtherMenuComponent=()=>{
+
   const columns = useSelector((state) => state.ordersAll.columns);
   const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
 const navigate = useNavigate();
@@ -41,6 +42,10 @@ const [openPrint, setOpenPrint]= useState(false);
 const printRef = useRef(null);
 const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const fileExtension = '.xlsx';
+let selected =  [];
+if (sessionStorage.getItem("selected")) {
+    selected =  sessionStorage.getItem("selected")?.split(',');
+}
 
 const handleClickOpen = () => {
 if (!open) {
@@ -67,11 +72,7 @@ const handleMouseEnter=(e)=>{
   }
 
 }
-const handleJustinClosed=()=>{
-  if (open) {
-    setOpenjustin(false)
-  }  
-}
+
 const handleClickJustinItem=()=>{
   setOpen(false);
   setOpenjustin(false);
@@ -83,9 +84,10 @@ const handleClickJustinItemCreate=()=>{
   dispatch(getOpenTableCreate({id: 'justin_create', str: true}));
 }
 const handleMouseEnterNewPost=()=>{
-  handleJustinClosed()
   if (open) {   
+    setOpenjustin(false)
     setOpenNp(true)
+    setOpenPrint(false)
   }
 }
 
@@ -99,12 +101,22 @@ const handlePrepayStatus=()=>{
 }
 const handleUpdateOrders=()=>{
   handleClickJustinItem()
-  let selected =  sessionStorage.getItem("selected").split(',');
-  if (selected[0]) {
+  if (selected.length === 0 || !selected) {
+    return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
+  }
+  if (selected.length === 1 && selected[0]) {
+    let id = selected[0]
+    dispatch(getRowsAfterAdd(id));  
+    navigate(`/trendcrm/order/:${selected[0]}`); 
+    return  
+  }
+  if (selected.length > 1) {
+    dispatch(alertMessageUpdate({message: 'idSelectedOne', type: 'warn'}))
     let id = selected[0]
     dispatch(getRowsAfterAdd(id));  
     navigate(`/trendcrm/order/:${selected[0]}`);   
-  }
+    return
+  } else dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
 }
 
 const handleStatusUpdate=()=>{  
@@ -162,6 +174,10 @@ if (Number(id)) {
 
 const successAlert = () => {
   handleClickJustinItem()
+  if (selected.length === 0 || !selected) {
+    return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'warn'}))
+  }
+
   withReactContent(Swal).fire({  
         title: 'Увага!',  
         text: 'Ви дійсно хочете експортувати в Exсel?',
@@ -187,13 +203,14 @@ const handleImportExcel=()=>{
   handleClickJustinItem()
   dispatch(getOpenTableCreate({id: 'open_modal_component', str: true})); 
 }
+
 return(
 
     <Select 
     id="other_menu"
     value={''}
     open={open}
-    onClose={()=>openJustin?null:setOpen(false)}
+    onClose={()=>openJustin || openNp ?null:setOpen(false)}
     input={<InputBase onClick={handleClickOpen} startAdornment={
    <InputAdornment   position="start">
        <SettingsIcon  sx={svgStyle}/>
@@ -205,8 +222,8 @@ return(
         <ListItemText onClick={handleClicSms}  primary={'Відправити SMS'} />      
       </MenuItem>
 
-      <MenuItem ref={justinRef} onMouseEnter={handleMouseEnter} value={'justin'} sx={listStyle} id={'justin'} key={'justin'} >
-        <ListItemText  primary={'Justin'} />
+      <MenuItem ref={justinRef} onMouseEnter={handleMouseEnter} value={'ukr_poshta'} sx={listStyle} id={'УкрПошта'} key={'УкрПошта'} >
+        <ListItemText  primary={'УкрПошта'} />
         <KeyboardArrowRightOutlinedIcon fontSize='small' sx={{color: '#a0a0a0'}} />
         {open? <Popper
           open={openJustin}
@@ -233,8 +250,8 @@ return(
               </Paper>
            </Popper>:null}
       </MenuItem>
-      <MenuItem ref={newPostRef} value={'newPost'} onMouseEnter={handleMouseEnterNewPost} sx={listStyle}>
-        <ListItemText  primary={'Нова Пошта'} />
+      <MenuItem ref={newPostRef} value={'newPost'} onMouseEnter={handleMouseEnterNewPost}  sx={listStyle}>
+        <ListItemText   primary={'Нова Пошта'} />
         <KeyboardArrowRightOutlinedIcon fontSize='small' sx={{color: '#a0a0a0'}} />
         { open? <Popper
           open={openNp}
@@ -250,7 +267,7 @@ return(
                     aria-labelledby="composition-button"
                                        
                   >
-                    <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItemCreate} onMouseEnter={()=>setOpenPrint(false)}>Створити ТТН</MenuItem>
+                    <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem} onMouseEnter={()=>setOpenPrint(false)}>Створити ТТН</MenuItem>
                     <MenuItem   ref={printRef}  sx={{fontSize: '14px', alignItems: 'center'}} onClick={handleClickJustinItem} onMouseEnter={()=>setOpenPrint(true)}>Роздрукувати ТТН
                     <KeyboardArrowRightOutlinedIcon fontSize='small' sx={{color: '#a0a0a0', marginLeft: '15px'}} />
                     { open? <Popper
@@ -267,7 +284,7 @@ return(
                                 id="print_menu"
                                 aria-labelledby="composition-button"                                    
                            >
-                                      <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItemCreate}>pdf</MenuItem>
+                                      <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem}>pdf</MenuItem>
                                       <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem}>pdf (зебра)</MenuItem>
                                     </MenuList>
                               
