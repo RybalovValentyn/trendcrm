@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import {Preloader} from './components/preloader/preloader';
 import { CookiesProvider } from "react-cookie";
-
+import { SnackbarProvider} from 'notistack'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -16,7 +16,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
        <PersistGate persistor={persistor}>
        <BrowserRouter>
        <CookiesProvider>
-         <App />
+           <SnackbarProvider maxSnack={6}>
+             <App /> 
+           </SnackbarProvider>
          </CookiesProvider>
        </BrowserRouter>
        </PersistGate>

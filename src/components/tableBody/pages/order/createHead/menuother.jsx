@@ -107,14 +107,14 @@ const handleUpdateOrders=()=>{
   if (selected.length === 1 && selected[0]) {
     let id = selected[0]
     dispatch(getRowsAfterAdd(id));  
-    navigate(`/trendcrm/order/:${selected[0]}`); 
+    navigate(`/trendcrm/order/${selected[0]}`); 
     return  
   }
   if (selected.length > 1) {
     dispatch(alertMessageUpdate({message: 'idSelectedOne', type: 'warn'}))
     let id = selected[0]
     dispatch(getRowsAfterAdd(id));  
-    navigate(`/trendcrm/order/:${selected[0]}`);   
+    navigate(`/trendcrm/order/${selected[0]}`);   
     return
   } else dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
 }
@@ -203,6 +203,10 @@ const handleImportExcel=()=>{
   handleClickJustinItem()
   dispatch(getOpenTableCreate({id: 'open_modal_component', str: true})); 
 }
+const handleClickCreateTtnNewPost=()=>{
+  handleClickJustinItem()
+  dispatch(getOpenTableCreate({id: 'ttnNewPostCreate', str: true}));
+}
 
 return(
 
@@ -267,7 +271,7 @@ return(
                     aria-labelledby="composition-button"
                                        
                   >
-                    <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem} onMouseEnter={()=>setOpenPrint(false)}>Створити ТТН</MenuItem>
+                    <MenuItem sx={{fontSize: '14px'}} onClick={handleClickCreateTtnNewPost} onMouseEnter={()=>setOpenPrint(false)}>Створити ТТН</MenuItem>
                     <MenuItem   ref={printRef}  sx={{fontSize: '14px', alignItems: 'center'}} onClick={handleClickJustinItem} onMouseEnter={()=>setOpenPrint(true)}>Роздрукувати ТТН
                     <KeyboardArrowRightOutlinedIcon fontSize='small' sx={{color: '#a0a0a0', marginLeft: '15px'}} />
                     { open? <Popper

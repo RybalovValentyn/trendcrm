@@ -109,12 +109,12 @@ if (location.pathname === '/trendcrm' && isAuth) {
                                   />
                                 ))}  
                          <Route path={'order'} element={<PrivateRoute component={CreateRows}/>}>
-                             <Route path={':idRows'} element={<CreateRows/>} />
+                             <Route path={`${idRows}`} element={<CreateRows/>} />
                          </Route>                        
                          
 
                     </Route>
-                    <Route path="/trendcrm/order/*" element={<ErrorPage/>} />         
+                    <Route path="/trendcrm/order/*" element={<Preloader/>} />         
                     <Route path="*" element={<Preloader/>} />
 
       </Routes>

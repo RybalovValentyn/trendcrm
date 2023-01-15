@@ -18,7 +18,8 @@ import { Preloader } from '../../../preloader/preloader';
 import { TableRows } from './tableRows';
 import { hexToRgbA } from "./functionOrder";
 import { getLoading } from '../../../../redux/funcReduser';
-
+import NewPostTtnCreate from '../modals/modalcomponent/newpostttncreate';
+import { CustomSnackBar } from '../../../alerts/snackbar';
 
 const ExportExcelComponent= lazy(() => import("../modals/modalcomponent/exportExel.jsx"));
 const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
@@ -253,7 +254,7 @@ const handleClick = (e, index) => {
   sessionStorage.setItem("selected", '');
        dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     dispatch(getRowsAfterAdd(id));  
-    navigate(`/trendcrm/order/:${id}`); 
+    navigate(`/trendcrm/order/${id}`); 
   };
 const countUpdate = ()=>{  
   const element = rowRef
@@ -310,7 +311,7 @@ return (
   </Box>
 <MyTablePagination length={Number(tableLength)} rowsPerPage={rowsPerPage}  page={page}/>
 </Box>
-
+<NewPostTtnCreate/>
 
     <Suspense>
     <ExportExcelComponent/>
@@ -339,6 +340,7 @@ return (
     <Suspense>
      <JustinCreate/>
     </Suspense>
+    <CustomSnackBar/>
     </Box>
   );
 }

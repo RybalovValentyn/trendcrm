@@ -86,6 +86,7 @@ export const messages={
     idSelectedWarn: 'Потрібно вибрати хоч одне замовлення',
     idSelectedOne: 'Потрібно вибрати тільки одне замовлення',
     idSelectedFile: 'Потрібно вибрати файл для відправки',
+    orderttnError: 'Помилка в замовлені'
 }
 
 export const typeMessage={

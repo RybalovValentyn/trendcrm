@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncOrders';
 import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
          getAllOrders, getAllStatuses, getFilteredOrders, setCommentAdd, setOrderReturn,
-          setOrderPayment, setOrderUpdatestatusPrepay,setOrderStatusUpdate } from './asyncThunc';
+          setOrderPayment, setOrderUpdatestatusPrepay,setOrderStatusUpdate, setFileExcelSend,
+          setNewPostTtnCreate,  } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
-import { useMemo } from 'react';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
 
 const table = tableParse.data
@@ -154,6 +154,8 @@ const ordersReduser = createSlice({
       status_update: false,
       date_send_update: false,
       open_modal_component: false,
+      ttnNewPostCreate: false,
+      
   },
  
 ttn_status: {},
@@ -204,9 +206,10 @@ client: {...client},
   selectedRows: [],
   translater: {...translater},
   message: [],
+  messageSendFile: '',
   typeMessage: '',
   isStatusUpdated: false,
-  // selected: 0
+  sneckBarMessage: null,
   },
 
    reducers: {
@@ -312,7 +315,35 @@ client: {...client},
 
 
       extraReducers: {
+        
+        [setNewPostTtnCreate.pending]:handlePending,
+        [setNewPostTtnCreate.fulfilled](state, action) { 
+        
+          if (action.payload?.data?.message) {
+            state.message = [action.payload?.data?.message]
+            state.typeMessage= typeMessage.success;
+          } else if (action.payload?.data?.error
+            ) {
+            state.sneckBarMessage = [`${messages.orderttnError} ${action.payload.id}`,action.payload?.data?.error]
+            state.typeMessage= typeMessage.error;
+          } 
+          
+          state.isError = false;
+          state.isLoading = false;
+        },
+        [setNewPostTtnCreate.rejected]:handleRejected,
 
+        [setFileExcelSend.pending]:handlePending,
+        [setFileExcelSend.fulfilled](state, action) { 
+            
+          if (action.payload?.data?.message) {
+            state.messageSendFile = [action.payload?.data?.message]
+          } 
+          
+          state.isError = false;
+          state.isLoading = false;
+        },
+        [setFileExcelSend.rejected]:handleRejected,
         [setOrderStatusUpdate.pending]:handlePending,
         [setOrderStatusUpdate.fulfilled](state, action) { 
             

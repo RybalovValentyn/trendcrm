@@ -15,11 +15,13 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 
 export const ModalComponent = ({Component, open, closeButtonText, sendButtonText, titleText, 
-                      funcOnSend,funcOnClouse, borderHeader, borderAction, alignAction}) =>{
+                      funcOnSend,funcOnClouse, borderHeader, borderAction, alignAction, isAutoclouse}) =>{
 
 
       const handleSendFromButton=()=>{
-        funcOnClouse()
+        if (!isAutoclouse) {
+          funcOnClouse()
+        }        
         funcOnSend()
       }
 

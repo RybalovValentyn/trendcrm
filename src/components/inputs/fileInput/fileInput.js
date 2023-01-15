@@ -27,7 +27,7 @@ export const InputFile = ({func})=>{
                       
                       }}  htmlFor="uploads">{'Додати файл .xls'}</FormLabel>
 
-          <Input onChange={handleChange} ref={fileInput}  sx={{ width: '0', height: '0', opasity: 1}} type="file" id="uploads" name="uploads" accept=".xls"/>
+          <Input onChange={handleChange} ref={fileInput}  sx={{ width: '0', height: '0', opasity: 1}} type="file" id="uploads" name="uploads" accept=".xlsx"/>
  
           
           </Box>

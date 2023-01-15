@@ -1,34 +1,44 @@
 import DialogContent from '@mui/material/DialogContent';
 import { useDispatch, useSelector,  } from 'react-redux';
-import { getOpenTableCreate, alertMessageUpdate } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate, alertMessageUpdate, autoUpdate } from '../../../../../redux/ordersReduser';
 import { InputFile } from '../../../../inputs/fileInput/fileInput';
 import { MenuItem, Select, Box, Typography, OutlinedInput, IconButton } from '@mui/material';
 import { useState } from 'react';
 import { selectStyles } from '../../order/createHead/input';
 import { ModalComponent } from '../modalComponent';
 import file from '../../../../../tpl/Import template.xlsx';
-import { setFileExcelSend } from '../../../../../redux/asyncThunc';
+import { setFileExcelSend, getFilteredOrders,getAllOrders  } from '../../../../../redux/asyncThunc';
 
 
 const ExportExcelComponent=()=>{
     const dispatch = useDispatch();
     const open = useSelector((state) => state.ordersAll.modalControl.open_modal_component);
     const [url, setUrl] = useState(null)
+    const message = useSelector((state) =>state.ordersAll.messageSendFile)
+    const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 
   const handleClouse =(e)=>{
         dispatch(getOpenTableCreate({id: 'open_modal_component', str: false}));
+        dispatch(autoUpdate({id: 'messageSendFile', str: ''}));
+        if (message === 'Заказы импортированы') {
+          getUpdate()
+        }
+        
       }
 
   const handleSendFile=()=>{
 const element = document.getElementById('uploads');
 const selectedFile = element.files[0]
-
 if (selectedFile) {
   dispatch(setFileExcelSend(selectedFile)) 
 } else dispatch(alertMessageUpdate({message: 'idSelectedFile', type: 'warn'}))
       
     }
-
+ const getUpdate = ()=>{  
+      if (filteredRows?.length > 0) {
+        dispatch(getFilteredOrders())
+      } else dispatch(getAllOrders())
+    }
 const Component =()=>(
    
         <DialogContent>
@@ -88,7 +98,7 @@ const Component =()=>(
         <Typography  sx={{fontSize: '13px'}}>або</Typography>
         <Typography  sx={{fontSize: '13px'}}>&#123; id товара в CRM &#125; - количество товара;</Typography>
         <Typography  sx={{fontSize: '13px',display: 'block', margin: '10px 0px'}}>При импорте страница будет заблокирована до конца импорта.</Typography>
-
+          {message?<Typography  sx={{fontSize: '16px', color: 'red'}}>{message}</Typography>:null}
         </DialogContent> 
     )
 
@@ -96,7 +106,7 @@ const Component =()=>(
     return(
 
         <ModalComponent Component={Component} funcOnClouse={handleClouse} open={open} closeButtonText={'Закрити'} sendButtonText={'Завантаити'} titleText={"Імпорт замовлень з Excel"}
-         funcOnSend={handleSendFile} borderHeader={true} borderAction={false} alignAction={false}/>
+         funcOnSend={handleSendFile} borderHeader={true} borderAction={false} alignAction={false} isAutoclouse={true}/>
        )
 };
 export default ExportExcelComponent

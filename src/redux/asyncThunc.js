@@ -11,6 +11,7 @@ const login = "/auth";
 const auth = '/auth';
 
 const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
+const TREND_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function'
 
 // const REBASE_URL= 'http://localhost:5000/api';
 
@@ -24,7 +25,9 @@ const orderReturn = 'order_return';
 const payment = 'payment_received';
 const prepayStatus = '/update/prepay_status';
 const excel = '/excel';
-const imp = '/import'
+const imp = '/import';
+const ttn = '/ttn';
+const novaPochta = '/novaposhta'
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -464,19 +467,19 @@ export const setOrderStatusUpdate = createAsyncThunk(
 export const setFileExcelSend = createAsyncThunk(
   'file/post',
   async (file, { rejectWithValue}) => {
-    const formData = new FormData();
-  formData.append('file', file);
-    console.log(formData);
+    const fileData = new FormData();
+    fileData.append('file', file);
+    console.log(fileData.get('file'));
 
           try {
-        const resp = await axios({
+        const {data} = await axios({
           method: "post",
            url:  REBASE_URL+imp+orders+excel, 
-           data: {file: file},
+           data: fileData,
            headers: {"Content-Type": "multipart/form-data"}
           });
-console.log(resp);
-        //  return {data}       
+console.log(data);
+         return {data}       
       } catch (error) {
         return rejectWithValue({
           error: error.message,
@@ -485,9 +488,30 @@ console.log(resp);
     
   },
 );
-
+// https://react.trendcrm.biz/api/novaposhta/order/68/ttn
 // https://react.trendcrm.biz/api/import/orders/from/excel
 
 // https://react.trendcrm.biz/api/select/orders/ttn/from/excel
 
 // https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function/import/orders/excel
+
+// {weight: "34", responsible_packer: "1"}
+
+export const setNewPostTtnCreate = createAsyncThunk(
+  'ttn/create',
+  async ({id, weight, responsible_packer }, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  TREND_URL+addOrder+`/${id}`+ttn,
+           data: {weight: weight, responsible_packer: responsible_packer},
+          });
+         return {data, id}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);

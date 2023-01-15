@@ -4,8 +4,8 @@ import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useSelector, useDispatch } from 'react-redux';
-import { autoUpdate } from '../../redux/ordersReduser';
 import { Typography } from '@mui/material';
+import { autoUpdate } from '../../redux/ordersReduser';
 
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -21,7 +21,7 @@ export default function CustomizedSnackbars() {
     if (reason === 'clickaway') {
       return;
     }
-    // dispatch(autoUpdate({id: 'message', str: ''}));
+    dispatch(autoUpdate({id: 'message', str: ''}));
     
       setOpen(false);
   };
