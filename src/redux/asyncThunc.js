@@ -11,7 +11,7 @@ const login = "/auth";
 const auth = '/auth';
 
 const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
-const TREND_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function'
+// const TREND_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function'
 
 // const REBASE_URL= 'http://localhost:5000/api';
 
@@ -27,7 +27,10 @@ const prepayStatus = '/update/prepay_status';
 const excel = '/excel';
 const imp = '/import';
 const ttn = '/ttn';
-const novaPochta = '/novaposhta'
+const novaPochta = '/novaposhta';
+const remove = '/delete';
+const returnTtn = '/return'
+const deletOrder = '/basket'
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -195,7 +198,7 @@ const searchColumn = state.ordersAll.tHeadColumnFiltered
           datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name?state.ordersAll.searchParams.status_name:state.ordersAll.statusName,
-          order:[{column: 0, dir: 'desc'}],
+          order:[{column: state.ordersAll.sortColumn, dir: state.ordersAll.sortTable}],
           columns:[...column, {data: 'status_name', searchable: true, orderable: true, search:{value: params.status_name}},
           {data: 'id', searchable: true, orderable: true, search:{value: ''} },
         ] ,
@@ -218,6 +221,8 @@ const searchColumn = state.ordersAll.tHeadColumnFiltered
     
   },
 );
+// order[0][column]: 3
+// order[0][dir]: asc
 
 export const getAllOrders = createAsyncThunk(
   'orders/all',
@@ -234,7 +239,7 @@ export const getAllOrders = createAsyncThunk(
           datetime_sent_from: state.ordersAll.searchParams.datetime_sent_from,
           datetime_sent_to: state.ordersAll.searchParams.datetime_sent_to,
           status: state.ordersAll.searchParams.status_name?state.ordersAll.searchParams.status_name:state.ordersAll.statusName,
-          order:[{column: 0, dir: 'desc'}],
+          order:[{column: state.ordersAll.sortColumn, dir: state.ordersAll.sortTable}],
           columns:[
             {data: 'id', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.id} },
              {data: 'status_name', searchable: true, orderable: true, search:{value: state.ordersAll.searchParams.status_name}}, 
@@ -503,10 +508,88 @@ export const setNewPostTtnCreate = createAsyncThunk(
           try {
         const {data} = await axios({
           method: "post",
-           url:  TREND_URL+addOrder+`/${id}`+ttn,
+           url:  REBASE_URL+novaPochta+addOrder+`/${id}`+ttn,
            data: {weight: weight, responsible_packer: responsible_packer},
           });
          return {data, id}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+export const getPrintTtn = createAsyncThunk(
+  'ttn/print',
+  async ({orders, type}, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  REBASE_URL+novaPochta+ttn,
+           data: {orders: orders, type: type},
+          });
+         return {data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/novaposhta/order/69/ttn/delete
+
+export const getNewPostTtnDelete = createAsyncThunk(
+  'ttn/delete',
+  async (id, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  REBASE_URL+novaPochta+addOrder+`/${id}`+ttn+remove,
+           });
+         return {data, id}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+//react.trendcrm.biz/api/novaposhta/ttn/75/return
+
+export const getNewPostTtnReturn = createAsyncThunk(
+  'ttn/return',
+  async (id, { rejectWithValue}) => {
+          try {
+        const {data} = await axios({
+          method: "post",
+           url:  REBASE_URL+novaPochta+addOrder+`/${id}`+ttn+returnTtn,
+           });
+         return {data, id}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+// https://react.trendcrm.biz/api/order/31/basket
+
+export const RemoveOrderFromId= createAsyncThunk(
+  'order/delete',
+  async (id, { rejectWithValue}) => {
+          try {
+        const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+addOrder+`/${id}`+deletOrder,
+           data: {orders: [id], values: {status: 32}}
+           });
+           return {data: resp.status, id}       
       } catch (error) {
         return rejectWithValue({
           error: error.message,

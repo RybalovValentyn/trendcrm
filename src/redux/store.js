@@ -26,7 +26,8 @@ import functionReduser from './funcReduser';
   const orderPersistConfig = {
     key: 'orderAll',
     storage,
-    blacklist: ['isError', 'error', 'createRows', 'message', 'typeMessage', 'sneckBarMessage', 'messageSendFile']
+    blacklist: ['isError', 'error', 'createRows', 'message', 'typeMessage', 'sneckBarMessage',
+     'messageSendFile', 'sortColumn', 'sortTable']
     };
   
   const authPersistReducer = persistReducer(authPersistConfig, authReduser);

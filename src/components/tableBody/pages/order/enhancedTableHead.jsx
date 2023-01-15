@@ -7,72 +7,33 @@ import TableCell from '@mui/material/TableCell';
 import {dividerStyle, dividerSecondStyle, rowPosition, tHeadStyle} from './styles';
 import {Divider,TableSortLabel, Box } from '@mui/material';
 import {tHeadColumnUpdate} from '../../../../redux/ordersReduser';
-
-import { getWidthUpdate, setWidthColumn } from '../../../../redux/ordersReduser';
+import { getWidthUpdate, setWidthColumn, autoUpdate } from '../../../../redux/ordersReduser';
+import { SortArrow } from '../../../sortarrow';
+import { getFilteredOrders, getAllOrders } from '../../../../redux/asyncThunc';
 
 const InputSelector = lazy(() => import("./createHead/inputselector"));
 
  function EnhancedTableHead() {
-    //  const columns = useSelector((state) => state.ordersAll.columns);
     const dataForHeader = useSelector((state) => state.ordersAll.tHeadColumn);
     const widthOfColumn = useSelector((state) => state.ordersAll.widthOfColumn);
-    // const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =  props;
-    // const filteredColumn = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
     const [width, setWidth] = useState(null);
     const [deltaWidth, setDeltaWidth] = useState(null);
     const [isResize, setIsResize] = useState(null);
     const [firstWidth, setFirstWidth] = useState(null)
     const dispatch = useDispatch();
-
+    const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+    
 
     
-// useEffect(() => {
-//   if (columns.length > 0 && filteredColumn.length === 0) {  
-    
-//   // dispatch(tHeadColumnUpdate(headerValue));
   
-// }else  if (columns.length > 0 && filteredColumn.length > 0) {
-//   console.log('headerValue');
-//   // dispatch(tHeadColumnUpdate(filteredHeaderValue))
-// }
-// }, [columns, filteredColumn]); 
-    
- 
-//   const headerValue = useMemo(() => Object.entries(translater).reduce((acc,str, ind) =>{
-//   if (str.values) {
-//     acc.push({id:str[0], str:str[1]})
-//   }   
-//   return [...acc] 
-//     },[]),[dataForHeader]
-// ); 
-
-
-// const filteredHeaderValue = useMemo(() => filteredColumn.reduce((acc,str, ind) =>{
-//   if (translater[str.data]) {
-//      acc.push({id:str.data, str:translater[str.data]})
-//   }    
-//   return [...acc] 
-// },[]),[dataForHeader]
-// ); 
-
-
-   
   const getWidthColumnUpdate =(e)=>{
+    // console.log(e.target.id);
     setIsResize(false);
-    dispatch(setWidthColumn(width))
+    // dispatch(setWidthColumn(width))
   }
   
-  const containerStyle ={
-   overflow: 'hidden',
-  maxWidth: '600px',
-   padding: '3px 10px',
-    alignItems: 'center',
-   minWidth: width,
-    position: 'relative',
-}
-
 const handleDownResize=(e)=>{
-  console.log(e.target.id);
+  // console.log(e.target.id);
   let id = e.target.id
   setIsResize(true);
   setDeltaWidth(e.clientX);
@@ -82,7 +43,7 @@ const handleDownResize=(e)=>{
 }
 const mouseWheel =(e)=>{
 if (isResize) {
-  console.log(deltaWidth, firstWidth);
+  // console.log(deltaWidth, firstWidth);
   setWidth({id: width.id, width: firstWidth+(e.clientX - deltaWidth)} )
 
 }
@@ -93,12 +54,26 @@ setIsResize(false)
 setFirstWidth(null)
 
 }
+
+const handleSortTable=({sort,ind, id})=>{
+  console.log(sort,ind, id);
+dispatch(autoUpdate({id: 'sortColumn', str: ind}))
+dispatch(autoUpdate({id: 'sortTable', str: sort}))
+
+getUpdate()
+}
+
+const getUpdate = ()=>{
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
+}
     return (    
       <TableHead sx={{ backgroundColor: colorsRef.formBgColor, position: '-webkit-sticky', position: 'sticky', top: '0', zIndex: 2}} >    
   
         <TableRow sx={rowPosition}>       
   
-          {dataForHeader.map((row) => (          
+          {dataForHeader.map((row, ind) => (          
             <TableCell
             onMouseUp={getWidthColumnUpdate}            
             onMouseMove={mouseWheel}
@@ -110,7 +85,7 @@ setFirstWidth(null)
               >  
               <div  id={row.id} style={{   overflow: 'hidden', maxWidth: '600px', padding: '4px 40px', alignItems: 'center',
               minWidth: isResize && width?.id === row.id?width?.width : widthOfColumn[row.id],
-                   position: 'relative', color: colorsRef.labelTextColor}} key={row.id}>
+                   position: 'relative', color: colorsRef.labelTextColor, display: 'flex',}} key={row.id}>
   
               {/* <TableSortLabel            
                 active={orderBy === row.id}
@@ -124,6 +99,7 @@ setFirstWidth(null)
                 ) : null} */}
                
               {/* </TableSortLabel> */}
+              <SortArrow id={row.id} ind={ind} func={handleSortTable}/>
               <Divider onMouseDown={handleDownResize} 
               onMouseUp = {handleMouseUp}  
               id={row.id} key={row.id} sx={dividerStyle} orientation="vertical" flexItem />

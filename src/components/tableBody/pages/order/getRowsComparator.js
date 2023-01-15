@@ -13,10 +13,9 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 export function GetRowsComparator({row}) {
-   
-const {value, id, color} = row
-const dataForSelect = useSelector((state) => state.ordersAll.payment_type);
 
+const {value, id, color, statusColor} = row
+const dataForSelect = useSelector((state) => state.ordersAll.payment_type);
     const operators = {
         "63": "lifecell",
         "93": "lifecell",
@@ -68,7 +67,7 @@ if (value!=='' && value!== ' ') {
         };
 break;
 case 'status_name':
-            return(<Chip sx={{backgroundColor: color, maxHeight: '18px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis',
+            return(<Chip sx={{backgroundColor: statusColor, maxHeight: '18px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis',
              color: '#fff', padding: '0px 10px', border: 'none'}} label={value} size="small" variant="outlined" />)
 case 'ttn_status':
     let ttnStatusStyle={

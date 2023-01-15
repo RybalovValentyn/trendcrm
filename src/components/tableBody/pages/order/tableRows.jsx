@@ -2,7 +2,6 @@ import { GetRowsComparator } from "./getRowsComparator";
 import { hexToRgbA } from "./functionOrder";
 
 export const TableRows=({rows, index, arr, click} )=>{  
-// console.log(rows);
 
     const columnStyle ={
         minWidth: '100px',

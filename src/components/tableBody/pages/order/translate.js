@@ -1,81 +1,110 @@
 export const translater = {
     "id":"Замовлення",
-    // "client_id":"377",
-    "store_id":"Відповідальний магазин",
-    "store_url":"Сайт",
-    // "script_id":"1",
-    "responsible":"Відповідальний",
-    // "responsible_group":"0",
-    // "responsible_packer":"0",
-    // "status":"Статус",
-    "delivery_type": 'Тип доставки',
-    "delivery_price":"Ціна доставки",
-    "payment_type":"Тип оплати",
-    "payment_status":"Оплата",
-    "prepay_amount":"Сума передплати",
-    "payment_received": "Оплата отримана",
-    "discount":"Знижка",
-    // "discount_type":"0",
-    // "order_return":"0",
-    // "total":"Ціна",
-    "backward_delivery_summ":"Зворотня ддоставки",
-    "total_weight":"Повна Маса",
-    // "total_volume_general":"Собівартість",
+    "status_name":"Статус",
+    "client": "ПІБ клієнта",
+    "client_phone":"Телефон",
+    "client_groups":"Група клієнта",
+    "ig_username":"Instagram",
     "comment":"Коментар",
-    "client_comment":"Коментар клієнта",
-    "additional_field":"Доп. Коментар",
+    "supplier": "Постачальник",
+    "total":"Ціна",
+    "storage_income_price_sum": "Собівартість",
+    "products_names":"Найменування",
+    "responsible":"Відповідальний",
+    "group_name":"Група",
+    "packer_name":"Пакувальник",
+    "єcounterparty": "Контрагент",
+    "delivery_type": 'Пошта',
+    "ttn": "ТТН",
+    "backward_delivery_summ":"Наложений платіж",
+    "ttn_cost":"Розрахована вартість",
+    "payment_type":"Спосіб оплати",
+    "ttn_status_code": "Статус доставки",
+    "ttn_update_at": "Днів в статусі",
+    "datetime":"Дата додавання",
+    "update_at":"Дата зміни",
+    "datetime_sent":"Дата відправлення",
+    "store_url":"Сайт",
+    "name_store_resp":"Відповідальний магазин",
+    "store_title": "Магазин",
+
+    // "client_id":"377",
     "utm_source": 'utm_source',
     "utm_medium":"utm_medium",
     "utm_term":"utm_term",
     "utm_content":"utm_content",
     "utm_campaign":"utm_campaign",
-    "datetime":"Дата додавання",
-    "update_at":"Дата зміни",
-    // "view_id":"1",
-    "new_datetime":"Нова дата",
-    "datetime_sent":"Дата відправлення",
-    // "DT_RowId":"117680",
-    "delivery_type_id":"Доставка",
-    "client": "ПІБ клієнта",
-    "client_phone":"Телефон",
-    // "banned_phone":"0",
-    "ig_username":"Instagram",
+    
+    // "script_id":"1",
+    "marketing": 'Маркетинг',
     "client_ip":"ІР-адреса",
+    
+    // "responsible_group":"0",
+    // "responsible_packer":"0",
+    // "status":"Статус",
+    
+    // "delivery_price":"Ціна доставки",
+    
+    // "payment_status":"Оплата",
+    // "prepay_amount":"Сума передплати",
+    // "payment_received": "Оплата отримана",
+    // "discount":"Знижка",
+    // "discount_type":"0",
+    // "order_return":"0",
+    // 
+    
+    // "total_weight":"Повна Маса",
+    // "total_volume_general":"Собівартість",
+    
+    // "client_comment":"Коментар клієнта",
+    // "additional_field":"Доп. Коментар",
+
+    
+    
+    // "view_id":"1",
+    // "new_datetime":"Нова дата",
+    
+    // "DT_RowId":"117680",
+    // "delivery_type_id":"Доставка",
+    
+    
+    // "banned_phone":"0",
+    
+    
     // "count_calls":null,
     // "sms_count":null,
-    "packer_name":"Пакувальник",
-    "group_name":"Група",
-    "status_name":"Статус",
+    
+    
+    
     // "status_style":"Статус",
-    "products_names":"Найменування",
+    
     // "product_amount":"1",
     // "system_action":"",
-    "storage_income_price_sum": "Ціна",
+    
     // "payment_name":"Спосіб оплати",
     // "j_number":null,
     // "justin_account":null,
     // "j_ttn_cost":null,
     // "j_status":"",
     // "j_name":null,
-    "ttn":"ТТН",
-    "ttn_cost":"Розрахована вартість",
-    "ttn_status":"Статус ТТН",
-    // "ttn_status_code":null,
-    // "ttn_update_at":null,
+
+    
+    // "ttn_status":"Статус ТТН",
+    // 
+    // 
     // "novaposhta_account":null,
-    // "counterparty":"",
+
     // "barcode":null,
     // "barcode_cost":null,
     // "barcode_status":null,
     // "ukrposhta_account":null,
-    // "store_title":null,
+    // 
     // "store_responsible":null,
-    // "name_store_resp":null,
-    "supplier": "Постачальник",
+    
     // "client_groups":"Група клієнта",
     // "repeat_client":"1",
     // "doubl_client":1,
-    marketing: 'Маркетинг',
+    
 
     };
 
@@ -86,7 +115,10 @@ export const messages={
     idSelectedWarn: 'Потрібно вибрати хоч одне замовлення',
     idSelectedOne: 'Потрібно вибрати тільки одне замовлення',
     idSelectedFile: 'Потрібно вибрати файл для відправки',
-    orderttnError: 'Помилка в замовлені'
+    orderttnError: 'Помилка в замовлені',
+    error: 'Помилка',
+    deleted: 'Номер видаленого замовлення:',
+    recikled: 'Замовлення пренесене в корзину',
 }
 
 export const typeMessage={

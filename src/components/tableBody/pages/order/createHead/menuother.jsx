@@ -10,7 +10,8 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content';
 import * as fileSaver from 'file-saver';
 import *as XLSX from 'sheetjs-style';
-import { getRowsAfterAdd } from '../../../../../redux/asyncThunc';
+import { getRowsAfterAdd, getPrintTtn, getNewPostTtnDelete, getNewPostTtnReturn, RemoveOrderFromId,
+         getFilteredOrders, getAllOrders} from '../../../../../redux/asyncThunc';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -44,7 +45,49 @@ const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sh
 const fileExtension = '.xlsx';
 let selected =  [];
 if (sessionStorage.getItem("selected")) {
-    selected =  sessionStorage.getItem("selected")?.split(',');
+    selected =  sessionStorage.getItem("selected")?.split(',').filter(
+      (id, index, array) => array.indexOf(id) === index);;
+}
+const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
+
+
+const successAlertAll = ({text, disp, func}) => {
+  handleClickJustinItem()
+  withReactContent(Swal).fire({  
+      title: 'Увага!',  
+      text: text,
+      icon: 'warning',
+      confirmButtonColor: 'rgb(239, 83, 80)',
+      confirmButtonText: 'Так',
+      showCancelButton: true,
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Ні',
+    }).then((result) => {        
+      if (result.isConfirmed) {
+        if (disp) {
+          requestPostTemplate(disp)
+          getUpdate()
+        } else if (func) {
+          func()
+        Swal.fire(
+          'Експортовано!',
+          'Виділені замовлення успішно експортовані',
+          'success'
+        )
+        } 
+    
+        // Swal.fire(
+        //   'Створено!',
+        //   'ЕН Justin успішно створена',
+        //   'success'
+        // )
+      }
+    });     
+}
+const getUpdate = ()=>{
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
 }
 
 const handleClickOpen = () => {
@@ -91,30 +134,36 @@ const handleMouseEnterNewPost=()=>{
   }
 }
 
-const handlePrintTTN=()=>{
-
+const handlePrintTTN=(type)=>{
+ handleClickJustinItem()
+ if (selected.length > 0 && selected) {
+  dispatch(getPrintTtn({orders: selected, type: type}))
+  return
+} else dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
+ 
 }
+
 const handlePrepayStatus=()=>{
   handleClickJustinItem()
-  dispatch(getOpenTableCreate({id: 'prepay_update', str: true}));
+  dispatch(getOpenTableCreate({id: 'prepay_update', str: true}));  
 
 }
 const handleUpdateOrders=()=>{
   handleClickJustinItem()
-  if (selected.length === 0 || !selected) {
+  if (selected?.length === 0 || !selected) {
     return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
   }
-  if (selected.length === 1 && selected[0]) {
+  if (selected?.length === 1 && selected[0]) {
     let id = selected[0]
     dispatch(getRowsAfterAdd(id));  
-    navigate(`/trendcrm/order/${selected[0]}`); 
+    navigate(`/trendcrm/order/${id}`); 
     return  
   }
-  if (selected.length > 1) {
+  if (selected?.length > 1) {
     dispatch(alertMessageUpdate({message: 'idSelectedOne', type: 'warn'}))
     let id = selected[0]
     dispatch(getRowsAfterAdd(id));  
-    navigate(`/trendcrm/order/${selected[0]}`);   
+    navigate(`/trendcrm/order/${id}`);   
     return
   } else dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
 }
@@ -138,8 +187,6 @@ const isFirstElement = (row)=>{
 }
 
 const handleExportExcel=()=>{
-  let selected =  sessionStorage.getItem("selected").split(',').filter(
-    (id, index, array) => array.indexOf(id) === index);
   let column = [];
   if (selected[0]) {
  column = selected.map((id, ind)=>{ 
@@ -172,31 +219,11 @@ if (Number(id)) {
 
 }
 
-const successAlert = () => {
-  handleClickJustinItem()
+const exportExcel = ()=>{
+  const text = 'Ви дійсно хочете експортувати в Exсel?';
   if (selected.length === 0 || !selected) {
     return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'warn'}))
-  }
-
-  withReactContent(Swal).fire({  
-        title: 'Увага!',  
-        text: 'Ви дійсно хочете експортувати в Exсel?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        cancelButtonText: 'Ні',
-        confirmButtonText: 'Так експортувати',
-      }).then((result) => {        
-        if (result.isConfirmed) {
-            handleExportExcel()
-          // Swal.fire(
-          //   'Створено!',
-          //   'ЕН Justin успішно створена',
-          //   'success'
-          // )
-        }
-      }); 
+  } else successAlertAll({text: text, func: handleExportExcel });
 }
 
 const handleImportExcel=()=>{
@@ -206,6 +233,34 @@ const handleImportExcel=()=>{
 const handleClickCreateTtnNewPost=()=>{
   handleClickJustinItem()
   dispatch(getOpenTableCreate({id: 'ttnNewPostCreate', str: true}));
+}
+const removeTtnNewPost = ()=>{
+  const text = `Ви дісно хочете видалити ${selected.length} TTH`;
+  successAlertAll({text: text, disp: getNewPostTtnDelete });
+ 
+}
+
+const requestPostTemplate = (disp)=>{
+  if (selected && selected?.length === 1) {
+    dispatch(disp(selected[0]))
+  }else if (selected && selected?.length > 1) {
+    selected.map(s=>{
+      if (Number(s)) {
+        dispatch(disp(s))
+      }
+    })
+  } else dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
+}
+
+const returnTtnNewPost = ()=>{
+  const text = `Ви дісно хочете зробити повернення ${selected.length} TTH`;
+  successAlertAll({text: text, disp: getNewPostTtnReturn });
+
+}
+
+const removeOrder = ()=>{
+  const text = `Ви дісно хочете видалити замовлення?`;
+  successAlertAll({text: text, disp: RemoveOrderFromId });
 }
 
 return(
@@ -288,15 +343,15 @@ return(
                                 id="print_menu"
                                 aria-labelledby="composition-button"                                    
                            >
-                                      <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem}>pdf</MenuItem>
-                                      <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem}>pdf (зебра)</MenuItem>
+                                      <MenuItem sx={{fontSize: '14px'}} onClick={()=>handlePrintTTN("ttn_pdf")}>pdf</MenuItem>
+                                      <MenuItem sx={{fontSize: '14px'}} onClick={()=>handlePrintTTN("ttn_pdf_zebra")}>pdf (зебра)</MenuItem>
                                     </MenuList>
                               
                                 </Paper>
                             </Popper>:null}
                     </MenuItem>
-                    <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem} onMouseEnter={()=>setOpenPrint(false)}>Видалити ТТН</MenuItem>
-                    <MenuItem sx={{fontSize: '14px'}} onClick={handleClickJustinItem}>Повернення ТТН</MenuItem>
+                    <MenuItem sx={{fontSize: '14px'}} onClick={removeTtnNewPost} onMouseEnter={()=>setOpenPrint(false)}>Видалити ТТН</MenuItem>
+                    <MenuItem sx={{fontSize: '14px'}} onClick={returnTtnNewPost}>Повернення ТТН</MenuItem>
                   </MenuList>
              
               </Paper>
@@ -314,13 +369,13 @@ return(
       <MenuItem value={'schange_date'} onClick={handleDateSendUpdate} onMouseEnter={handleHover} sx={listStyle} >
         <ListItemText  primary={'Змінити дату відправлення'} />
       </MenuItem>
-      <MenuItem value={'export_exel'} onClick={successAlert} onMouseEnter={handleHover} sx={listStyle}>
+      <MenuItem value={'export_exel'} onClick={exportExcel} onMouseEnter={handleHover} sx={listStyle}>
         <ListItemText  primary={'Експотр Exel'} />
       </MenuItem>
       <MenuItem value={'import_exel'} onClick={handleImportExcel}  sx={listStyle} onMouseEnter={handleHover} >
         <ListItemText  primary={'Імпорт Exel'} />
       </MenuItem>
-      <MenuItem value={'delete'} sx={listStyle} onMouseEnter={handleHover}>
+      <MenuItem value={'delete'} sx={listStyle} onClick={removeOrder} onMouseEnter={handleHover}>
         <ListItemText  primary={'Видалити'} />
       </MenuItem>
 

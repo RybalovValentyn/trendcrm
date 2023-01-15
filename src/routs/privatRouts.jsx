@@ -7,16 +7,16 @@ export function PrivateRoute({ component: C, }) {
     const navigate = useNavigate();
    
     const isAuth = useSelector(state => state.auth.isAuth);
-    // const [auth, setAuth] = useState(false)
-    const auth = true
+    const [auth, setAuth] = useState(false)
+    // const auth = true
 
-    // useEffect(() => {
-    //     if (isAuth) {
-    //         setAuth(true)
-    //     } else navigate('/auth')
+    useEffect(() => {
+        if (isAuth) {
+            setAuth(true)
+        } else navigate('/auth')
    
-    //   }, [isAuth]);
-    // console.log(isAuth);
+      }, [isAuth]);
+    console.log(isAuth);
 
     return (<>
 

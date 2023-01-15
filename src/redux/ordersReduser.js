@@ -4,7 +4,7 @@ import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncO
 import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
          getAllOrders, getAllStatuses, getFilteredOrders, setCommentAdd, setOrderReturn,
           setOrderPayment, setOrderUpdatestatusPrepay,setOrderStatusUpdate, setFileExcelSend,
-          setNewPostTtnCreate,  } from './asyncThunc';
+          setNewPostTtnCreate, getPrintTtn,getNewPostTtnDelete, getNewPostTtnReturn, RemoveOrderFromId  } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
@@ -41,10 +41,7 @@ const rows=  {
   doors_flat: "",
   responsible: '0',
   // group_name: '',
-
-
   responsible_group: "4",
-
   store_url:'',
   // ttn_cost: '',
   client_comment: '',
@@ -114,6 +111,11 @@ const handleRejected = (state, action) => {
   state.isError = true;
 };
 
+const requestFulfilled=(state, action) => {
+  state.isError = false;
+  state.isLoading = false;
+};
+
 const colorUpdate=(str)=>{
   let color = '';
   if (str?.order_return === '1' && str?.payment_received === '0') {              
@@ -133,6 +135,8 @@ const ordersReduser = createSlice({
     getStatuses: [],
     // getStatuses: [...initStatus],
     searchParamCount : 0,
+    sortColumn: 0,
+    sortTable: 'desc',
     tHeadColumn: [],
     tHeadColumnFiltered: [],
     bodyTableRows: [],
@@ -256,15 +260,6 @@ client: {...client},
       return { ...state,
         getStatuses: [...state.getStatuses,action.payload ] 
     };},
-      //  bodyTableRowsUpdate: (state, action) => {  
-      //   console.log('is updated tablerows');
-      //   return { ...state,
-      //     bodyTableRows: [...action.payload ] 
-      // };},
-      //  tHeadColumnUpdate: (state, action) => {  
-      //     return { ...state,
-      //       tHeadColumn: [...action.payload ] 
-      //   };},
         getWidthUpdate: (state, action) => {  
           return { ...state,
             widthOfColumn: [...action.payload ] 
@@ -316,6 +311,57 @@ client: {...client},
 
       extraReducers: {
         
+        [RemoveOrderFromId.pending]:handlePending,
+        [RemoveOrderFromId.fulfilled](state, action) { 
+         
+          if (String(action.payload.data) === '200') {
+            console.log(action.payload);
+            state.sneckBarMessage = [`${messages.deleted} ${action.payload.id}`, messages.recikled]
+            state.typeMessage= typeMessage.success    
+          } else 
+          if (String(action.payload.data) !== '200') {
+            state.sneckBarMessage = [`Щось пішло не так`]
+             state.typeMessage= typeMessage.error 
+          } 
+            requestFulfilled(state, action)
+        },
+        [RemoveOrderFromId.rejected]:handleRejected, 
+
+        [getNewPostTtnReturn.pending]:handlePending,
+        [getNewPostTtnReturn.fulfilled](state, action) { 
+          if (action.payload.data?.error) {
+            state.sneckBarMessage = [`${messages.orderttnError} ${action.payload.id}`,action.payload?.data?.error]
+            state.typeMessage= typeMessage.error;
+          } else if (action.payload.data?.message) {
+            state.sneckBarMessage = [`${messages.orderttnError} ${action.payload.id}`, action.payload.data?.message]
+            state.typeMessage= typeMessage.error   
+          }
+         
+            requestFulfilled(state, action)
+        },
+        [getNewPostTtnReturn.rejected]:handleRejected, 
+
+        [getNewPostTtnDelete.pending]:handlePending,
+        [getNewPostTtnDelete.fulfilled](state, action) { 
+          if (action.payload.data?.error) {
+            state.sneckBarMessage = [`${messages.orderttnError} ${action.payload.id}`,action.payload?.data?.error]
+            state.typeMessage= typeMessage.error;
+          } else if (action.payload.data?.message) {
+            state.message = [messages.error, action.payload.data?.message]
+            state.typeMessage= action.payload.data?.status   
+          }
+         
+            requestFulfilled(state, action)
+        },
+        [getNewPostTtnDelete.rejected]:handleRejected, 
+
+          [getPrintTtn.pending]:handlePending,
+          [getPrintTtn.fulfilled](state, action) { 
+              state.message = [messages.error, action.payload.data?.message]
+              state.typeMessage= action.payload.data?.status           
+              requestFulfilled(state, action)
+          },
+          [getPrintTtn.rejected]:handleRejected, 
         [setNewPostTtnCreate.pending]:handlePending,
         [setNewPostTtnCreate.fulfilled](state, action) { 
         
@@ -327,9 +373,7 @@ client: {...client},
             state.sneckBarMessage = [`${messages.orderttnError} ${action.payload.id}`,action.payload?.data?.error]
             state.typeMessage= typeMessage.error;
           } 
-          
-          state.isError = false;
-          state.isLoading = false;
+          requestFulfilled(state, action)
         },
         [setNewPostTtnCreate.rejected]:handleRejected,
 
@@ -339,9 +383,7 @@ client: {...client},
           if (action.payload?.data?.message) {
             state.messageSendFile = [action.payload?.data?.message]
           } 
-          
-          state.isError = false;
-          state.isLoading = false;
+          requestFulfilled(state, action)
         },
         [setFileExcelSend.rejected]:handleRejected,
         [setOrderStatusUpdate.pending]:handlePending,
@@ -357,9 +399,7 @@ client: {...client},
             state.typeMessage= typeMessage.success;
             state.message = [messages.dateUpdate] 
           }  
-          
-          state.isError = false;
-          state.isLoading = false;
+          requestFulfilled(state, action)
         },
         [setOrderStatusUpdate.rejected]:handleRejected,
 
@@ -367,22 +407,19 @@ client: {...client},
         [setOrderUpdatestatusPrepay.fulfilled](state, action) { 
           state.typeMessage= typeMessage.success;
           state.message = [`${messages.countOrder} ${action.payload?.data?.update}`, messages.statusPrepay]         
-          state.isError = false;
-          state.isLoading = false;
+          requestFulfilled(state, action)
         },
         [setOrderUpdatestatusPrepay.rejected]:handleRejected,
 
         [setOrderPayment.pending]:handlePending,
         [setOrderPayment.fulfilled](state, action) {            
-          state.isError = false;
-          state.isLoading = false;
+          requestFulfilled(state, action)
         },
         [setOrderPayment.rejected]:handleRejected,
 
         [setOrderReturn.pending]:handlePending,
         [setOrderReturn.fulfilled](state, action) {    
-          state.isError = false;
-          state.isLoading = false;
+          requestFulfilled(state, action)
         },
         [setOrderReturn.rejected]:handleRejected,
         
@@ -390,8 +427,7 @@ client: {...client},
         [setCommentAdd.fulfilled](state, action) {    
           const updatedRows = state.columns?.findIndex(n=>n.id===action.payload.idComent);
           state.columns[updatedRows].comment = action.payload.coment;
-          state.isError = false;
-          state.isLoading = false;
+          requestFulfilled(state, action)
         },
         [setCommentAdd.rejected]:handleRejected,
 
@@ -419,7 +455,7 @@ client: {...client},
            const arrayFilteredRows = action.payload.data?.map((str, ind) =>{
             let color = colorUpdate(str)
               return (tHeadColumnFiltered.reduce((acc,val, ind) =>{    
-                acc.push({id:val.data, value: str[val.data], color: color !== ''?color:str.status_style })         
+                acc.push({id:val.data, value: str[val.data], color: color !== ''?color:str.status_style, statusColor: str.status_style })         
                 return [...acc]   
               },[]));
             
@@ -450,7 +486,7 @@ client: {...client},
           const arrayRows = action.payload.data?.map((str, ind) =>{
             let color = colorUpdate(str)
             return (headerValue.reduce((acc,val, ind) =>{               
-              acc.push({id:val.id, value: str[val.id], color: color !== ''?color:str.status_style })         
+              acc.push({id:val.id, value: str[val.id], color: color !== ''?color:str.status_style, statusColor: str.status_style })         
               return [...acc]   
             },[]));
           });
@@ -468,7 +504,7 @@ client: {...client},
     
         [orderStatusThunk.pending]:handlePending,
         [orderStatusThunk.fulfilled](state, action) {
-    console.log(action.payload);
+
           return{
            ...state,
             nextStatus: action.payload,

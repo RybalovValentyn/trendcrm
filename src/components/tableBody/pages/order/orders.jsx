@@ -7,8 +7,6 @@ import {useState, useEffect, useLayoutEffect, useRef, Profiler, lazy, useMemo,Su
 import {useNavigate, useSearchParams, useLocation, createSearchParams} from 'react-router-dom';
 import { colorsRef } from '../../../../consts/colorConstants';
 import {getRowsAfterAdd, getAllOrders, getAllStatuses, getSitysFromNp, getFilteredOrders} from '../../../../redux/asyncThunc';
-import {GetRowsComparator} from './getRowsComparator';
-// import { descendingComparator, getComparator, stableSort} from './functionOrder';
 import { useDispatch, useSelector } from 'react-redux';
 import {dividerStyle, rowPosition, tHeadStyle, tableBoxStyle,
          paperTableStyle, tableContainerStyle, inOrdersBoxStyle} from './styles';
@@ -334,7 +332,7 @@ return (
     </Suspense>
 
     <Suspense>
-    <SmsSend/>   \\no modalComponent
+    <SmsSend/>   
     </Suspense>
 
     <Suspense>
