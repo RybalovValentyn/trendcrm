@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/trendcrm/static/css/main.abfd59ec.css",
-    "main.js": "/trendcrm/static/js/main.94262fdd.js",
+    "main.js": "/trendcrm/static/js/main.ccb5f301.js",
     "static/js/224.65aa08c2.chunk.js": "/trendcrm/static/js/224.65aa08c2.chunk.js",
     "static/js/104.506e2e92.chunk.js": "/trendcrm/static/js/104.506e2e92.chunk.js",
     "static/js/625.713f70b1.chunk.js": "/trendcrm/static/js/625.713f70b1.chunk.js",
@@ -15,14 +15,14 @@
     "static/js/150.6cb6fce8.chunk.js": "/trendcrm/static/js/150.6cb6fce8.chunk.js",
     "static/js/551.9efca4bb.chunk.js": "/trendcrm/static/js/551.9efca4bb.chunk.js",
     "static/js/371.17eaa41c.chunk.js": "/trendcrm/static/js/371.17eaa41c.chunk.js",
-    "static/js/231.d8a77644.chunk.js": "/trendcrm/static/js/231.d8a77644.chunk.js",
+    "static/js/564.cab468ec.chunk.js": "/trendcrm/static/js/564.cab468ec.chunk.js",
     "static/js/681.bf0872c9.chunk.js": "/trendcrm/static/js/681.bf0872c9.chunk.js",
-    "static/js/883.3138957a.chunk.js": "/trendcrm/static/js/883.3138957a.chunk.js",
+    "static/js/883.69fefef1.chunk.js": "/trendcrm/static/js/883.69fefef1.chunk.js",
     "static/js/786.72cdfd9c.chunk.js": "/trendcrm/static/js/786.72cdfd9c.chunk.js",
     "static/js/689.b314356a.chunk.js": "/trendcrm/static/js/689.b314356a.chunk.js",
     "static/js/783.dea6a93a.chunk.js": "/trendcrm/static/js/783.dea6a93a.chunk.js",
     "static/js/116.8430bac2.chunk.js": "/trendcrm/static/js/116.8430bac2.chunk.js",
-    "static/js/451.68d774bd.chunk.js": "/trendcrm/static/js/451.68d774bd.chunk.js",
+    "static/js/451.9b27a7c3.chunk.js": "/trendcrm/static/js/451.9b27a7c3.chunk.js",
     "static/js/701.84e1e381.chunk.js": "/trendcrm/static/js/701.84e1e381.chunk.js",
     "static/js/886.53a07265.chunk.js": "/trendcrm/static/js/886.53a07265.chunk.js",
     "static/js/513.c830ec87.chunk.js": "/trendcrm/static/js/513.c830ec87.chunk.js",
@@ -34,7 +34,7 @@
     "static/media/Import template.xlsx": "/trendcrm/static/media/Import template.f06e21824f65305778b9.xlsx",
     "index.html": "/trendcrm/index.html",
     "main.abfd59ec.css.map": "/trendcrm/static/css/main.abfd59ec.css.map",
-    "main.94262fdd.js.map": "/trendcrm/static/js/main.94262fdd.js.map",
+    "main.ccb5f301.js.map": "/trendcrm/static/js/main.ccb5f301.js.map",
     "224.65aa08c2.chunk.js.map": "/trendcrm/static/js/224.65aa08c2.chunk.js.map",
     "104.506e2e92.chunk.js.map": "/trendcrm/static/js/104.506e2e92.chunk.js.map",
     "625.713f70b1.chunk.js.map": "/trendcrm/static/js/625.713f70b1.chunk.js.map",
@@ -48,14 +48,14 @@
     "150.6cb6fce8.chunk.js.map": "/trendcrm/static/js/150.6cb6fce8.chunk.js.map",
     "551.9efca4bb.chunk.js.map": "/trendcrm/static/js/551.9efca4bb.chunk.js.map",
     "371.17eaa41c.chunk.js.map": "/trendcrm/static/js/371.17eaa41c.chunk.js.map",
-    "231.d8a77644.chunk.js.map": "/trendcrm/static/js/231.d8a77644.chunk.js.map",
+    "564.cab468ec.chunk.js.map": "/trendcrm/static/js/564.cab468ec.chunk.js.map",
     "681.bf0872c9.chunk.js.map": "/trendcrm/static/js/681.bf0872c9.chunk.js.map",
-    "883.3138957a.chunk.js.map": "/trendcrm/static/js/883.3138957a.chunk.js.map",
+    "883.69fefef1.chunk.js.map": "/trendcrm/static/js/883.69fefef1.chunk.js.map",
     "786.72cdfd9c.chunk.js.map": "/trendcrm/static/js/786.72cdfd9c.chunk.js.map",
     "689.b314356a.chunk.js.map": "/trendcrm/static/js/689.b314356a.chunk.js.map",
     "783.dea6a93a.chunk.js.map": "/trendcrm/static/js/783.dea6a93a.chunk.js.map",
     "116.8430bac2.chunk.js.map": "/trendcrm/static/js/116.8430bac2.chunk.js.map",
-    "451.68d774bd.chunk.js.map": "/trendcrm/static/js/451.68d774bd.chunk.js.map",
+    "451.9b27a7c3.chunk.js.map": "/trendcrm/static/js/451.9b27a7c3.chunk.js.map",
     "701.84e1e381.chunk.js.map": "/trendcrm/static/js/701.84e1e381.chunk.js.map",
     "886.53a07265.chunk.js.map": "/trendcrm/static/js/886.53a07265.chunk.js.map",
     "513.c830ec87.chunk.js.map": "/trendcrm/static/js/513.c830ec87.chunk.js.map",
@@ -66,6 +66,6 @@
   },
   "entrypoints": [
     "static/css/main.abfd59ec.css",
-    "static/js/main.94262fdd.js"
+    "static/js/main.ccb5f301.js"
   ]
 }
