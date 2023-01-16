@@ -16,6 +16,8 @@ import { InputBase } from '@mui/material';
 import { listStyle } from './style';
 import 'dayjs/locale/ru';
 import 'dayjs/locale/uk';
+import Button from '@mui/material/Button';
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -137,7 +139,7 @@ if (e.key === 'Enter') {
 
 const getUpdate = ()=>{
   sessionStorage.setItem("selected", '');
-  console.log(filteredRows?.length);
+  // console.log(filteredRows?.length);
   if (filteredRows?.length > 0) {
     console.log(filteredRows?.length);
     dispatch(getFilteredOrders())
@@ -171,6 +173,21 @@ if (str === 0 || str === undefined || e.target.value === '') {
   getUpdate()
 };
 
+const handleButtonClick=(actions)=>{
+handleClick()
+dispatch(getSortDate({id: actions, str: ''}))
+getUpdate()
+}
+
+const ButtonReset =(props)=>{
+  const { actions } = props;
+  return(
+<Box sx={{width: '100%', textAlign: 'center', padding: '0px 10px 10px 10px'}}>
+<Button sx={{fontSize: '14px', textTransform: 'none', color: '#333333', width: '100%', "&:hover":{backgroundColor: '#e4dfdf'}}} 
+onClick={()=>handleButtonClick(actions)}
+variant="text">Очистити</Button>
+</Box>
+  )}
 
 if (name === 'payment_name') {
   return (
@@ -280,6 +297,12 @@ if (name === 'payment_name') {
                 maxDate={value.datetime_sent_to}
                 onChange={handleChangeSentFor}
                 renderInput={(params) => <StyledextField color="success" onClick={()=>setOpenSentFor(true)} {...params} />}
+                components={{
+                   ActionBar: ButtonReset
+                }}
+                componentsProps={{
+                  actionBar:{ actions: 'datetime_sent_from'},
+                }}
               />
       </Box >
       <span>-</span>
@@ -298,6 +321,12 @@ if (name === 'payment_name') {
                 minDate={value.datetime_sent_from}
                 onChange={handleChangeSentTo}
                 renderInput={(params) => <StyledextField   onClick={()=>setOpenSentTo(true)} {...params} />}
+                components={{
+                  ActionBar: ButtonReset
+               }}
+               componentsProps={{
+                 actionBar:{ actions: 'datetime_sent_to'},
+               }}
               />
       </Box>
       </LocalizationProvider>
@@ -323,6 +352,12 @@ if (name === 'payment_name') {
                 maxDate={value.update_date_to}
                  onChange={handleChangeUpdateFor}
                 renderInput={(params) => <StyledextField color="success" onClick={()=>setOpenUdateFor(true)} {...params} />}
+                components={{
+                  ActionBar: ButtonReset
+               }}
+               componentsProps={{
+                 actionBar:{ actions: 'update_date_from'},
+               }}
               />
       </Box >
       <span>-</span>
@@ -340,6 +375,12 @@ if (name === 'payment_name') {
                 minDate={value.update_date_from}
                 onChange={handleChangeUpdateTo}
                 renderInput={(params) => <StyledextField   onClick={()=>setOpenUdateTo(true)} {...params} />}
+                components={{
+                  ActionBar: ButtonReset
+               }}
+               componentsProps={{
+                 actionBar:{ actions: 'update_date_to'},
+               }}
               />
       </Box>
       </LocalizationProvider>
@@ -365,6 +406,12 @@ if (name === 'payment_name') {
                   maxDate={value.create_date_to}
                    onChange={handleChangeFor}
                   renderInput={(params) => <StyledextField color="success" onClick={()=>setOpenFor(true)} {...params} />}
+                  components={{
+                    ActionBar: ButtonReset
+                 }}
+                 componentsProps={{
+                   actionBar:{ actions: 'create_date_from'},
+                 }}
                 />
         </Box >
         <span>-</span>
@@ -382,6 +429,12 @@ if (name === 'payment_name') {
                   minDate={value.create_date_from}
                   onChange={handleChangeTo}
                   renderInput={(params) => <StyledextField   onClick={()=>setOpenTo(true)} {...params} />}
+                  components={{
+                    ActionBar: ButtonReset
+                 }}
+                 componentsProps={{
+                   actionBar:{ actions: 'create_date_to'},
+                 }}
                 />
         </Box>
         </LocalizationProvider>

@@ -20,7 +20,7 @@ import NewPostTtnCreate from '../modals/modalcomponent/newpostttncreate';
 import { CustomSnackBar } from '../../../alerts/snackbar';
 
 const ExportExcelComponent= lazy(() => import("../modals/modalcomponent/exportExel.jsx"));
-const ComentModalMenu = lazy(() => import("../modals/comentmodal.jsx"));
+const ComentModalMenu = lazy(() => import("../modals/modalcomponent/comentmodal.jsx"));
 const EnhancedTableHead = lazy(() => import("./enhancedTableHead.jsx"));
 const ScrollTabsButton = lazy(() => import("./tableInBody.jsx"));
 const HeaderContainer = lazy(() => import("./header.jsx"));

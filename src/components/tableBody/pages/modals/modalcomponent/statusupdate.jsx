@@ -92,9 +92,9 @@ const handleSubmit=()=>{
 };
 
 const onAutocompliteChange=(e)=>{    
-    let ind = e.target.id.split('-')[2]     
+    let ind = e.target.id.split('-')[2]  
 if (Number(ind)) {
-    setStatus(statuses[ind].id)
+    setStatus(renderFilteredStatus[ind].id)
 }
 };
 const getUpdate = ()=>{

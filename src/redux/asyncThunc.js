@@ -369,7 +369,9 @@ const dataSend ={
 
 export const setCommentAdd = createAsyncThunk(
   'comment/post',
-  async ({coment, idComent}, { rejectWithValue}) => {
+  async ({idComent}, { rejectWithValue,  getState}) => {
+    const state = getState(); 
+    const coment = state.ordersAll.updatedComment
           try {
         const { data } = await axios({
           method: "post",
