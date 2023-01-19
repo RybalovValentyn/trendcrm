@@ -18,7 +18,7 @@ export const CustomSnackBar=()=>{
     }
     
     useEffect(() => {
-        if (message?.length >1) {
+        if (message?.length >=1) {
             console.log(message);
             enqueueSnackbar(Component(),{autoHideDuration: 5000, children:Component,direction:'down', variant: type?type:'default',
             preventDuplicate: 'true', anchorOrigin:{ horizontal: 'right', vertical:'bottom' }   }) 

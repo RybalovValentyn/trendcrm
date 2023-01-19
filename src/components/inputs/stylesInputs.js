@@ -68,3 +68,64 @@ export const BootstrapInput = styled(InputBase)(({ theme }) => ({
     
     },
 }));
+
+export const StyledextField = styled(TextField)({
+  '& label': {
+   color: '#777777 !important',
+   top:'-18px'
+ },
+ '& label.Mui-focused': {
+   display: 'none',
+   opasity: 0,
+
+ },
+
+   '& .MuiInputBase-input': {
+       borderRadius: '4px ',
+       position: 'relative',
+       fontSize: '12px',
+       padding: '0',         
+       color: colorsRef.inputHeadTextColor, 
+    
+       },
+     '& .MuiOutlinedInput-root': {
+      
+       '& fieldset': {
+         color: colorsRef.inputHeadTextColor,
+         border: 'none !important',
+          
+       },
+      '&.Mui-focused fieldset': {
+       border: 'none !important',
+        
+     }},
+     '& .MuiInputBase-root': {
+        miWidth: '80px',
+        padding: '3px 0px 1px 8px',
+        minWidth: '80px',
+        marginLeft: '10px',
+        marginRight: '10px',
+       
+       },
+     '& div.MuiFormControl-root':{
+       position: 'relative',
+      
+      },
+   '& .MuiButtonBase-root':{
+       padding: '0px',
+       width: 0,
+       height: 0,
+       position: 'absolute',
+       zIndex: -2,
+       top: 0
+
+   },
+   // '& .MuiSvgIcon-root':{
+   //     width: 0,
+   //     height: 0,
+   //     position: 'absolute',
+   //     zIndex: -2,
+   //     top: 0
+   // },
+
+ });

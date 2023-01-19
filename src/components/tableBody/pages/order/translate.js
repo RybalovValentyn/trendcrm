@@ -18,7 +18,8 @@ export const translater = {
     "ttn": "ТТН",
     "backward_delivery_summ":"Наложений платіж",
     "ttn_cost":"Розрахована вартість",
-    "payment_type":"Спосіб оплати",
+     "payment_name":"Спосіб оплати",
+    // "payment_type":"Спосіб оплати",
     "ttn_status_code": "Статус доставки",
     "ttn_update_at": "Днів в статусі",
     "datetime":"Дата додавання",
@@ -81,7 +82,7 @@ export const translater = {
     // "product_amount":"1",
     // "system_action":"",
     
-    // "payment_name":"Спосіб оплати",
+   
     // "j_number":null,
     // "justin_account":null,
     // "j_ttn_cost":null,
@@ -119,6 +120,7 @@ export const messages={
     error: 'Помилка',
     deleted: 'Номер видаленого замовлення:',
     recikled: 'Замовлення пренесене в корзину',
+    paymentUpdate: 'Дані про платіж оновлено в замовленні:'
 }
 
 export const typeMessage={
@@ -126,4 +128,5 @@ export const typeMessage={
     warn: "warning",
     info: "info",
     success: "success",
+    
 }

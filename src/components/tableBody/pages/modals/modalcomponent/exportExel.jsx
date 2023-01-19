@@ -106,7 +106,7 @@ const Component =()=>(
     return(
 
         <ModalComponent Component={Component} funcOnClouse={handleClouse} open={open} closeButtonText={'Закрити'} sendButtonText={'Завантаити'} titleText={"Імпорт замовлень з Excel"}
-         funcOnSend={handleSendFile} borderHeader={true} borderAction={false} alignAction={false} isAutoclouse={true}/>
+         funcOnSend={handleSendFile} borderHeader={true} borderAction={false} alignAction={false} isAutoclouse={true} />
        )
 };
 export default ExportExcelComponent

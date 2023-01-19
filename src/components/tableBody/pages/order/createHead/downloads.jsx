@@ -2,7 +2,7 @@ import { Select, MenuItem, ListItemText, InputBase, InputAdornment } from '@mui/
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { useState, forwardRef } from 'react';
-import { getOpenTableCreate } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate, alertMessageUpdate } from '../../../../../redux/ordersReduser';
 import { selectStyles, svgStyle, listStyle } from './style';
 import { calculateNewValue } from '@testing-library/user-event/dist/utils';
 import { setOrderReturn, getFilteredOrders, getAllOrders, setOrderPayment } from '../../../../../redux/asyncThunc';
@@ -24,7 +24,11 @@ export const DownloadComponent=()=>{
 const dispatch = useDispatch();
 const [open, setOpen] = useState(false);
 const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-let selected =  sessionStorage.getItem("selected")?.split(',');
+let selected =  [];
+if (sessionStorage.getItem("selected")) {
+    selected =  sessionStorage.getItem("selected")?.split(',').filter(
+      (id, index, array) => array.indexOf(id) === index);
+}
 
 const handleClickOpen = () => {
   setOpen(!open);
@@ -39,40 +43,46 @@ setOpen(!open);
 };
 const handleReturnProduct =(value)=>{
   let length = selected.length
+  if (selected?.length === 0 && selected) {
+    return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
+  }
   if (length === 1 && selected[0] !== '') {
     dispatch(setOrderReturn({id: selected[0], value}));  
-  } else if (length > 1) {
+    } else if (length > 1) {
     selected.map((id)=>{
       if (id !== '') {
         dispatch(setOrderReturn({id,value}))
       }  
-    })
-  }else if (length === 0) {
-    return
+    })    
   }
-getUpdate()
+  setTimeout(getUpdate, '200') 
 }
 
 const handlePaymentReceived=(value)=>{
   let length = selected.length
+  if (selected?.length === 0 && selected) {
+    return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
+  }
   if (length === 1 && selected[0] !== '') {
     dispatch(setOrderPayment({id: selected[0], value}));  
-  } else if (length > 1) {
+    } else if (length > 1) {
     selected.map((id)=>{
       if (id !== '') {
         dispatch(setOrderPayment({id,value}))
-      }  
-    })
-  }else if (length === 0) {
-    return
+      }        
+    })    
   }
-getUpdate()
+  setTimeout(getUpdate, '200') 
 }
 
 const handleCancelled =()=>{
+  if (selected?.length === 0 && selected) {
+    return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'error'}))
+  }
   handleReturnProduct('0')
   handlePaymentReceived('0')
 }
+
 const getUpdate = ()=>{
   if (filteredRows?.length > 0) {
     dispatch(getFilteredOrders())
@@ -93,10 +103,10 @@ return(
     }  sx={selectStyles}/>}
     MenuProps={MenuProps}
   >   
-      <MenuItem value={'exel'} sx={listStyle} >
+      {/* <MenuItem value={'exel'} sx={listStyle} >
         <ListItemText onClick={handleClickExel} primary={'Завантажити Exel'} /> 
      
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem value={'back'} sx={listStyle} >
         <ListItemText onClick={()=>handleReturnProduct('1')} primary={'Повернення товару'} />
       </MenuItem>

@@ -4,7 +4,7 @@ import { useState, forwardRef, useRef } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { selectStyles, svgStyle, listStyle } from './style';
 import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
-import { getOpenTableCreate, alertMessageUpdate } from '../../../../../redux/ordersReduser';
+import { getOpenTableCreate, alertMessageUpdate, autoUpdate } from '../../../../../redux/ordersReduser';
 import { useNavigate} from 'react-router-dom';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content';
@@ -46,7 +46,7 @@ const fileExtension = '.xlsx';
 let selected =  [];
 if (sessionStorage.getItem("selected")) {
     selected =  sessionStorage.getItem("selected")?.split(',').filter(
-      (id, index, array) => array.indexOf(id) === index);;
+      (id, index, array) => array.indexOf(id) === index);
 }
 const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
 
@@ -66,7 +66,7 @@ const successAlertAll = ({text, disp, func}) => {
       if (result.isConfirmed) {
         if (disp) {
           requestPostTemplate(disp)
-          getUpdate()
+          setTimeout(getUpdate, '100')
         } else if (func) {
           func()
         Swal.fire(
@@ -155,12 +155,14 @@ const handleUpdateOrders=()=>{
   }
   if (selected?.length === 1 && selected[0]) {
     let id = selected[0]
+    dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     dispatch(getRowsAfterAdd(id));  
     navigate(`/trendcrm/order/${id}`); 
     return  
   }
   if (selected?.length > 1) {
     dispatch(alertMessageUpdate({message: 'idSelectedOne', type: 'warn'}))
+    dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     let id = selected[0]
     dispatch(getRowsAfterAdd(id));  
     navigate(`/trendcrm/order/${id}`);   

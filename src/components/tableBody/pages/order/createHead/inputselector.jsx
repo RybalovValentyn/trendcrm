@@ -1,23 +1,16 @@
-import dayjs from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { useState, useRef } from 'react';
-import { StyledextField, selectStylesCheck } from './input';
+import { useState} from 'react';
+import {  selectStylesCheck } from './input';
 import { useDispatch, useSelector } from 'react-redux';
 import {getSortDate} from '../../../../../redux/ordersReduser';
 import { getAllOrders, getFilteredOrders } from '../../../../../redux/asyncThunc';
 import { StyledInput } from './input';
 import { InputBase } from '@mui/material';
 import { listStyle } from './style';
-import 'dayjs/locale/ru';
-import 'dayjs/locale/uk';
-import Button from '@mui/material/Button';
-
+import { DateTimeComponent } from '../../../../inputs/datetimetable';
+import { SelectTable } from '../../../../inputs/selecttableheader';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 4;
@@ -36,104 +29,35 @@ const  InputSelector =({name}) => {
     const dispatch = useDispatch();
     const value = useSelector((state) => state.ordersAll.searchParams);
     const statuses = useSelector((state)=> state.ordersAll.getStatuses);
-    const groups = useSelector((state)=> state.addStatus.groups);
-    const packerName = useSelector((state)=> state.ordersAll.packer_name);
-    const paymentType =  useSelector((state)=> state.ordersAll.payment_name);
     const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
-    const [openFor, setOpenFor] = useState(false);
-    const [openTo, setOpenTo] = useState(false);
-    const [openUpdateFor, setOpenUdateFor] = useState(false);
-    const [openUpdateTo, setOpenUdateTo] = useState(false);
-    const [openSentFor, setOpenSentFor] = useState(false);
-    const [openSentTo, setOpenSentTo] = useState(false);
-    const [status, setStatus] = useState('');
-    const [group, setGroup] = useState('');
-    const [packer, setPacker] = useState('');
-    const [payType, setPaytype] = useState('');
-    const [locale, setLocale] = useState('uk');
-    const inputEl1 = useRef(null);
-// console.log(statuses[0].name);
+    const ordersAll = useSelector((state)=> state.ordersAll);
 
-const handleChangeFor = (newValue) => {  
-        let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
-        let id ='create_date_from'
-        dispatch(getSortDate({id, str}))  
-        getUpdate()   
-      setOpenFor(false)
-    };    
-
-const handleChangeTo=(newValue)=>{
-    let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
-    let id = 'create_date_to'
-    setOpenTo(false)
-    dispatch(getSortDate({id, str}))   
-    getUpdate()  
-    
-}
-
-const handleChangeUpdateFor=(newValue)=>{
-  let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
-  let id ='update_date_from'
-  setOpenUdateFor(false)
-  dispatch(getSortDate({id, str}))  
- 
-  getUpdate()    
-  
-}
-
-const handleChangeUpdateTo =(newValue)=>{
-  let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
-  let id ='update_date_to'
-  setOpenUdateTo(false)  
-  dispatch(getSortDate({id, str}))
-  getUpdate()    
-  
-}
-const handleChangeSentFor =(newValue) =>{
-  let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
-  let id ='datetime_sent_from'
-  setOpenSentFor(false)  
-  dispatch(getSortDate({id, str}))
-  getUpdate()  
-}
-const handleChangeSentTo =(newValue) =>{
-  let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split('T')[0];
-  let id ='datetime_sent_to'
-  setOpenSentTo(false)  
-  dispatch(getSortDate({id, str}))
-  getUpdate()  
-}
-
+    let initValue = ''
+    if (name === 'status_name') {
+         initValue =statuses?.find(n=>n.id === value.status_name)?.name?statuses?.find(n=>n.id === value.status_name)?.name:''
+  }
 const handleInputchange =(e)=>{
   let id = e.target.id
   let str = e.target.value.trim()
-  if ((Number(str) && id === 'id') || (Number(str) && id === 'client_phone') || 
-      (Number(str) && id === 'storage_income_price_sum') || (Number(str) && id === 'ttn_cost')
-      
-      ) {
-    dispatch(getSortDate({id, str}))
+  if (id === 'id' || id === 'client_phone' || id === 'storage_income_price_sum' ||  id === 'ttn_cost' ||
+       id === 'total') {
+        let n = e.target.value.replace(/[^0-9.]/g, '');
+        dispatch(getSortDate({id, str: n}));
+    return
   }else if (id !== 'id' && id !== 'client_phone' && id  !== 'storage_income_price_sum' &&
-            id !== 'ttn_cost') {
-    dispatch(getSortDate({id, str}))
-  } 
+     id !== 'ttn_cost' && id !== 'total' && id !== 'client_num_ph') {
+     dispatch(getSortDate({id, str}));
+    return
+  } else if (id === 'client_num_ph') {
+    let s =  e.target.value.replace(/[^0-9.]/g, '');
+    dispatch(getSortDate({id: 'client_phone', str: s}));
+  }
 };
-
-const handleClick=()=>{
-setOpenSentFor(false);
-setOpenSentTo(false);
-setOpenUdateFor(false);
-setOpenUdateTo(false);
-setOpenFor(false);
-setOpenTo(false);
-}
 
 const keyCodeInput = (e) =>{ 
   let id = e.target.id
-if (e.key === 'Enter') {   
+if (e.key === 'Enter' && value[id] !== '') {   
   getUpdate()
-  }else if (e.key === 'Backspace') {
-    let str = ''
-    dispatch(getSortDate({id, str}))
   }
 };
 
@@ -145,122 +69,67 @@ const getUpdate = ()=>{
     dispatch(getFilteredOrders())
   } else dispatch(getAllOrders())
 }
-
-const handleSelectChange = (e) => {
-  let id = e.target.name
-  // console.log(e.target.value);
+const handleSelecthandleChange = (e, id) => {
   let str = ''
-  const { target: { value },} = e;
-  if (id === 'status_name') {
-      setStatus(typeof value === 'string' ? value.split(',') : value,
-   );
-   str = statuses.find(str=>str.name === e.target.value)?.id   
-  }else if (id === 'group_name' ) {
-  setGroup(typeof value === 'string' ? value.split(',') : value,)
-  str = groups.find(str=>str.name === e.target.value)?.id
-  }else if (id === 'packer_name' ) {
-    setPacker(typeof value === 'string' ? value.split(',') : value,)
-    str = packerName.find(str=>str.name === e.target.value)?.id
-    }else if (id === 'payment_name' ) {
-      setPaytype(typeof value === 'string' ? value.split(',') : '0',);
-      let type = paymentType.find(str=>str.name === e.target.value)?.id
-      str= type?.id+`,${type?.prepay_status}`
+  if (e.target.value === 0 || e.target.value === undefined || e.target.value === '') {
+    if (id === 'payment_type' ) {
+      dispatch(getSortDate({id: 'payment_name', str}))
+      return  getUpdate()
     }
-if (str === 0 || str === undefined || e.target.value === '') {
-  str = ''
-}
+    dispatch(getSortDate({id, str}))
+    return  getUpdate()
+  }else if (e.target.value && e.target.value !== '') {
+      if (id === 'payment_type' ) {
+            let type = ordersAll[id]?.find(str=>str.name === e.target.value)
+            if (type?.prepay_status === '') {
+              str = type?.id
+            } else 
+          str= type?.id+`,${type?.prepay_status}`
+       dispatch(getSortDate({id: 'payment_name', str}))
+       return getUpdate()
+        }else if (id === 'status_name') {
+          str = statuses.find(str=>str.name === e.target.value)?.id
+          dispatch(getSortDate({id, str}))
+          return getUpdate()
+        }        
+  str = ordersAll[id]?.find(str=>str.name === e.target.value)?.id
   dispatch(getSortDate({id, str}))
+  } 
   getUpdate()
 };
 
-const handleButtonClick=(actions)=>{
-handleClick()
-dispatch(getSortDate({id: actions, str: ''}))
-getUpdate()
-}
 
-const ButtonReset =(props)=>{
-  const { actions } = props;
-  return(
-<Box sx={{width: '100%', textAlign: 'center', padding: '0px 10px 10px 10px'}}>
-<Button sx={{fontSize: '14px', textTransform: 'none', color: '#333333', width: '100%', "&:hover":{backgroundColor: '#e4dfdf'}}} 
-onClick={()=>handleButtonClick(actions)}
-variant="text">Очистити</Button>
-</Box>
-  )}
+const handleBlurAction=(e)=>{
+  let id = e.target.id
+  if (value[id] !== '' && value[id]) {   
+    getUpdate()
+    }  else if (id === 'client_num_ph' && value.client_phone !== '' && value.client_phone) {
+      getUpdate()
+    }
+}
 
 if (name === 'payment_name') {
   return (
-    <Select 
-    id="packer_name"
-    name = {name}
-    value={payType}
-    onChange={handleSelectChange}
-    input={<InputBase  sx={selectStylesCheck}/>}
-    MenuProps={MenuProps}
-    displayEmpty
-  >
-      <MenuItem  value='' sx={listStyle}>      
-      {'Всі'}
-      </MenuItem>
-    {paymentType.map((name, ind) => (
-      <MenuItem  key={ind} value={name.name} sx={listStyle}>      
-        {name.name}
-      </MenuItem>
-    ))}
-  </Select>
+    <SelectTable id={'payment_type'}  dataForSelect={false} InputStyle={selectStylesCheck} listStyle={listStyle} onChangeFunc={handleSelecthandleChange}/>
   )
 }else if (name === 'packer_name') {
   return (
-    <Select 
-    id="packer_name"
-    name = {name}
-    value={packer}
-    onChange={handleSelectChange}
-    input={<InputBase  sx={selectStylesCheck}/>}
-    displayEmpty
-    MenuProps={MenuProps}
-  >
-      <MenuItem  value='' sx={listStyle}>      
-      {'Всі'}
-      </MenuItem>
-    {packerName.map((name, ind) => (
-      <MenuItem  key={ind} value={name.name} sx={listStyle} >      
-        {name.name}
-      </MenuItem>
-    ))}
-  </Select>
+    <SelectTable id={'packer_name'}  dataForSelect={false} InputStyle={selectStylesCheck} listStyle={listStyle} onChangeFunc={handleSelecthandleChange}/>
   )
 }else if (name === 'group_name') {
   return (
-    <Select 
-    id="group_name"
-    name = {name}
-    value={group}
-    onChange={handleSelectChange}
-    input={<InputBase  sx={selectStylesCheck}/>}
-    MenuProps={MenuProps}
-    displayEmpty
-  >
-      <MenuItem  value='' sx={listStyle} >      
-        {'Всі'}
-      </MenuItem>
-    {groups.map((name) => (
-      <MenuItem  key={name.id} value={name.name} sx={listStyle} >      
-      {name.name}
-      </MenuItem>
-    ))}
-  </Select>
+    <SelectTable id={'group_name'} dataForSelect={false} InputStyle={selectStylesCheck} listStyle={listStyle} onChangeFunc={handleSelecthandleChange}/>
   )
 }else if (name === 'status_name') {
   return (
     <Select 
     id="status_name"
     name = {name}
-    value={status}
-    onChange={handleSelectChange}
+    value={initValue}
+    onChange={(e)=>handleSelecthandleChange(e, name)}
     input={<InputBase  sx={selectStylesCheck}/>}
     displayEmpty
+    renderValue={(initValue)=>(<Box>{initValue !== ''?initValue:'Всі'}</Box>)}
     MenuProps={MenuProps}
 
   >
@@ -269,7 +138,7 @@ if (name === 'payment_name') {
       </MenuItem>
     {statuses.map((name) => (
       <MenuItem  key={name.id} value={name.name} sx={listStyle} >      
-      {status[0]!==name.name && <span style ={{display: 'block', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: name.style, marginRight: '10px'}}></span>}
+      <span style ={{display: 'block', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: name.style, marginRight: '10px'}}></span>
         {name.name} 
       </MenuItem>
     ))}
@@ -279,170 +148,36 @@ if (name === 'payment_name') {
  if (name === 'datetime_sent') {
   return (
       <Box component="form" key={name} sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
-      <Box sx={{position: 'relative'}}>
-       <span style={{position: 'absolute', display: 'block',
-        width: '80px', height: '100%', border: `${value.datetime_sent_from? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
-        top: '-1px', left: 10, borderRadius: '4px',  backgroundColor: `${value.datetime_sent_from? '#f0f0f0' : '#fff' } `,
-        }}></span>
-      <DesktopDatePicker
-                id='datetime_sent_for'
-               open={openSentFor} 
-               onClose={handleClick}
-                disableFuture  
-                 disableOpenPicker                     
-                inputFormat="YYYY-MM-DD"
-                value={value.datetime_sent_from?value.datetime_sent_from:null}
-                label={`${value.datetime_sent_from? '' : 'з' } `}
-                maxDate={value.datetime_sent_to}
-                onChange={handleChangeSentFor}
-                renderInput={(params) => <StyledextField color="success" onClick={()=>setOpenSentFor(true)} {...params} />}
-                components={{
-                   ActionBar: ButtonReset
-                }}
-                componentsProps={{
-                  actionBar:{ actions: 'datetime_sent_from'},
-                }}
-              />
-      </Box >
-      <span>-</span>
-      <Box sx={{position: 'relative'}}>
-      <span style={{position: 'absolute', display: 'block',
-        width: '80px', height: '100%', border: `${value.datetime_sent_to? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
-        top: '-1px', left: 10, borderRadius: '4px', backgroundColor: `${value.datetime_sent_to? '#f0f0f0' : '#fff' } `}}></span>
-      <DesktopDatePicker
-             id='datetime_sent_to'
-              open={openSentTo}
-              disableOpenPicker 
-              onClose={handleClick}
-               label={`${value.datetime_sent_to? '' : 'по' } `}
-                inputFormat="YYYY-MM-DD"
-                value={value.datetime_sent_to?value.datetime_sent_to:null}
-                minDate={value.datetime_sent_from}
-                onChange={handleChangeSentTo}
-                renderInput={(params) => <StyledextField   onClick={()=>setOpenSentTo(true)} {...params} />}
-                components={{
-                  ActionBar: ButtonReset
-               }}
-               componentsProps={{
-                 actionBar:{ actions: 'datetime_sent_to'},
-               }}
-              />
-      </Box>
-      </LocalizationProvider>
-
+     <DateTimeComponent  id='datetime_sent_from' disp={getSortDate} textLabel='з' update={getUpdate} maxDate={value.datetime_sent_to}/>
+     <span>-</span>
+     <DateTimeComponent  id='datetime_sent_to' disp={getSortDate} textLabel='по' update={getUpdate} minDate={value.datetime_sent_from}/>
       </Box>
   )
 } else if (name === 'update_at') {
   return (
       <Box component="form" key={name} sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
-      <Box sx={{position: 'relative'}}>
-       <span style={{position: 'absolute', display: 'block',
-        width: '80px', height: '100%', border: `${value.update_date_from? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
-        top: '-1px', left: 10, borderRadius: '4px',  backgroundColor: `${value.update_date_from? '#f0f0f0' : '#fff' } `,
-        }}></span>
-      <DesktopDatePicker
-                open={openUpdateFor}  
-                onClose={handleClick}                                              
-                inputFormat="YYYY-MM-DD"
-                disableOpenPicker 
-                value={value.update_date_from?value.update_date_from:null}
-                label={`${value.update_date_from? '' : 'з' } `}
-                maxDate={value.update_date_to}
-                 onChange={handleChangeUpdateFor}
-                renderInput={(params) => <StyledextField color="success" onClick={()=>setOpenUdateFor(true)} {...params} />}
-                components={{
-                  ActionBar: ButtonReset
-               }}
-               componentsProps={{
-                 actionBar:{ actions: 'update_date_from'},
-               }}
-              />
-      </Box >
-      <span>-</span>
-      <Box sx={{position: 'relative'}}>
-      <span style={{position: 'absolute', display: 'block',
-        width: '80px', height: '100%', border: `${value.update_date_to? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
-        top: '-1px', left: 10, borderRadius: '4px', backgroundColor: `${value.update_date_to? '#f0f0f0' : '#fff' } `}}></span>
-      <DesktopDatePicker
-              open={openUpdateTo}
-              onClose={handleClick}
-              label={`${value.update_date_to? '' : 'по' } `}
-                inputFormat="YYYY-MM-DD"
-                disableOpenPicker 
-                value={value.update_date_to?value.update_date_to:null}
-                minDate={value.update_date_from}
-                onChange={handleChangeUpdateTo}
-                renderInput={(params) => <StyledextField   onClick={()=>setOpenUdateTo(true)} {...params} />}
-                components={{
-                  ActionBar: ButtonReset
-               }}
-               componentsProps={{
-                 actionBar:{ actions: 'update_date_to'},
-               }}
-              />
-      </Box>
-      </LocalizationProvider>
-
+         <DateTimeComponent  id='update_date_from' disp={getSortDate} textLabel='з' update={getUpdate} maxDate={value.update_date_to}/>
+     <span>-</span>
+     <DateTimeComponent  id='update_date_to' disp={getSortDate} textLabel='по' update={getUpdate} minDate={value.update_date_from}/>   
+        
       </Box>
   )
 } else if (name === 'datetime') {
     return (
         <Box component="form" key={name} sx={{width: '100%', maxWidth: '250px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
-        <Box sx={{position: 'relative'}}>
-         <span style={{position: 'absolute', display: 'block',
-          width: '80px', height: '100%', border: `${value.create_date_from? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
-          top: '-1px', left: 10, borderRadius: '4px',  backgroundColor: `${value.create_date_from? '#f0f0f0' : '#fff' } `,
-          }}></span>
-        <DesktopDatePicker
-                  open={openFor} 
-                  onClose={handleClick}
-                  disableOpenPicker                                  
-                  inputFormat="YYYY-MM-DD"
-                  value={value.create_date_from?value.create_date_from:null}
-                  label={`${value.create_date_from? '' : 'з' } `}
-                  maxDate={value.create_date_to}
-                   onChange={handleChangeFor}
-                  renderInput={(params) => <StyledextField color="success" onClick={()=>setOpenFor(true)} {...params} />}
-                  components={{
-                    ActionBar: ButtonReset
-                 }}
-                 componentsProps={{
-                   actionBar:{ actions: 'create_date_from'},
-                 }}
-                />
-        </Box >
-        <span>-</span>
-        <Box sx={{position: 'relative'}}>
-        <span style={{position: 'absolute', display: 'block',
-          width: '80px', height: '100%', border: `${value.create_date_to? '1px solid #212AFF' : '1px solid #d0d0d0' } ` , 
-          top: '-1px', left: 10, borderRadius: '4px', backgroundColor: `${value.create_date_to? '#f0f0f0' : '#fff' } `}}></span>
-        <DesktopDatePicker
-                open={openTo}
-                disableOpenPicker 
-                onClose={handleClick}
-                label={`${value.create_date_from? '' : 'по' } `}
-                  inputFormat="YYYY-MM-DD"
-                  value={value.create_date_to?value.create_date_to:null}
-                  minDate={value.create_date_from}
-                  onChange={handleChangeTo}
-                  renderInput={(params) => <StyledextField   onClick={()=>setOpenTo(true)} {...params} />}
-                  components={{
-                    ActionBar: ButtonReset
-                 }}
-                 componentsProps={{
-                   actionBar:{ actions: 'create_date_to'},
-                 }}
-                />
-        </Box>
-        </LocalizationProvider>
-
-        </Box>
+   <DateTimeComponent  id='create_date_from' disp={getSortDate} textLabel='з' update={getUpdate} maxDate={value.create_date_to}/>
+     <span>-</span>
+  <DateTimeComponent  id='create_date_to' disp={getSortDate} textLabel='по' update={getUpdate} minDate={value.create_date_from}/>   
+       
+       </Box>
     )
+  }else if (name === 'client_phone') {
+    return(
+< StyledInput autoComplete='off' id={'client_num_ph'} value={value.client_phone} onBlur={handleBlurAction}  onChange={handleInputchange} onKeyDown={keyCodeInput} />
+    )
+    
   } else return (
-      < StyledInput autoComplete='off' id={name} value={value[name]} onChange={handleInputchange}  onKeyDown={keyCodeInput}/>
+      < StyledInput autoComplete='off' id={name} value={value[name]} onBlur={handleBlurAction}  onChange={handleInputchange} onKeyDown={keyCodeInput}/>
     )
 }
 

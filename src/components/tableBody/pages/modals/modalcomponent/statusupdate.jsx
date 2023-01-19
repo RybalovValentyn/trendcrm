@@ -67,8 +67,9 @@ const handleClouse =(e)=>{
 const listStyle={
     display: 'flex',
     padding: '7px 12px',
-    borderRadius: '8px',
-    width: 'max-content'
+     width: '100%',
+   
+    
    
 }
 

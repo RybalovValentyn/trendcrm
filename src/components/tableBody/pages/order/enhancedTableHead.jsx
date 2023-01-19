@@ -87,18 +87,7 @@ const getUpdate = ()=>{
               minWidth: isResize && width?.id === row.id?width?.width : widthOfColumn[row.id],
                    position: 'relative', color: colorsRef.labelTextColor, display: 'flex',}} key={row.id}>
   
-              {/* <TableSortLabel            
-                active={orderBy === row.id}
-                direction={orderBy === row.id ? order : 'asc'}
-              > */}
-                {row.str}
-                {/* {orderBy === row.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null} */}
-               
-              {/* </TableSortLabel> */}
+               {row.str}
               <SortArrow id={row.id} ind={ind} func={handleSortTable}/>
               <Divider onMouseDown={handleDownResize} 
               onMouseUp = {handleMouseUp}  

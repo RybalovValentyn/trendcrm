@@ -33,9 +33,10 @@ export function MiniDrawer() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(''); 
- const [menuOpen, setMenuOpen] = useState(false)
-const [currentLocation, setCurrentLocation] = useState(null)
-const [menuHover, setMenuHover] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [currentLocation, setCurrentLocation] = useState(null)
+  const [menuHover, setMenuHover] = useState(null)
+  const listUserRouting = useSelector((state) => state.auth.menu_list_access);
 
 useEffect(()=>{
   let current = location.pathname.split('/')
@@ -145,6 +146,8 @@ const handleItemClickMenu=(route)=>{
     return navigate(route);
    } else return 
 }
+
+
   return (
     <Box sx={{ display: 'flex','& .MuiAppBar-root': {boxShadow: 'none !important'}, height: '100vh' }}>
       <CssBaseline />
@@ -177,18 +180,20 @@ const handleItemClickMenu=(route)=>{
                    >  
 
               <ListItemButton sx={buttonStyle}>  
-             {text.child ? (name===text.route&&isOpen?<RemoveIcon  sx={addStyleIcon} fontSize='small'/>:<AddIcon sx={addStyleIcon} fontSize='small'/>): null}
+             {text.child ? (name===text.route&&isOpen?<RemoveIcon  sx={addStyleIcon} fontSize='small'/>:
+             <AddIcon sx={addStyleIcon} fontSize='small'/>): null}
               <ListItemText primary={text.label} sx={textStyle} />
                 <ListItemIcon sx={{minWidth: '30px',}}   >
                   {text.item}
                 </ListItemIcon>
                 
               </ListItemButton>
-              {open && <SimpleCollapse name={name} id={text.route} isOpen={isOpen} child={text.child} onFunc={handleItemClick} wrawOpen={open} location={currentLocation}/>}
+              {open && <SimpleCollapse name={name} id={text.route} isOpen={isOpen} list={listUserRouting}
+              child={text.child} onFunc={handleItemClick} wrawOpen={open} location={currentLocation}/>}
 
             <Suspense>
-            {menuHover===text.id?<ListItemCategories text={text.child?text.child:[{id: text.id, text: text.label, route: text.route}]}
-             open={menuOpen} id={menuHover} onFunc={handleItemClickMenu} location={currentLocation}/>:null}
+            {menuHover===text.id?<ListItemCategories text={text.child?text.child:[{id: text.id, text: text.label, route: text.route, }]}
+             open={menuOpen} id={menuHover} onFunc={handleItemClickMenu} location={currentLocation} list={listUserRouting}/>:null}
             </Suspense>
 
             </ListItem>

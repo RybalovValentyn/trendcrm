@@ -11,7 +11,7 @@ import {getOpenTableCreate, getClouseTableCreate} from '../../../../redux/orders
 import {StyledButton} from '../../../buttons/buttons';
 import { colorsRef } from '../../../../consts/colorConstants';
 import { useEffect, useState } from 'react';
-import { searchCountUpdate, CountUpdate, autoUpdate, isGrabAll} from '../../../../redux/ordersReduser';
+import {  CountUpdate, autoUpdate} from '../../../../redux/ordersReduser';
 import { getAllOrders, getAllStatuses, getFilteredOrders } from '../../../../redux/asyncThunc';
 import { DownloadComponent } from './createHead/downloads'; 
 import { ModalMenu } from '../modals/modal'
@@ -25,8 +25,6 @@ import { getselected } from '../../../../redux/funcReduser';
 function HeaderContainer() {
 const dispatch = useDispatch();
 const navigate = useNavigate();
-const params = useSelector((state) => state.ordersAll.searchParams);
-const copyParams = Object.values(params);
 const bodyTableRows = useSelector((state) => state.ordersAll.bodyTableRows);
 const paramsCount = useSelector((state) => state.ordersAll.searchParamCount);
 const columns = useSelector((state) => state.ordersAll.tHeadColumn);
@@ -38,10 +36,6 @@ const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered)
 const isAllListProducts =  useSelector((state) => state.ordersAll.isAllListProducts);
 let [timer, setTimer] = useState(null);
 
-useEffect(() => {
-  const searchCount = copyParams.reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
-  dispatch(searchCountUpdate(searchCount));
-  }, [params]);
 
   useEffect(() => {
 
@@ -73,7 +67,6 @@ useEffect(() => {
   }, [filteredRows]);
 
 const stopTimer = ()=>{
-  // console.log('stop Timer');
   clearInterval(timer);
   setTimer(null)
 }
@@ -90,7 +83,7 @@ dispatch(CountUpdate())
 if (filteredRows?.length > 0) {
   dispatch(getFilteredOrders())
 } else dispatch(getAllOrders())
-navigate('/trendcrm/orders')
+// navigate('/trendcrm/orders')
 }
 
 

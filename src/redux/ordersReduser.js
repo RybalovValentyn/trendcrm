@@ -204,6 +204,11 @@ client: {...client},
   payment_status: [{name: 'Ні', id: '0'}, {name:'Так', id: '1'}],
   sms_templates: [{name: 'Не вибрано', id: '0', value: ''},{name: 'Доставлено', id: '1', value: 'Shanovnij klient! Vidpravlennya pribulo. TTN №{ttn}'},
                   {name: 'Відправлено', id: '2', value: 'Уважаемый клиент! Ваш товар успешно отправлен. ТТН №{ttn}'}],
+  group_name:[  {id: "4", name: "Администраторы", disabled: "0"},
+                    {id: "5", name: "Менеджер КЦ", disabled: "0"},
+                    {id: "6", name: "Маркетологи", disabled: "0"},
+                    {id: "7", name: "Курьер", disabled: "0"}
+  ],
   doors_city: [],
   doors_address:[],
   doors_flat: [],
@@ -244,10 +249,6 @@ client: {...client},
     CountUpdate: (state, action)=>{
       return { ...state,
         searchParams:{...searchRefParams}
-      }},
-    searchCountUpdate: (state, action)=>{
-      return { ...state,
-        searchParamCount: action.payload
       }},
     getSortDate: (state, action) => { 
     console.log(action.payload);
@@ -394,6 +395,8 @@ client: {...client},
             
           if (action.payload?.data?.message) {
             state.messageSendFile = [action.payload?.data?.message]
+            state.typeMessage= typeMessage.error   
+            state.message = [messages.error, action.payload.data?.message]
           } 
           requestFulfilled(state, action)
         },
@@ -424,13 +427,24 @@ client: {...client},
         [setOrderUpdatestatusPrepay.rejected]:handleRejected,
 
         [setOrderPayment.pending]:handlePending,
-        [setOrderPayment.fulfilled](state, action) {            
+        [setOrderPayment.fulfilled](state, action) { 
+          
+          if (String(action.payload.status) === '200') {
+            state.typeMessage= typeMessage.success;
+            state.sneckBarMessage = [`${messages.paymentUpdate} ${action.payload.id}`,]
+            
+          }          
           requestFulfilled(state, action)
         },
         [setOrderPayment.rejected]:handleRejected,
 
         [setOrderReturn.pending]:handlePending,
-        [setOrderReturn.fulfilled](state, action) {    
+        [setOrderReturn.fulfilled](state, action) {  
+          if (String(action.payload.status) === '200') {
+            state.typeMessage= typeMessage.success;
+            state.sneckBarMessage = [`${messages.paymentUpdate} ${action.payload.id}`,]
+            
+          }    
           requestFulfilled(state, action)
         },
         [setOrderReturn.rejected]:handleRejected,
@@ -457,6 +471,7 @@ client: {...client},
 
           [getFilteredOrders.pending]: handlePending,
           [getFilteredOrders.fulfilled](state, action) {
+        const searchCount = Object.values(state.searchParams).reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
          const filteredHeaderValue = state.tHeadColumnFiltered.reduce((acc,str, ind) =>{
               if (translater[str.data]) {
                  acc.push({id:str.data, str:translater[str.data]})
@@ -475,6 +490,7 @@ client: {...client},
 
               return{
              ...state,
+             searchParamCount: searchCount,
              columns: [...action.payload.data],
              tableLength: action.payload.recordsFiltered,
               isLoading: false,
@@ -488,8 +504,9 @@ client: {...client},
         [getAllOrders.pending]:handlePending,
 
         [getAllOrders.fulfilled](state, action) {
-  
-         const headerValue = Object.entries(translater).reduce((acc,str, ind) =>{
+
+          const searchCount = Object.values(state.searchParams).reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
+           const headerValue = Object.entries(translater).reduce((acc,str, ind) =>{
             if (str.values) {
               acc.push({id:str[0], str:str[1]})
             }   
@@ -504,6 +521,7 @@ client: {...client},
           });
             return{
            ...state,
+           searchParamCount: searchCount,
            columns: [...action.payload.data],
            tableLength: Number(action.payload.recordsTotal),
             isLoading: false,
@@ -683,7 +701,7 @@ client: {...client},
         }}
 );
 
-export const { getWidthUpdate, setWidthColumn, getOpenTableCreate, searchCountUpdate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
+export const { getWidthUpdate, setWidthColumn, getOpenTableCreate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
    getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel, setOpenRowsCreator,
    autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate
   } = ordersReduser.actions;

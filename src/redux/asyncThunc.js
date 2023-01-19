@@ -47,7 +47,7 @@ export const loginThunk = createAsyncThunk(
         url: REBASE_URL+login,
          data: user});      
       const data = await response
-      // console.log('loginThunk', data.data);
+      // console.log('loginThunk', data );
       return data.data;
     } catch (error) {
       return rejectWithValue({
@@ -151,28 +151,7 @@ export const getAllStatuses = createAsyncThunk(
   },
 );
 
-// export const getAllStatuses = createAsyncThunk(
-//   'statuses/all',
-//   async (_, { rejectWithValue, getState }) => {
-//     const state = getState(); 
-//     const cookie = state.auth.id
 
-//         try {
-//         const { data } = await axios({
-//           method: "get",
-//            url:  REBASE_URL+getStatus,
-//            params:{ cookie: 'user_id=1'}
-//           })
-         
-//          return data.orders_status_count
-//       } catch (error) {
-//         return rejectWithValue({
-//          error: error.message
-//         });
-//       }
-    
-//   },
-// );
 export const getFilteredOrders = createAsyncThunk(
   'filtered/all',
   async (_, { rejectWithValue, getState }) => { 
@@ -221,8 +200,6 @@ const searchColumn = state.ordersAll.tHeadColumnFiltered
     
   },
 );
-// order[0][column]: 3
-// order[0][dir]: asc
 
 export const getAllOrders = createAsyncThunk(
   'orders/all',
@@ -279,14 +256,14 @@ export const getAllOrders = createAsyncThunk(
            
           ] ,
            }
-// console.log(columns);
+
         try {
         const response = await axios({
           method: "post",
            url:  REBASE_URL+orders,
            data: columns
           })
-          // console.log(response.data);
+
          return response.data
       } catch (error) {
         return rejectWithValue({
@@ -327,7 +304,6 @@ export const postRowsFromForm = createAsyncThunk(
     
 const rows = state.ordersAll.createRows
 const client = state.ordersAll.client
-console.log('postRowsFromForm', rows);
 
    const utm ={
       utm_source:"",
@@ -353,7 +329,7 @@ const dataSend ={
         const { data } = await axios({
           method: "post", 
            url:  REBASE_URL+addOrder,
-           data: {...dataSend},  
+           data: dataSend,  
   
           })
           console.log(data);
@@ -395,12 +371,12 @@ export const setOrderReturn = createAsyncThunk(
   'return/post',
   async ({id, value }, { rejectWithValue}) => {
           try {
-        const {data} = await axios({
+        const resp = await axios({
           method: "post",
            url:  REBASE_URL+addOrder+`/${id}/${orderReturn}`,
            data: {order_return: value},
           });
-        return {data, id}
+          return {data: resp.data, id, status: resp.status}
       } catch (error) {
         console.log(error);
         return rejectWithValue({
@@ -415,12 +391,12 @@ export const setOrderPayment = createAsyncThunk(
   'payment/post',
   async ({id, value }, { rejectWithValue}) => {
           try {
-        const {data} = await axios({
+        const resp = await axios({
           method: "post",
            url:  REBASE_URL+addOrder+`/${id}/${payment}`,
            data: {payment_received: value},
           });
-        return {data, id}
+          return {data: resp.data, id, status: resp.status}
       } catch (error) {
         console.log(error);
         return rejectWithValue({
@@ -470,22 +446,20 @@ export const setOrderStatusUpdate = createAsyncThunk(
     
   },
 );
-
+// https://react.trendcrm.biz/api/select/orders/ttn/from/excel
 export const setFileExcelSend = createAsyncThunk(
   'file/post',
   async (file, { rejectWithValue}) => {
-    const fileData = new FormData();
-    fileData.append('file', file);
-    console.log(fileData.get('file'));
+    console.log(file);
 
           try {
         const {data} = await axios({
           method: "post",
            url:  REBASE_URL+imp+orders+excel, 
-           data: fileData,
+           data: {file: file},
            headers: {"Content-Type": "multipart/form-data"}
           });
-console.log(data);
+// console.log(data);
          return {data}       
       } catch (error) {
         return rejectWithValue({
