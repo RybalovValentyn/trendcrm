@@ -24,14 +24,15 @@ export const mainNavBarItem = [
         label: 'Користувачі',
         route: 'users',
         child:[{id: 'users',text: 'Користувачі', route: 'users',}, 
-        {id: 'storage', text:'Магазини', route: 'stores',} ]
+        {id: 'storage', text:'Магазини', route: 'stores',},
+        {id: 'user_groups', text:'Групи користувачів', route: 'stores',} ]
     },    {
         id: 'orders',
         item: <BookmarksOutlinedIcon/>,
         label: 'Замовлення',
         route: 'orders',
         child:[{id: 'orders', text: 'Замовлення', route: 'orders',},
-         {id: 'clients', text:'Клієнти', route: 'clients',} ,
+         {id: 'clients', text:'Клієнти', route: 'clients',},
           {id: 'basket', text:'Корзина', route: 'basket',}]
     },    {
         id: 'products',
@@ -39,7 +40,7 @@ export const mainNavBarItem = [
         label: 'Товари',
         route: 'products',
         child:[{id: 'products', text: 'Товари', route: 'products', },
-         {id: 'attributes', text:'Атрибути', route: 'products',} , 
+         {id: 'attributes', text:'Атрибути', route: 'products',}, 
          {id: 'consignments', text:'Товарні накладні', route: 'products',},
         {id: 'suppliers', text: 'Постачальники', route: 'products', },
          {id: 'scripts', text:'Скрипти', route: 'products',} , 
@@ -50,7 +51,7 @@ export const mainNavBarItem = [
         label: 'Доставка',
         route: 'delivery',
         child:[{id: 'novaposhta', text: 'Нова Пошта',route: 'delivery' }, 
-                {id: 'ukrposhta', text:'УкрПошта', route: 'delivery',} ,
+                {id: 'ukrposhta', text:'УкрПошта', route: 'delivery',},
                 {id: 'justin', text:'Justin',route: 'delivery',},
                  {id: 'control_shipments', text:'Контроль відправок', route: 'delivery',}]
     },    {
@@ -109,8 +110,5 @@ export const mainNavBarItem = [
     // },
 ]
 
-// {"nav_user_groups":"1",
 
-// 
 // "nav_prom_accounts":"1",
-// }

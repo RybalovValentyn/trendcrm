@@ -42,6 +42,8 @@ labelTextColor: '#232323',
     iconColor: '#d0d0d0',
 
     drawerTextColor: '#777777',
+
+    modalProductBgColor: '#455A64'
 }
 
 // height: 30px;

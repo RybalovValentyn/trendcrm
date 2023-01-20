@@ -3,7 +3,7 @@ import {colorsRef} from '../../consts/colorConstants';
 
 
 
-export const StyledButton = ({text, func, startIcon, bgColor, border})=>{
+export const StyledButton = ({text, func, startIcon, bgColor, border, margin})=>{
     const buttonStyle={
         border: `1px solid ${border}`,
         fontSize: '12px',
@@ -12,6 +12,7 @@ export const StyledButton = ({text, func, startIcon, bgColor, border})=>{
         padding: '4px 10px 3px 10px',
         minWidth: 'max-content',
         alignItem: 'center',
+        margin: margin?margin:0,
         '& .MuiButton-startIcon':{
             margin: 0,
             

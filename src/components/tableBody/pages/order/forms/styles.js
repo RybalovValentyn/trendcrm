@@ -15,7 +15,7 @@ borderBottom: `1px solid ${colorsRef.createBorderColorOFAll}`,
 textTransform: 'uppercase',
 };
 
-export const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'};
+export const formStyle={ width: '100%',boxShadow: 'none', minWidth: '300px', padding: '10px'};
 
 export const BootstrapInput = styled('input')(({ theme }) => 
 `border: 1px solid ${colorsRef.modalInputBorderColor};

@@ -111,6 +111,9 @@ store_title: '',
 packer_name: '',
 payment_name: '',
 ttn_status: '',
+searchId: '',
+prevalue: ''
+
 }
 const handlePending = state => {
   state.isLoading = true;
@@ -136,7 +139,22 @@ const colorUpdate=(str)=>{
   } else return color = str.status_style
 
 }
+const ProductData={
+discount: 0,
 
+};
+const newProduct ={
+  attribute_id: "",
+category: "0",
+cost: "0",
+data: "1",
+icon: null,
+name: "",
+parent_id: "0",
+price: "0",
+supplier_id: [],
+value: ""
+}
 const ordersReduser = createSlice({
     name: 'orders',
     initialState: {
@@ -170,9 +188,11 @@ const ordersReduser = createSlice({
       date_send_update: false,
       open_modal_component: false,
       ttnNewPostCreate: false,
-      
+      productCreate: false,
+
   },
- 
+productData:{...ProductData},
+newProduct: {...newProduct},
 ttn_status: {},
 client: {...client},
  createRows:{...rows},
@@ -209,6 +229,8 @@ client: {...client},
                     {id: "6", name: "Маркетологи", disabled: "0"},
                     {id: "7", name: "Курьер", disabled: "0"}
   ],
+  products:[{id: 1, name: 'Название товара 1', data: 'Название товара 1'},
+           {id: 2, name: 'Название товара 2', data: 'Название товара 2'}],
   doors_city: [],
   doors_address:[],
   doors_flat: [],
@@ -234,6 +256,15 @@ client: {...client},
   },
 
    reducers: {
+    productsdataUpdate:(state, action) => {  
+      // console.log(action.payload);
+    state.productData= {[action.payload.id]: action.payload.str}
+  },
+      newProductUpdate:(state, action) => {  
+        console.log(action.payload);
+      state.productData= {[action.payload.id]: action.payload.str}
+    },
+
     alertMessageUpdate: (state, action) => {  
       return { ...state,
         message: [messages[action.payload.message]] ,
@@ -251,7 +282,7 @@ client: {...client},
         searchParams:{...searchRefParams}
       }},
     getSortDate: (state, action) => { 
-    console.log(action.payload);
+    // console.log(action.payload);
       switch (action.id) {
         case ('create_date_from'):
           return { ...state,
@@ -403,13 +434,15 @@ client: {...client},
         [setFileExcelSend.rejected]:handleRejected,
         [setOrderStatusUpdate.pending]:handlePending,
         [setOrderStatusUpdate.fulfilled](state, action) { 
-            
+            console.log(action.payload);
           if (action.payload?.data?.message) {
-            state.message = [action.payload?.data?.message]
+            state.typeMessage= typeMessage.warn;
+            state.sneckBarMessage = [`Помилка в оновлені статусу замовлення № ${action.payload.id}`,action.payload?.data?.message]
           } else if (action.payload?.data?.sending) {
             state.isStatusUpdated=true;
             state.typeMessage= typeMessage.success;
-            state.message = [`${messages.countOrder} ${action.payload?.data?.sending.length?action.payload?.data?.sending:1}`, messages.statusPrepay]  
+            state.sneckBarMessage = [`${messages.statusUpdateOrder} ${action.payload.id}`, messages.statusUpdate]
+            // state.message = [`${messages.countOrder} ${action.payload?.data?.sending.length?action.payload?.data?.sending:1}`, messages.statusPrepay]  
           } else if (action.payload?.data) {
             state.typeMessage= typeMessage.success;
             state.message = [messages.dateUpdate] 
@@ -458,10 +491,12 @@ client: {...client},
         [setCommentAdd.rejected]:handleRejected,
 
           [getAllStatuses.pending]: handlePending,
-        [getAllStatuses.fulfilled](state, action) {
+         [getAllStatuses.fulfilled](state, action) {
+             const statuses = Object.keys(action.payload.statuses);
+              const filteredStatuses = action.payload.data.filter(str=>statuses.includes(str.id) || str.id === 0)
           return{
            ...state,
-           getStatuses: [...action.payload],
+           getStatuses: [...filteredStatuses],
             isLoading: false,
             isError: false,
  
@@ -504,8 +539,7 @@ client: {...client},
         [getAllOrders.pending]:handlePending,
 
         [getAllOrders.fulfilled](state, action) {
-
-          const searchCount = Object.values(state.searchParams).reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
+            const searchCount = Object.values(state.searchParams).reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
            const headerValue = Object.entries(translater).reduce((acc,str, ind) =>{
             if (str.values) {
               acc.push({id:str[0], str:str[1]})
@@ -703,7 +737,7 @@ client: {...client},
 
 export const { getWidthUpdate, setWidthColumn, getOpenTableCreate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
    getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel, setOpenRowsCreator,
-   autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate
+   autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate, productsdataUpdate, newProductUpdate
   } = ordersReduser.actions;
 export default ordersReduser.reducer;
 

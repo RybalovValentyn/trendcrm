@@ -28,27 +28,32 @@ const StatusUpdate = () =>{
 
 
     const [status, setStatus] = useState(0);
-    
+    const [open, setOpen]= useState(false)
     let selected =  [];
     if (sessionStorage.getItem("selected")) {
         selected =  sessionStorage.getItem("selected")?.split(',');
     }
     if (selected.length >0) {
-      let d = columns.find(n=>n.id === selected[0])?.status; 
-      defaultStatus =  statuses?.find(str=> str.id === d);
+      let defaultStatus = renderFilteredStatus.find(n=>n.id === selected[0]) 
+      // defaultStatus =  statuses?.find(str=> str.id === d);
     }
 
 useEffect(()=>{
    
 if (isStatusUpdated) {
+  setOpen(true)
+  if (!open) {
     successAlert()
-    getUpdate()   
+  }
+    
+    // getUpdate()   
     dispatch(autoUpdate({id: 'isStatusUpdated', str: false}));
 }
 },[isStatusUpdated])
 
 
 const successAlert = () => {
+  console.log('successAlert');
     dispatch(getOpenTableCreate({id: 'status_update', str: false}));
     withReactContent(Swal).fire({  
         title: isStatusUpdated?'Переміщено':'Увага!',  
@@ -56,7 +61,12 @@ const successAlert = () => {
         icon: isStatusUpdated?'success':'error',
         confirmButtonColor: '#3085d6',
         confirmButtonText: 'Ok',
-      })    
+      }).then((result) => {        
+        if (result.isConfirmed) {
+          setOpen(false)
+           getUpdate()
+                }
+      });     
 }
 
 
@@ -76,15 +86,19 @@ const listStyle={
 const handleSubmit=()=>{
    if (!selected || selected.length === 0) {
    return dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'warn'}))
-   } else if (selected[0] && selected.length === 1) {
+   } else if (selected[0] && selected.length === 1) {      
+        dispatch(setOrderStatusUpdate({id: selected[0], status: String(status.id)}))
         successAlert()
-        dispatch(setOrderStatusUpdate({id: selected[0], status: String(status)}))
         return
         } else if(selected.length > 1){
-            successAlert()
-            selected.map(n=>{
+            
+            selected.map((n, i)=>{
                 if (Number(n)) {
-                    dispatch(setOrderStatusUpdate({id: String(n), status: String(status)}))
+                  console.log(i === selected.length-1, status);
+                    dispatch(setOrderStatusUpdate({id: String(n), status: String(status.id)}))
+                    if (i === selected.length-1) {
+                      successAlert()
+                    }
                 }
             })
             return
@@ -94,11 +108,13 @@ const handleSubmit=()=>{
 
 const onAutocompliteChange=(e)=>{    
     let ind = e.target.id.split('-')[2]  
+    console.log(renderFilteredStatus[ind]);
 if (Number(ind)) {
-    setStatus(renderFilteredStatus[ind].id)
+    setStatus(renderFilteredStatus[ind])
 }
 };
 const getUpdate = ()=>{
+  console.log('getUpdate');
     dispatch(getAllStatuses());
     if (filteredRows?.length > 0) {
       dispatch(getFilteredOrders())
@@ -115,7 +131,8 @@ const Component = ()=>(
           id={'status'}
           disableClearable
           onChange={onAutocompliteChange}
-          value={defaultStatus}                
+          value={status?status:(defaultStatus?defaultStatus:null)}    
+          // defaultValue ={defaultStatus?defaultStatus:null}           
           options={renderFilteredStatus}
           getOptionLabel={(option) => option.name}
           renderOption={(props, option, { selected }) => (

@@ -131,6 +131,7 @@ export const getAllStatuses = createAsyncThunk(
   'statuses/all',
   async (_, { rejectWithValue, getState }) => {
     const state = getState(); 
+    const statuses = state.auth.order_statuses_access
     const cookie = state.auth.id
 
         try {
@@ -139,7 +140,7 @@ export const getAllStatuses = createAsyncThunk(
           url:  REBASE_URL,
            params:{ cookie: document.cookie}
           })
-         return data.orders_status_count
+         return {data: data.orders_status_count, statuses: statuses}
       } catch (error) {
         // console.log(error.message);
         return rejectWithValue({
@@ -437,7 +438,7 @@ export const setOrderStatusUpdate = createAsyncThunk(
            url:  REBASE_URL+addOrder+`/${id}`,
            data: status?{status: status, sent: sent?sent:''}:{sent: sent?sent:''},
           });
-         return {data}       
+         return {data, id}       
       } catch (error) {
         return rejectWithValue({
           error: error.message,

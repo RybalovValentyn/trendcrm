@@ -250,11 +250,11 @@ const handleClick = (e, index) => {
       }
   }
  const handleDoubleClick=(event, index, id)=>{
-  dispatch(loginThunk({login: 'admin', password: 'admin'}))
-  // sessionStorage.setItem("selected", '');
-  //      dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
-  //   dispatch(getRowsAfterAdd(id));  
-  //   navigate(`/trendcrm/order/${id}`); 
+  // dispatch(loginThunk({login: 'admin', password: 'admin'}))
+  sessionStorage.setItem("selected", '');
+       dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
+    dispatch(getRowsAfterAdd(id));  
+    navigate(`/trendcrm/order/${id}`); 
   };
 const countUpdate = ()=>{  
   const element = rowRef

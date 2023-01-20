@@ -111,6 +111,8 @@ export const translater = {
 
 export const messages={
    countOrder: 'Оновлено замовлень:',
+   statusUpdateOrder: 'Оновлено замовлення №:',
+    statusUpdate: 'Статус замовлення змінено',
     statusPrepay: 'Статус передплати змінено',
     dateUpdate: 'Дату відправки встановлено',
     idSelectedWarn: 'Потрібно вибрати хоч одне замовлення',

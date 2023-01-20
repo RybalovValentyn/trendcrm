@@ -36,6 +36,7 @@ const  InputSelector =({name}) => {
     if (name === 'status_name') {
          initValue =statuses?.find(n=>n.id === value.status_name)?.name?statuses?.find(n=>n.id === value.status_name)?.name:''
   }
+  
 const handleInputchange =(e)=>{
   let id = e.target.id
   let str = e.target.value.trim()
@@ -97,15 +98,18 @@ const handleSelecthandleChange = (e, id) => {
   } 
   getUpdate()
 };
+const handleFocusInput=(name)=>{
+  // let id = e.target.id
+  dispatch(getSortDate({id: 'prevalue', str: value[name]}));
+  dispatch(getSortDate({id: 'searchId', str: value[name]}));
+}
 
-
-const handleBlurAction=(e)=>{
-  let id = e.target.id
-  if (value[id] !== '' && value[id]) {   
-    getUpdate()
-    }  else if (id === 'client_num_ph' && value.client_phone !== '' && value.client_phone) {
-      getUpdate()
-    }
+const handleBlurAction=(name)=>{
+if (value.prevalue !== value[name]) {
+  dispatch(getSortDate({id: 'prevalue', str: ''}));
+  dispatch(getSortDate({id: 'searchId', str: ''}));
+  getUpdate()
+}
 }
 
 if (name === 'payment_name') {
@@ -173,11 +177,12 @@ if (name === 'payment_name') {
     )
   }else if (name === 'client_phone') {
     return(
-< StyledInput autoComplete='off' id={'client_num_ph'} value={value.client_phone} onBlur={handleBlurAction}  onChange={handleInputchange} onKeyDown={keyCodeInput} />
+< StyledInput autoComplete='off' id={'client_num_ph'} value={value.client_phone} onFocus={()=>handleFocusInput('client_phone')}
+                       onBlur={()=>handleBlurAction('client_phone')}  onChange={handleInputchange} onKeyDown={keyCodeInput} />
     )
     
   } else return (
-      < StyledInput autoComplete='off' id={name} value={value[name]} onBlur={handleBlurAction}  onChange={handleInputchange} onKeyDown={keyCodeInput}/>
+      < StyledInput autoComplete='off' id={name} value={value[name]} onFocus={()=>handleFocusInput(name)} onBlur={()=>handleBlurAction(name)}  onChange={handleInputchange} onKeyDown={keyCodeInput}/>
     )
 }
 

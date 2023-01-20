@@ -15,12 +15,16 @@ import { HeaderOrder } from './headerOrder';
 import {useNavigate, useSearchParams,} from 'react-router-dom';
 import { autoUpdate } from '../../../../redux/ordersReduser';
 import { useEffect } from 'react';
+import ProductCreateComponent from './productcreate'; 
+import ScriptCreateComponent from './scriptcreate';
+import ProductCreate from './modals/productCreate';
+
 
 export function CreateRows(){
     const dispatch = useDispatch();
     const isPay = useSelector((state) => state.ordersAll.createRows.payment_type)
     const deliveryType = useSelector((state) => state.ordersAll.createRows.delivery_service_type);
-    const formStyle={ width: '35%',boxShadow: 'none', minWidth: '300px'};
+    const formStyle={ width: '100%',boxShadow: 'none', minWidth: '300px', padding: '10px'};
     const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
  
 
@@ -69,121 +73,130 @@ return(
         <ListAutocompliteStatuses/>
         <HeaderOrder/>
         </Box>
-    <Box sx={{paddingBottom: '50px', backgroundColor: '#fff', width: '100%', boxShadow:'0px 4px 18px -10px rgb(0 0 0 / 50%)', padding: '20px'}} >
+    <Box sx={{paddingBottom: '50px', backgroundColor: '#fff', width: '100%', boxShadow:'0px 4px 18px -10px rgb(0 0 0 / 50%)', padding: '20px', display: 'flex'}} >
 
-<ClientForm/>
+<Box sx={{width: '34%'}}>
+        <ClientForm/>
 
         <Paper component="form" sx={formStyle}>
         <Typography sx={ typographyStyle} variant="h2" component="h3">
          Доставка:
         </Typography >
-<List>
-    <StyledList>
-    <MultiInput label='Спосіб доставки:' name='delivery_type' type='select'/>
-    </StyledList>
+            <List >
+                <StyledList>
+                <MultiInput label='Спосіб доставки:' name='delivery_type' type='select'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Пакувальник:' name='packer_name' type='select'/>
-    </StyledList>
-    
-    <StyledList>
-    <MultiInput label='Спосіб оплати:' name='payment_type' type='select'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Пакувальник:' name='packer_name' type='select'/>
+                </StyledList>
+                
+                <StyledList>
+                <MultiInput label='Спосіб оплати:' name='payment_type' type='select'/>
+                </StyledList>
 
-  {(isPay === '16') &&  <StyledList>
-    <MultiInput label='Cума передплати:' name='prepay_amount' type='num'/>
-    </StyledList>}
+            {(isPay === '16') &&  <StyledList>
+                <MultiInput label='Cума передплати:' name='prepay_amount' type='num'/>
+                </StyledList>}
 
- { (isPay === '16') &&   <StyledList>
-    <MultiInput label='Передплата оплачена?' name='payment_status' type='select'/>    
-    </StyledList> }
+            { (isPay === '16') &&   <StyledList>
+                <MultiInput label='Передплата оплачена?' name='payment_status' type='select'/>    
+                </StyledList> }
 
-{(isPay === '15'||isPay === '86') &&    <StyledList>
-    <MultiInput label='Cума наложеного платежу:' name='backward_delivery_summ' type='num'/>
-    </StyledList>}
+            {(isPay === '15'||isPay === '86') &&    <StyledList>
+                <MultiInput label='Cума наложеного платежу:' name='backward_delivery_summ' type='num'/>
+                </StyledList>}
 
-    <StyledList>
-    <MultiInput label='Дата відправки:' name='datetime_sent' type='data'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Дата відправки:' name='datetime_sent' type='data'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Час відправки:' name='datetime_sent' type='time'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Час відправки:' name='datetime_sent' type='time'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Доставка:' name='delivery_service_type' type='select'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Доставка:' name='delivery_service_type' type='select'/>
+                </StyledList>
 
-    {(deliveryType === '0') &&<StyledList>
-    <MultiInput label='Місто відділення:' name='warehouse_city' type='autocomplete'/>
-    </StyledList>}
+                {(deliveryType === '0') &&<StyledList>
+                <MultiInput label='Місто відділення:' name='warehouse_city' type='autocomplete'/>
+                </StyledList>}
 
-    {(deliveryType === '0') &&<StyledList>
-    <MultiInput label='Адреса відділення:' name='warehouse_address' type='autocomplete'/>
-    </StyledList>}
+                {(deliveryType === '0') &&<StyledList>
+                <MultiInput label='Адреса відділення:' name='warehouse_address' type='autocomplete'/>
+                </StyledList>}
 
-    {(deliveryType === '1') &&<StyledList>
-    <MultiInput label='Місто:' name='doors_city' type='autocomplete'/>
-    </StyledList>}
+                {(deliveryType === '1') &&<StyledList>
+                <MultiInput label='Місто:' name='doors_city' type='autocomplete'/>
+                </StyledList>}
 
-    {(deliveryType === '1') &&<StyledList>
-    <MultiInput label='Адреса:' name='doors_address' type='autocomplete'/>
-    </StyledList>}
+                {(deliveryType === '1') &&<StyledList>
+                <MultiInput label='Адреса:' name='doors_address' type='autocomplete'/>
+                </StyledList>}
 
-    {(deliveryType === '1') &&<StyledList>
-    <MultiInput label='Дім:' name='doors_house' type='text'/>
-    </StyledList>}
+                {(deliveryType === '1') &&<StyledList>
+                <MultiInput label='Дім:' name='doors_house' type='text'/>
+                </StyledList>}
 
-    {(deliveryType === '1') &&<StyledList>
-    <MultiInput label='Квартира:' name='doors_flat' type='text'/>
-    </StyledList>}
+                {(deliveryType === '1') &&<StyledList>
+                <MultiInput label='Квартира:' name='doors_flat' type='text'/>
+                </StyledList>}
 
-    <StyledList>
-    <MultiInput label='Платник за доставку:' name='delivery_payers'  type='select'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Платник за доставку:' name='delivery_payers'  type='select'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Платник наложеного платежу:' name='delivery_payers_redelivery'  type='select'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Платник наложеного платежу:' name='delivery_payers_redelivery'  type='select'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Вага (кг):' name='weight' type='num'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Вага (кг):' name='weight' type='num'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Обємна вага:' name='volume_general' type='num'/>
-    </StyledList>
-    
-    <StyledList>
-    <MultiInput label='Кількість місць:' name='seats_amount' type='num'/>
-    </StyledList>
-    
-    <StyledList>
-    <MultiInput label='ТТН:' name='tnn' type='readOnly'/>
-    </StyledList>
-    
-    <StyledList>
-    <MultiInput label='Номер повернення:' name='sent' type='readOnly'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Обємна вага:' name='volume_general' type='num'/>
+                </StyledList>
+                
+                <StyledList>
+                <MultiInput label='Кількість місць:' name='seats_amount' type='num'/>
+                </StyledList>
+                
+                <StyledList>
+                <MultiInput label='ТТН:' name='tnn' type='readOnly'/>
+                </StyledList>
+                
+                <StyledList>
+                <MultiInput label='Номер повернення:' name='sent' type='readOnly'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Статус:' name='status' type='readOnly'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Статус:' name='status' type='readOnly'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Розрахункова вартість:' name='cost' type='readOnly'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Розрахункова вартість:' name='cost' type='readOnly'/>
+                </StyledList>
 
-    <StyledList>
-    <MultiInput label='Коментарій:' name='novaposhta_comment' type='textarea'/>
-    </StyledList>
+                <StyledList>
+                <MultiInput label='Коментарій:' name='novaposhta_comment' type='textarea'/>
+                </StyledList>
 
 
-</List>
+            </List>
         </Paper>
+</Box>
+<Box sx={{width: '66%'}}>
+    <ProductCreateComponent />
+<ScriptCreateComponent/>
+</Box>
 <AddStatusForm isbutton={false}/>
 <SaveButton  />
     </Box>
+
+<ProductCreate/>
+
     </Box>
 )
 
