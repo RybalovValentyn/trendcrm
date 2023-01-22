@@ -53,7 +53,7 @@ if (isStatusUpdated) {
 
 
 const successAlert = () => {
-  console.log('successAlert');
+  // console.log('successAlert');
     dispatch(getOpenTableCreate({id: 'status_update', str: false}));
     withReactContent(Swal).fire({  
         title: isStatusUpdated?'Переміщено':'Увага!',  
@@ -108,13 +108,13 @@ const handleSubmit=()=>{
 
 const onAutocompliteChange=(e)=>{    
     let ind = e.target.id.split('-')[2]  
-    console.log(renderFilteredStatus[ind]);
+    // console.log(renderFilteredStatus[ind]);
 if (Number(ind)) {
     setStatus(renderFilteredStatus[ind])
 }
 };
 const getUpdate = ()=>{
-  console.log('getUpdate');
+  // console.log('getUpdate');
     dispatch(getAllStatuses());
     if (filteredRows?.length > 0) {
       dispatch(getFilteredOrders())

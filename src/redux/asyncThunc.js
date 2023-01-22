@@ -47,7 +47,7 @@ export const loginThunk = createAsyncThunk(
         url: REBASE_URL+login,
          data: user});      
       const data = await response
-      // console.log('loginThunk', data );
+      console.log('loginThunk', data );
       return data.data;
     } catch (error) {
       return rejectWithValue({
@@ -575,3 +575,8 @@ export const RemoveOrderFromId= createAsyncThunk(
     
   },
 );
+
+
+// {name: "постачальник 1", phone: "0661222234", email: "vale345v@gmail.com", comment: "Коментарій"}
+// https://react.trendcrm.biz/api/supplier
+// https://react.trendcrm.biz/api/suppliers

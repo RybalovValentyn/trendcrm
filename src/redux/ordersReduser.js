@@ -139,21 +139,22 @@ const colorUpdate=(str)=>{
   } else return color = str.status_style
 
 }
-const ProductData={
+const ProductDataRef={
 discount: 0,
 
 };
-const newProduct ={
+const newProductRef ={
   attribute_id: "",
 category: "0",
-cost: "0",
+cost: "",
 data: "1",
 icon: null,
 name: "",
 parent_id: "0",
-price: "0",
+price: "",
 supplier_id: [],
-value: ""
+value: "",
+count: ''
 }
 const ordersReduser = createSlice({
     name: 'orders',
@@ -189,10 +190,10 @@ const ordersReduser = createSlice({
       open_modal_component: false,
       ttnNewPostCreate: false,
       productCreate: false,
-
+      newProductCreate: false,
   },
-productData:{...ProductData},
-newProduct: {...newProduct},
+productData:{...ProductDataRef},
+newProduct: {...newProductRef},
 ttn_status: {},
 client: {...client},
  createRows:{...rows},
@@ -260,9 +261,13 @@ client: {...client},
       // console.log(action.payload);
     state.productData= {[action.payload.id]: action.payload.str}
   },
-      newProductUpdate:(state, action) => {  
-        console.log(action.payload);
-      state.productData= {[action.payload.id]: action.payload.str}
+  newProductUpdate:(state, action) => {  
+        console.log({[action.payload.id]: action.payload.str});
+  if (action.payload.str === 'clear') {
+    state.newProduct = {...newProductRef}
+  }
+
+      state.newProduct= {...state.newProduct,[action.payload.id]: action.payload.str}
     },
 
     alertMessageUpdate: (state, action) => {  

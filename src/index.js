@@ -13,7 +13,7 @@ import { SnackbarProvider} from 'notistack'
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store} loading={<Preloader/>} basename="/trendcrm" >
-       <PersistGate persistor={persistor}>
+       {/* <PersistGate persistor={persistor}> */}
        <BrowserRouter>
        <CookiesProvider>
            <SnackbarProvider maxSnack={6}>
@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
            </SnackbarProvider>
          </CookiesProvider>
        </BrowserRouter>
-       </PersistGate>
+       {/* </PersistGate> */}
     </Provider>
   </React.StrictMode>
 );

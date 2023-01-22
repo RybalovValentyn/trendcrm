@@ -34,18 +34,18 @@ import functionReduser from './funcReduser';
   const orderPersistReduser = persistReducer(orderPersistConfig, ordersReduser);
 
   export const store = configureStore({
-    // reducer: {
-    //    auth: authReduser,
-    //   addStatus: statusReduser,
-    //   ordersAll: ordersReduser,
-    //   function: functionReduser,
-    // },
     reducer: {
-      auth: authPersistReducer,
-     addStatus: statusReduser,
-     ordersAll: orderPersistReduser,
-        function: functionReduser,
-   },
+       auth: authReduser,
+      addStatus: statusReduser,
+      ordersAll: ordersReduser,
+      function: functionReduser,
+    },
+  //   reducer: {
+  //     auth: authPersistReducer,
+  //    addStatus: statusReduser,
+  //    ordersAll: orderPersistReduser,
+  //       function: functionReduser,
+  //  },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: {

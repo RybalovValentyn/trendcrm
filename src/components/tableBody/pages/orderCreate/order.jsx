@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 import ProductCreateComponent from './productcreate'; 
 import ScriptCreateComponent from './scriptcreate';
 import ProductCreate from './modals/productCreate';
+import NewProductCreate from './modals/newProduct';
 
 
 export function CreateRows(){
@@ -196,7 +197,7 @@ return(
     </Box>
 
 <ProductCreate/>
-
+<NewProductCreate/>
     </Box>
 )
 
