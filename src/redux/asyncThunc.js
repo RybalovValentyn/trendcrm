@@ -29,8 +29,17 @@ const imp = '/import';
 const ttn = '/ttn';
 const novaPochta = '/novaposhta';
 const remove = '/delete';
-const returnTtn = '/return'
-const deletOrder = '/basket'
+const returnTtn = '/return';
+const deletOrder = '/basket';
+const products = '/products';
+const name = '/name';
+const autocomplete = '/autocomplete';
+const list = '/list';
+const attributes='/attributes';
+const suppliers='/suppliers';
+const category = '/category_list';
+const description='/description_list_by_data'
+
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -417,7 +426,7 @@ export const setOrderUpdatestatusPrepay = createAsyncThunk(
            url:  REBASE_URL+orders+prepayStatus,
            data: {orders: selected, value: value},
           });
-        return {data}
+        return {data, selected}
        
       } catch (error) {
         console.log(error);
@@ -576,7 +585,109 @@ export const RemoveOrderFromId= createAsyncThunk(
   },
 );
 
+export const getDataForAutocompliteList= createAsyncThunk(
+  'products/list',
+  async (query, { rejectWithValue}) => {
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+products+name+autocomplete+list,
+           data: {query: query?query:''}
+           });
+          //  console.log(resp.data.suggestions);
+           return {data: resp.data.suggestions}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+export const getAtributesAutocompliteList= createAsyncThunk(
+  'atributes/list',
+  async (_,{ rejectWithValue}) => {
+          try {
+        const resp = await axios({
+          method: "get",
+           url:  REBASE_URL+attributes,
+           });
+           console.log(resp.data);
+           return {data: resp.data.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+export const getSupliersList= createAsyncThunk(
+  'supliers/list',
+  async (query, { rejectWithValue}) => {
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+suppliers,
+           data: {query: query?query:''}
+           });
+          //  console.log(resp);
+           return {data: resp.data.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
 
 // {name: "постачальник 1", phone: "0661222234", email: "vale345v@gmail.com", comment: "Коментарій"}
 // https://react.trendcrm.biz/api/supplier
 // https://react.trendcrm.biz/api/suppliers
+
+// https://react.trendcrm.biz/api/category_list
+
+
+export const getCategoryList= createAsyncThunk(
+  'category/list',
+  async (_,{ rejectWithValue}) => {
+          try {
+        const resp = await axios({
+          method: "get",
+           url:  REBASE_URL+category,
+           });
+          //  console.log(resp.data);
+           return {data: resp.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/novaposhta/description_list_by_data
+
+export const getDescriptionList= createAsyncThunk(
+  'description/list',
+  async (query, { rejectWithValue}) => {
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+novaPochta+description,
+           data: {query: query?query:''}
+           });
+           return {data: resp.data.suggestions}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);

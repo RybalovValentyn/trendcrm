@@ -27,25 +27,25 @@ import functionReduser from './funcReduser';
     key: 'orderAll',
     storage,
     blacklist: ['isError', 'error', 'createRows', 'message', 'typeMessage', 'sneckBarMessage',
-     'messageSendFile', 'sortColumn', 'sortTable']
+     'messageSendFile', 'sortColumn', 'sortTable', 'modalControl', 'ttnWeigth', 'ttnResponsible']
     };
   
   const authPersistReducer = persistReducer(authPersistConfig, authReduser);
   const orderPersistReduser = persistReducer(orderPersistConfig, ordersReduser);
 
   export const store = configureStore({
+    // reducer: {
+    //    auth: authReduser,
+    //   addStatus: statusReduser,
+    //   ordersAll: ordersReduser,
+    //   function: functionReduser,
+    // },
     reducer: {
-       auth: authReduser,
-      addStatus: statusReduser,
-      ordersAll: ordersReduser,
-      function: functionReduser,
-    },
-  //   reducer: {
-  //     auth: authPersistReducer,
-  //    addStatus: statusReduser,
-  //    ordersAll: orderPersistReduser,
-  //       function: functionReduser,
-  //  },
+      auth: authPersistReducer,
+     addStatus: statusReduser,
+     ordersAll: orderPersistReduser,
+        function: functionReduser,
+   },
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         serializableCheck: {

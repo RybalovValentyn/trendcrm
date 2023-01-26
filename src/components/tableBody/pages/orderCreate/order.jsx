@@ -19,7 +19,8 @@ import ProductCreateComponent from './productcreate';
 import ScriptCreateComponent from './scriptcreate';
 import ProductCreate from './modals/productCreate';
 import NewProductCreate from './modals/newProduct';
-
+import NewAtributeCreate from './modals/newAtribute';
+import NewSupliersCreate from './modals/newSupliers';
 
 export function CreateRows(){
     const dispatch = useDispatch();
@@ -198,6 +199,8 @@ return(
 
 <ProductCreate/>
 <NewProductCreate/>
+<NewAtributeCreate/>
+<NewSupliersCreate/>
     </Box>
 )
 

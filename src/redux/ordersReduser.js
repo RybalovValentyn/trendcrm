@@ -4,7 +4,9 @@ import { orderStatusThunk, getValidationForm, orderStatusUpdate } from './asyncO
 import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
          getAllOrders, getAllStatuses, getFilteredOrders, setCommentAdd, setOrderReturn,
           setOrderPayment, setOrderUpdatestatusPrepay,setOrderStatusUpdate, setFileExcelSend,
-          setNewPostTtnCreate, getPrintTtn,getNewPostTtnDelete, getNewPostTtnReturn, RemoveOrderFromId  } from './asyncThunc';
+          setNewPostTtnCreate, getPrintTtn,getNewPostTtnDelete, getNewPostTtnReturn, RemoveOrderFromId,
+          getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList,
+          getDescriptionList } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
@@ -130,6 +132,14 @@ const requestFulfilled=(state, action) => {
   state.isLoading = false;
 };
 
+// const getOpenMessage=(state, action) => {
+//   if (!state.openMessage) {
+//     state.openMessage = true;
+//   }
+ 
+// };
+
+
 const colorUpdate=(str)=>{
   let color = '';
   if (str?.order_return === '1' && str?.payment_received === '0') {              
@@ -146,15 +156,32 @@ discount: 0,
 const newProductRef ={
   attribute_id: "",
 category: "0",
-cost: "",
+cost: '',
 data: "1",
 icon: null,
 name: "",
 parent_id: "0",
-price: "",
+price: '',
 supplier_id: [],
 value: "",
-count: ''
+count: '',
+discount: '',
+
+}
+
+const productCreate={
+  booked: 1,
+category_id: "1",
+cost: "456",
+description_novaposhta: " док-станция",
+name: "",
+price: "1200",
+sell_in_the_red: 1,
+sku: "123345456",
+status: 1,
+supplier: ["1"],
+volume_general: "1000",
+weight: "34"
 }
 const ordersReduser = createSlice({
     name: 'orders',
@@ -191,9 +218,13 @@ const ordersReduser = createSlice({
       ttnNewPostCreate: false,
       productCreate: false,
       newProductCreate: false,
+      newAtribute: false,
+      newSuppliers: false,
+
   },
 productData:{...ProductDataRef},
 newProduct: {...newProductRef},
+productCreate: {...productCreate},
 ttn_status: {},
 client: {...client},
  createRows:{...rows},
@@ -230,8 +261,13 @@ client: {...client},
                     {id: "6", name: "Маркетологи", disabled: "0"},
                     {id: "7", name: "Курьер", disabled: "0"}
   ],
-  products:[{id: 1, name: 'Название товара 1', data: 'Название товара 1'},
-           {id: 2, name: 'Название товара 2', data: 'Название товара 2'}],
+  // products:[{id: 1, name: 'Название товара 1', data: 'Название товара 1'},
+  //          {id: 2, name: 'Название товара 2', data: 'Название товара 2'}],
+  products: [],
+  atributes: [],
+  suppliers: [],
+  category: [],
+  descriptionList: [],
   doors_city: [],
   doors_address:[],
   doors_flat: [],
@@ -248,8 +284,11 @@ client: {...client},
   tableLength: null,
   statusName: null,
   selectedRows: [],
+  ttnWeigth: '',
+  ttnResponsible: '',
   translater: {...translater},
   message: [],
+  // openMessage: false,
   messageSendFile: '',
   typeMessage: '',
   isStatusUpdated: false,
@@ -257,14 +296,25 @@ client: {...client},
   },
 
    reducers: {
+    newProductCreate:(state, action) => {  
+      console.log({[action.payload.id]: action.payload.str});
+if (action.payload.str === 'clear') {
+  state.productCreate = {...productCreate}
+} else if (action.payload.id === 'all') {
+  state.productCreate = {...action.payload.str,}
+}
+
+    state.productCreate= {...state.productCreate,[action.payload.id]: action.payload.str}
+  },
     productsdataUpdate:(state, action) => {  
-      // console.log(action.payload);
     state.productData= {[action.payload.id]: action.payload.str}
   },
   newProductUpdate:(state, action) => {  
         console.log({[action.payload.id]: action.payload.str});
   if (action.payload.str === 'clear') {
     state.newProduct = {...newProductRef}
+  } else if (action.payload.id === 'all') {
+    state.newProduct = {...action.payload.str,count: '', discount: '',}
   }
 
       state.newProduct= {...state.newProduct,[action.payload.id]: action.payload.str}
@@ -359,13 +409,49 @@ client: {...client},
 
 
       extraReducers: {
+    
+        [getDescriptionList.pending]:handlePending,
+        [getDescriptionList.fulfilled](state, action) { 
+          // console.log(action.payload.data);
+          state.descriptionList = action.payload.data
+            requestFulfilled(state, action)
+        },
+        [getDescriptionList.rejected]:handleRejected,
+
+        [getCategoryList.pending]:handlePending,
+        [getCategoryList.fulfilled](state, action) { 
+          console.log(action.payload.data);
+          state.category = action.payload.data
+            requestFulfilled(state, action)
+        },
+        [getCategoryList.rejected]:handleRejected, 
         
+        [getSupliersList.pending]:handlePending,
+        [getSupliersList.fulfilled](state, action) { 
+          state.suppliers = action.payload.data
+            requestFulfilled(state, action)
+        },
+        [getSupliersList.rejected]:handleRejected, 
+
+        [getAtributesAutocompliteList.pending]:handlePending,
+        [getAtributesAutocompliteList.fulfilled](state, action) { 
+          state.atributes = action.payload.data
+            requestFulfilled(state, action)
+        },
+        [getAtributesAutocompliteList.rejected]:handleRejected, 
+
+        [getDataForAutocompliteList.pending]:handlePending,
+        [getDataForAutocompliteList.fulfilled](state, action) { 
+            state.products = action.payload.data
+            requestFulfilled(state, action)
+        },
+        [getDataForAutocompliteList.rejected]:handleRejected, 
         [RemoveOrderFromId.pending]:handlePending,
         [RemoveOrderFromId.fulfilled](state, action) { 
-         
+          // getOpenMessage(state, action)
           if (String(action.payload.data) === '200') {
             console.log(action.payload);
-            state.sneckBarMessage = [`${messages.deleted} ${action.payload.id}`, messages.recikled]
+            state.sneckBarMessage = [`${messages.deleted} ${action.payload.id}`, messages.recicled]
             state.typeMessage= typeMessage.success    
           } else 
           if (String(action.payload.data) !== '200') {
@@ -378,6 +464,7 @@ client: {...client},
 
         [getNewPostTtnReturn.pending]:handlePending,
         [getNewPostTtnReturn.fulfilled](state, action) { 
+          // getOpenMessage()
           if (action.payload.data?.error) {
             state.sneckBarMessage = [`${messages.orderttnError} ${action.payload.id}`,action.payload?.data?.error]
             state.typeMessage= typeMessage.error;
@@ -392,6 +479,7 @@ client: {...client},
 
         [getNewPostTtnDelete.pending]:handlePending,
         [getNewPostTtnDelete.fulfilled](state, action) { 
+          // getOpenMessage()
           if (action.payload.data?.error) {
             state.sneckBarMessage = [`${messages.orderttnError} ${action.payload.id}`,action.payload?.data?.error]
             state.typeMessage= typeMessage.error;
@@ -406,6 +494,7 @@ client: {...client},
 
           [getPrintTtn.pending]:handlePending,
           [getPrintTtn.fulfilled](state, action) { 
+            // getOpenMessage(state, action)
               state.message = [messages.error, action.payload.data?.message]
               state.typeMessage= action.payload.data?.status           
               requestFulfilled(state, action)
@@ -413,7 +502,7 @@ client: {...client},
           [getPrintTtn.rejected]:handleRejected, 
         [setNewPostTtnCreate.pending]:handlePending,
         [setNewPostTtnCreate.fulfilled](state, action) { 
-        
+          // getOpenMessage(state, action)
           if (action.payload?.data?.message) {
             state.message = [action.payload?.data?.message]
             state.typeMessage= typeMessage.success;
@@ -440,10 +529,13 @@ client: {...client},
         [setOrderStatusUpdate.pending]:handlePending,
         [setOrderStatusUpdate.fulfilled](state, action) { 
             console.log(action.payload);
+           
           if (action.payload?.data?.message) {
+            // getOpenMessage(state, action)
             state.typeMessage= typeMessage.warn;
             state.sneckBarMessage = [`Помилка в оновлені статусу замовлення № ${action.payload.id}`,action.payload?.data?.message]
           } else if (action.payload?.data?.sending) {
+            // getOpenMessage(state, action)
             state.isStatusUpdated=true;
             state.typeMessage= typeMessage.success;
             state.sneckBarMessage = [`${messages.statusUpdateOrder} ${action.payload.id}`, messages.statusUpdate]
@@ -458,15 +550,16 @@ client: {...client},
 
         [setOrderUpdatestatusPrepay.pending]:handlePending,
         [setOrderUpdatestatusPrepay.fulfilled](state, action) { 
+          // getOpenMessage(state, action)
           state.typeMessage= typeMessage.success;
-          state.message = [`${messages.countOrder} ${action.payload?.data?.update}`, messages.statusPrepay]         
+          state.message = [`${messages.countOrder} ${action.payload?.selected}`, messages.statusPrepay]         
           requestFulfilled(state, action)
         },
         [setOrderUpdatestatusPrepay.rejected]:handleRejected,
 
         [setOrderPayment.pending]:handlePending,
         [setOrderPayment.fulfilled](state, action) { 
-          
+          // getOpenMessage(state, action)
           if (String(action.payload.status) === '200') {
             state.typeMessage= typeMessage.success;
             state.sneckBarMessage = [`${messages.paymentUpdate} ${action.payload.id}`,]
@@ -478,6 +571,7 @@ client: {...client},
 
         [setOrderReturn.pending]:handlePending,
         [setOrderReturn.fulfilled](state, action) {  
+          // getOpenMessage(state, action)
           if (String(action.payload.status) === '200') {
             state.typeMessage= typeMessage.success;
             state.sneckBarMessage = [`${messages.paymentUpdate} ${action.payload.id}`,]
@@ -742,7 +836,7 @@ client: {...client},
 
 export const { getWidthUpdate, setWidthColumn, getOpenTableCreate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
    getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel, setOpenRowsCreator,
-   autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate, productsdataUpdate, newProductUpdate
+   autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate, productsdataUpdate, newProductUpdate, newProductCreate
   } = ordersReduser.actions;
 export default ordersReduser.reducer;
 

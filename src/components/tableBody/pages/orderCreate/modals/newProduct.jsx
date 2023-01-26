@@ -12,6 +12,7 @@ import {listTextStyle, selectStyle, typoGrafyStyle} from '../components/style';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
+import NewProductCreateComponent from './newProdCreateComp'
 
  const NewProductCreate =()=>{
     const dispatch =useDispatch();
@@ -33,56 +34,17 @@ const handleClouse=()=>{
     setIsShow(false)
 
 }
-const handleAutocompliteChange=(e, newValue)=>{
-    let id = e.target?.id?.split('-')[2]
-
-    if (newValue) {
-        setIsShow(true)
-    }
-}
-
-
-
-const handleAtributeChange=(e, newValue)=>{
-//     dispatch(newProductUpdate({id: 'name', str: newValue.name}))
-//     dispatch(newProductUpdate({id: 'value', str: newValue.name}))
-console.log(products.find(n=>n.name === newProduct.name));
-}
 
 const handleChange=(e)=>{
 console.log('handleChange');
 
 }
 
-const handleChangeDiscount=(e)=>{
-    setFocus(true)
-    let n = e.target.value.replace(/[^0-9.]/g, '');
-    setDiscount(n)
-}
-const handleChangeSelect=(e)=>{
-setTypeDiscount(e.target.value)
-}
-const createNewProduct={id: '0', name: 'Створити новий товар', data: 'Створити новий товар'}
-
-const Component=()=>(
-    <DialogContent>
-        
-    <Box sx={{width: '100%'}}>
-<List sx={{width: '100%'}}>
-    <ListItem sx={{width: '100%', padding: '5px'}}>
-        <AutocompliteComponent data={[createNewProduct,...products]} disp={handleAutocompliteChange} textContent={'Товар:'}
-         value={products.find(n=>n.name === newProduct.name)} dafaultValue={false} label={'Назва товару'} showInput={true} / >
-    </ListItem>
-    
-</List>
-  
-    </Box >
-    </DialogContent>
-)
 
 
     return(
-        <ModalProductComponent Component={Component} funcOnClouse={handleClouse} open={open}  sendButtonText={'Добавити'} titleText={"Добавити товар"}
+        <ModalProductComponent Component={NewProductCreateComponent} funcOnClouse={handleClouse} open={open}  sendButtonText={'Створити'}
+         titleText={"Створення товару"}
         funcOnSend={handleChange} borderHeader={true} borderAction={false} alignAction={true} closeButtonText={'Відмінити'} width={'md'}/>
   
      )

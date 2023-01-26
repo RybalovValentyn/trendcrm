@@ -27,10 +27,12 @@ export default function CustomizedSnackbars() {
   };
  
   useEffect(()=>{
- if (message[0]) {
+ if (message?.length >0) {
     setOpen(true) 
+    console.log('CustomizedSnackbars', message);
 }
   },[message])
+
 
   return (
 

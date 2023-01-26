@@ -106,6 +106,12 @@ if (statuses.length === 0) {
 // getUpdate() 
 }, []);
 
+useEffect(() => {
+  removeAllColor()
+  sessionStorage.setItem("selected", '');
+  countUpdate() 
+}, [columns]);
+
 const getUpdate = ()=>{
   if (filteredRows?.length > 0) {
     dispatch(getFilteredOrders())
@@ -117,10 +123,11 @@ const getUpdate = ()=>{
 
 useEffect(() => {
   let prevSelected =[]
+
   if (sessionStorage.getItem("selected")?.split(',').length > 1) {
     prevSelected = sessionStorage.getItem("selected")?.split(',');
   } else return
- 
+  console.log(prevSelected);
 if (isGrabAll) {    
   prevSelected.map(str=>{
     if (str) {

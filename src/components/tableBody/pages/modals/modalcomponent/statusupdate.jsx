@@ -34,8 +34,8 @@ const StatusUpdate = () =>{
         selected =  sessionStorage.getItem("selected")?.split(',');
     }
     if (selected.length >0) {
-      let defaultStatus = renderFilteredStatus.find(n=>n.id === selected[0]) 
-      // defaultStatus =  statuses?.find(str=> str.id === d);
+      let idStatus = columns.find(n=>n.id === selected[0]).status       
+      defaultStatus =  statuses?.find(str=> str.id === idStatus);
     }
 
 useEffect(()=>{
@@ -70,9 +70,9 @@ const successAlert = () => {
 }
 
 
-const handleClouse =(e)=>{
-   
+const handleClouse =(e)=>{   
   dispatch(getOpenTableCreate({id: 'status_update', str: false}));
+  setStatus(0)
 }
 const listStyle={
     display: 'flex',
@@ -94,8 +94,7 @@ const handleSubmit=()=>{
             
             selected.map((n, i)=>{
                 if (Number(n)) {
-                  console.log(i === selected.length-1, status);
-                    dispatch(setOrderStatusUpdate({id: String(n), status: String(status.id)}))
+                      dispatch(setOrderStatusUpdate({id: String(n), status: String(status.id)}))
                     if (i === selected.length-1) {
                       successAlert()
                     }
@@ -108,14 +107,12 @@ const handleSubmit=()=>{
 
 const onAutocompliteChange=(e)=>{    
     let ind = e.target.id.split('-')[2]  
-    // console.log(renderFilteredStatus[ind]);
 if (Number(ind)) {
     setStatus(renderFilteredStatus[ind])
 }
 };
 const getUpdate = ()=>{
-  // console.log('getUpdate');
-    dispatch(getAllStatuses());
+    dispatch(getAllStatuses());    
     if (filteredRows?.length > 0) {
       dispatch(getFilteredOrders())
     } else dispatch(getAllOrders())

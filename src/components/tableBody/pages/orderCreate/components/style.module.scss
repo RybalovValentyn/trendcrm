@@ -1,0 +1,27 @@
+
+.inputModal{
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    width: 100%;
+    padding: 3px 10px;
+    height: 33px;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff ;
+
+    &::placeholder{
+        color: #d1c4c4;
+        
+    }
+    &:hover{
+        border-color: rgb(16, 16, 17);
+    }
+    &:focus-within{
+        border-color: rgb(81, 61, 232);
+    }
+    &:autofill {
+        background-color: #fff !important ;
+    }
+
+}

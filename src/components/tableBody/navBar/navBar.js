@@ -20,6 +20,7 @@ import SimpleCollapse from './listDrawer';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 
+
 const AppBarComponent = lazy(() => import("./appBar.js"));
 const ListItemCategories = lazy(()=> import("./listItem.jsx"));
 const CustomizedSnackbars = lazy(()=> import("../../alerts/notification.jsx"));
@@ -206,9 +207,12 @@ const handleItemClickMenu=(route)=>{
       {isLoading && <Preloader/>}
         <Outlet/>
       </Suspense>
+      
  <Suspense>
   <CustomizedSnackbars/>
  </Suspense>
+ {/* <Box id='tost_container' sx={{display: 'block',width: '200px', height: '200px', overflow: 'hidden', 
+ position: 'absolute', backgroundColor: 'red', zIndex: 1310, bottom: '20px', right: '20px'}}></Box> */}
     </Box>
   )
 }

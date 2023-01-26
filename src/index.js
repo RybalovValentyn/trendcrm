@@ -8,20 +8,24 @@ import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import {Preloader} from './components/preloader/preloader';
 import { CookiesProvider } from "react-cookie";
-import { SnackbarProvider} from 'notistack'
+import { SnackbarProvider} from 'notistack';
+import {SnackbarCloseButton} from './components/alerts/clouse';
+
+
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store} loading={<Preloader/>} basename="/trendcrm" >
-       {/* <PersistGate persistor={persistor}> */}
+       <PersistGate persistor={persistor}>
        <BrowserRouter>
        <CookiesProvider>
-           <SnackbarProvider maxSnack={6}>
+           <SnackbarProvider maxSnack={8} preventDuplicate={true} action={snackbarKey => <SnackbarCloseButton snackbarKey={snackbarKey}
+           disableWindowBlurListener={true} dense />}>
              <App /> 
            </SnackbarProvider>
          </CookiesProvider>
        </BrowserRouter>
-       {/* </PersistGate> */}
+       </PersistGate>
     </Provider>
   </React.StrictMode>
 );

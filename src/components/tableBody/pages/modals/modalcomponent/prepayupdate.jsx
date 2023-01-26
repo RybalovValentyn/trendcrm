@@ -6,8 +6,9 @@ import { getOpenTableCreate, alertMessageUpdate } from '../../../../../redux/ord
 import { MenuItem, Select, Box,Typography, OutlinedInput} from '@mui/material';
 import { useState } from 'react';
 import { selectStyles } from '../../order/createHead/input';
-import { setOrderUpdatestatusPrepay } from '../../../../../redux/asyncThunc';
+import { setOrderUpdatestatusPrepay, getFilteredOrders, getAllOrders } from '../../../../../redux/asyncThunc';
 import { ModalComponent } from '../modalComponent';
+
 
   const ITEM_HEIGHT = 40;
   const ITEM_PADDING_TOP = 4;
@@ -26,6 +27,7 @@ const PrepayUpdate = () =>{
     const dispatch = useDispatch();
     const openModal = useSelector((state) => state.ordersAll.modalControl.prepay_update);
     const prepay = useSelector((state) => state.ordersAll.payment_status);
+    const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
     const [status, setStatus] = useState(0)
     let selected =  [];
     if (sessionStorage.getItem("selected")) {
@@ -40,6 +42,12 @@ const handleClick=()=>{
   dispatch(setOrderUpdatestatusPrepay({selected, value: String(status)}))
   }  dispatch(alertMessageUpdate({message: 'idSelectedWarn', type: 'warn'}))
   dispatch(getOpenTableCreate({id: 'prepay_update', str: false}));
+  getUpdate()
+}
+const getUpdate = ()=>{
+  if (filteredRows?.length > 0) {
+    dispatch(getFilteredOrders())
+  } else dispatch(getAllOrders())
 }
 
 const handleSelectChange=(e)=>{
