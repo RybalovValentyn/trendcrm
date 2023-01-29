@@ -8,7 +8,7 @@ import AutocompliteComponent from "../components/autocomplite";
 import InputTextComponent from "../components/textField";
 import { useState, useEffect, useMemo, memo } from "react";
 import Grid from '@mui/material/Unstable_Grid2';
-import {listTextStyle, selectStyle, typoGrafyStyle} from '../components/style';
+import {selectStyle, typoGrafyStyle} from '../components/style';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';

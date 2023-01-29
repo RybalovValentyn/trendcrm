@@ -39,7 +39,11 @@ const attributes='/attributes';
 const suppliers='/suppliers';
 const category = '/category_list';
 const description='/description_list_by_data'
-
+const product = '/product';
+const supplier = '/supplier';
+const atrCategory = '/attribute_category';
+const createProdCategory = '/create_product_category';
+const addCategory ='/add_category'
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -644,11 +648,6 @@ export const getSupliersList= createAsyncThunk(
   },
 );
 
-
-// {name: "постачальник 1", phone: "0661222234", email: "vale345v@gmail.com", comment: "Коментарій"}
-// https://react.trendcrm.biz/api/supplier
-// https://react.trendcrm.biz/api/suppliers
-
 // https://react.trendcrm.biz/api/category_list
 
 
@@ -660,7 +659,7 @@ export const getCategoryList= createAsyncThunk(
           method: "get",
            url:  REBASE_URL+category,
            });
-          //  console.log(resp.data);
+           console.log(resp.data);
            return {data: resp.data}       
       } catch (error) {
         return rejectWithValue({
@@ -683,6 +682,122 @@ export const getDescriptionList= createAsyncThunk(
            data: {query: query?query:''}
            });
            return {data: resp.data.suggestions}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/product
+
+export const setNewProductCreate= createAsyncThunk(
+  'product/create',
+  async (_, { rejectWithValue, getState}) => {
+    const state = getState(); 
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+product,
+           data: state.ordersAll.productCreate
+           });
+           console.log(state.ordersAll.productCreate);
+           console.log(resp);
+           return {data: resp.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/supplier
+
+export const setNewSupplierCreate= createAsyncThunk(
+  'supplier/create',
+  async (_, { rejectWithValue, getState}) => {
+    const state = getState(); 
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+supplier,
+           data: state.ordersAll.newSuplplier
+           });
+           return {data: resp.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/attribute_category
+// atrCategory
+
+export const setAtributeCategoryList= createAsyncThunk(
+  'atribute_category/list',
+  async (_, { rejectWithValue}) => {
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+atrCategory,
+           });
+          //  console.log(resp);
+           return {data: resp.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/create_product_category
+
+export const setProductCategoryCreate= createAsyncThunk(
+  'prod_category/create',
+  async (_, { rejectWithValue, getState}) => {
+    const state = getState(); 
+    const data = state.ordersAll.newCategory
+
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+createProdCategory,
+           data: {name: data.name, parent_id: data.parent_id, attributes: data.attributes}
+           });
+           return {data: resp.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/add_category
+
+export const setAddCategoryAtribute= createAsyncThunk(
+  'add_category/create',
+  async (_, { rejectWithValue, getState}) => {
+    const state = getState(); 
+
+          try {
+         const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+addCategory,
+           data: state.ordersAll.newCetegoryAtribute
+           });
+           console.log(resp);
+           return {data: resp.data}       
       } catch (error) {
         return rejectWithValue({
           error: error.message,

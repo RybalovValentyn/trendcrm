@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {deliverypStatus, infoStatus} from '../../redux/statusReduser';
 import { BootstrapTooltip } from '../tableBody/pages/order/styles';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import { useState } from 'react';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { colorsRef } from '../../consts/colorConstants';
 

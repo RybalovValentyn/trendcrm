@@ -21,6 +21,9 @@ import ProductCreate from './modals/productCreate';
 import NewProductCreate from './modals/newProduct';
 import NewAtributeCreate from './modals/newAtribute';
 import NewSupliersCreate from './modals/newSupliers';
+import CategoryCreate from './modals/newCategory';
+import VolumeCalcModal from './modals/volumeCalc';
+import AtrCategoryCreate from './modals/newAtrCategory';
 
 export function CreateRows(){
     const dispatch = useDispatch();
@@ -201,6 +204,9 @@ return(
 <NewProductCreate/>
 <NewAtributeCreate/>
 <NewSupliersCreate/>
+<CategoryCreate/>
+<VolumeCalcModal/>
+<AtrCategoryCreate/>
     </Box>
 )
 

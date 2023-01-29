@@ -6,7 +6,8 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
           setOrderPayment, setOrderUpdatestatusPrepay,setOrderStatusUpdate, setFileExcelSend,
           setNewPostTtnCreate, getPrintTtn,getNewPostTtnDelete, getNewPostTtnReturn, RemoveOrderFromId,
           getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList,
-          getDescriptionList } from './asyncThunc';
+          getDescriptionList, setNewProductCreate, setNewSupplierCreate, setAtributeCategoryList,
+          setProductCategoryCreate, setAddCategoryAtribute} from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
@@ -169,20 +170,29 @@ discount: '',
 
 }
 
+const calcVolumeRef={length: 1, width: 1, heigth: 1, value: ''}
+
 const productCreate={
-  booked: 1,
-category_id: "1",
-cost: "456",
-description_novaposhta: " док-станция",
-name: "",
-price: "1200",
-sell_in_the_red: 1,
-sku: "123345456",
-status: 1,
-supplier: ["1"],
-volume_general: "1000",
-weight: "34"
+    booked: 1,
+    category_id: "",
+    cost: "",
+    description_novaposhta: "",
+    name: "",
+    price: "",
+    sell_in_the_red: 1,
+    sku: "",
+    status: 1,
+    supplier: [],
+    volume_general: "",
+    weight: ""
 }
+
+const newSuppliersRef={  name: "",   phone: "",  email: "",   comment: ""}
+
+const newCategoryRef = {name: "", parent_id: "", attributes: [], ids: []}
+
+const newCategoryAtributeRef = {name: "newCategoryAtr-1", prod_categ: []}
+
 const ordersReduser = createSlice({
     name: 'orders',
     initialState: {
@@ -220,11 +230,17 @@ const ordersReduser = createSlice({
       newProductCreate: false,
       newAtribute: false,
       newSuppliers: false,
+      newCategory: false,
+      volumeCalc: false,
+   atributeCategory: false,
 
   },
 productData:{...ProductDataRef},
 newProduct: {...newProductRef},
 productCreate: {...productCreate},
+newSuplplier: {...newSuppliersRef},
+newCategory: {...newCategoryRef},
+newCetegoryAtribute: {...newCategoryAtributeRef},
 ttn_status: {},
 client: {...client},
  createRows:{...rows},
@@ -267,6 +283,8 @@ client: {...client},
   atributes: [],
   suppliers: [],
   category: [],
+  atributeCategory: [],
+  calcVolume:{...calcVolumeRef},
   descriptionList: [],
   doors_city: [],
   doors_address:[],
@@ -296,15 +314,22 @@ client: {...client},
   },
 
    reducers: {
+
+    autoUpdateAllReducer:(state, action) => {  
+      // console.log(action.payload);
+if (action.payload.str === 'clear' && action.payload.state ) {
+ state[action.payload.state]= action.payload.ref
+} else
+        state[action.payload.state]= {...state[action.payload.state],[action.payload.id]: action.payload.str}
+  },
+
     newProductCreate:(state, action) => {  
-      console.log({[action.payload.id]: action.payload.str});
+      console.log({[action.payload.id]: action.payload.str}, 'newProductCreate');
 if (action.payload.str === 'clear') {
-  state.productCreate = {...productCreate}
+ state.productCreate = {...productCreate}
 } else if (action.payload.id === 'all') {
   state.productCreate = {...action.payload.str,}
-}
-
-    state.productCreate= {...state.productCreate,[action.payload.id]: action.payload.str}
+}else  state.productCreate= {...state.productCreate,[action.payload.id]: action.payload.str}
   },
     productsdataUpdate:(state, action) => {  
     state.productData= {[action.payload.id]: action.payload.str}
@@ -409,11 +434,73 @@ if (action.payload.str === 'clear') {
 
 
       extraReducers: {
-    
+        
+
+        [setAddCategoryAtribute.pending]:handlePending,
+        [setAddCategoryAtribute.fulfilled](state, action) { 
+          console.log(action.payload.data);
+           if (action.payload.data) {
+            state.typeMessage= typeMessage.success;
+            state.message = [`Створено категорію №: ${action.payload.data}`,]
+            
+          }          
+            requestFulfilled(state, action)
+        },
+        [setAddCategoryAtribute.rejected]:handleRejected, 
+        
+        [setProductCategoryCreate.pending]:handlePending,
+        [setProductCategoryCreate.fulfilled](state, action) { 
+          console.log(action.payload.data);
+           if (action.payload.data?.message) {
+            state.typeMessage= typeMessage.success;
+            state.message = [action.payload?.data?.message,]
+            
+          }         
+            requestFulfilled(state, action)
+        },
+        [setProductCategoryCreate.rejected]:handleRejected, 
+
+        [setAtributeCategoryList.pending]:handlePending,
+        [setAtributeCategoryList.fulfilled](state, action) { 
+          state.atributeCategory = action.payload.data.filter(n=>n.name !== '')
+            requestFulfilled(state, action)
+        },
+        [setAtributeCategoryList.rejected]:handleRejected,
+        
+        [setNewSupplierCreate.pending]:handlePending,
+        [setNewSupplierCreate.fulfilled](state, action) { 
+          console.log(action.payload.data);
+           if (action.payload.data?.message) {
+            state.typeMessage= typeMessage.success;
+            state.message = [action.payload?.data?.message,]
+            
+          } else if (action.payload.data) {
+            state.typeMessage= typeMessage.error 
+            state.message = [action.payload?.data?.message,]
+          }         
+            requestFulfilled(state, action)
+        },
+        [setNewSupplierCreate.rejected]:handleRejected, 
+
+        [setNewProductCreate.pending]:handlePending,
+        [setNewProductCreate.fulfilled](state, action) { 
+          console.log(action.payload.data);
+           if (action.payload.data?.status) {
+            state.typeMessage= typeMessage.error;
+            state.message = [action.payload?.data?.message,]
+            
+          } else if (action.payload.data) {
+            state.typeMessage= typeMessage.success 
+            state.message = [messages.productCreate,]
+          }         
+            requestFulfilled(state, action)
+        },
+        [setNewProductCreate.rejected]:handleRejected, 
+        
         [getDescriptionList.pending]:handlePending,
         [getDescriptionList.fulfilled](state, action) { 
           // console.log(action.payload.data);
-          state.descriptionList = action.payload.data
+          state.descriptionList = action.payload.data.filter(n=>n.name !== '')
             requestFulfilled(state, action)
         },
         [getDescriptionList.rejected]:handleRejected,
@@ -421,14 +508,16 @@ if (action.payload.str === 'clear') {
         [getCategoryList.pending]:handlePending,
         [getCategoryList.fulfilled](state, action) { 
           console.log(action.payload.data);
-          state.category = action.payload.data
+          state.category = action.payload.data.filter(n=>n.name !== '')
             requestFulfilled(state, action)
         },
         [getCategoryList.rejected]:handleRejected, 
         
         [getSupliersList.pending]:handlePending,
         [getSupliersList.fulfilled](state, action) { 
-          state.suppliers = action.payload.data
+          
+          let filtered = action.payload.data.filter(n=>n.name !== '')
+           state.suppliers = filtered
             requestFulfilled(state, action)
         },
         [getSupliersList.rejected]:handleRejected, 
@@ -836,7 +925,7 @@ if (action.payload.str === 'clear') {
 
 export const { getWidthUpdate, setWidthColumn, getOpenTableCreate,CountUpdate,tHeadFilteredColumnUpdate, autoUpdate,
    getFormTable, getClouseTableCreate, tHeadColumnUpdate,bodyTableRowsUpdate, getSortDate, getOpenTDownloadExel, setOpenRowsCreator,
-   autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate, productsdataUpdate, newProductUpdate, newProductCreate
+   autoUpdateRowsReupdate, setClientForm, isAll, alertMessageUpdate, productsdataUpdate, newProductUpdate, newProductCreate, autoUpdateAllReducer
   } = ordersReduser.actions;
 export default ordersReduser.reducer;
 

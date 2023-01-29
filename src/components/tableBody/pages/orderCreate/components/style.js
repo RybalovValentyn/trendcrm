@@ -33,8 +33,20 @@ export const textFieldStyle={
                               
     },
     };
+
+    export const textFieldStyleMulti={
+      '& .MuiOutlinedInput-root':{
+              padding: 0,
+              maxHeight: '33px',
+              owerflow: 'hidden',
+               borderRadius: '8px',       
+               backgroundColor: colorsRef.formBgColor,
+              alignItems: 'center',
+                                
+      },
+      };
 export const typoGrafyStyle = {
-  fontSize: '16px',
+  fontSize: '14px',
    margin: '10px 0',
     display: 'block',
       '@media (min-width:599px)':

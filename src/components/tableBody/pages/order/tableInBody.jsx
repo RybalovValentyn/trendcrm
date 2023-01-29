@@ -57,13 +57,30 @@ const handleClick =(e)=>{
   getUpdate()
 }
 
+// useEffect(()=>{
+//   console.log('searchstatus', seachStatus, statusName);
+//   if(Number(seachStatus)){
+//     console.log('statusName');
+//     setSearchParams(createSearchParams({ status: seachStatus }));
+//   }
+//   getUpdate()
+// },[seachStatus])
+
+// useEffect(()=>{
+//   console.log('statusName dddddddddddddd', statusName);
+//   // if(Number(seachStatus)){
+//   //   console.log('statusName');
+//   //   setSearchParams(createSearchParams({ status: seachStatus }));
+//   // }
+//   // getUpdate()
+// },[statusName])
+
 
 const getUpdate = ()=>{
   sessionStorage.setItem("selected", '');
   if (filteredRows?.length > 0) {
     dispatch(getFilteredOrders())
   } else dispatch(getAllOrders())
-  // removeAllColor()
 }
 const handleChange = (event, newValue) => {
    setValue(newValue);
