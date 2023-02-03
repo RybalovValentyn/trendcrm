@@ -19,7 +19,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { productsdataUpdate, getOpenTableCreate } from '../../../../redux/ordersReduser';
-import { getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList } from '../../../../redux/asyncThunc';
+import { getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList } from '../../../../redux/asyncThunc';
 
 const  ProductCreateComponent=()=>{
 const dispatch = useDispatch();
@@ -55,6 +55,7 @@ const handleAddProduct=()=>{
     dispatch(getDataForAutocompliteList())
     dispatch(getAtributesAutocompliteList())
     dispatch(getSupliersList())
+    dispatch(getCategoryList())
     // console.log('sdfsff');
 
 }

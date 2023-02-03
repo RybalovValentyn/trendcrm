@@ -124,7 +124,8 @@ export const messages={
     recicled: 'Замовлення пренесене в корзину',
     paymentUpdate: 'Дані про платіж оновлено в замовленні:',
     alert1: 'Сума скидки не може бути більше повної ціни',
-    productCreate: 'Товар успішно створено'
+    productCreate: 'Товар успішно створено',
+    clearString: 'Потрібно заповнити всі поля'
 }
 
 export const typeMessage={

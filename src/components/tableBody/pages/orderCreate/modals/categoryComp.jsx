@@ -5,6 +5,7 @@ import {List, ListItem} from "@mui/material";
 import AutocompliteComponent from "../components/autocomplite";
 import InputTextComponent from "../components/textField";
 import MultipleAutocompliteComponent from "../components/multipleAutocomplite";
+import { useState } from 'react';
 
 const NewCategoryCreate=()=>{
     const dispatch =useDispatch();
@@ -13,7 +14,9 @@ const NewCategoryCreate=()=>{
     const grandCategory={name: "Головна категорія", id: "0", attribute: []};
     const renderCategory = [grandCategory,...categoryList].filter(n=>n.name !== '')
     const atrCategory = useSelector((state) => state.ordersAll.atributeCategory);
-const newCategoryAtributes = {name: "Створити категорію атрибуту", id: "newAtr_category", status: '', sort: '', prod_categ: ''}
+    const newCategoryAtributes = {name: "Створити категорію атрибуту", id: "newAtr_category", status: '', sort: '', prod_categ: ''};
+    const [atribute, setAtribute]= useState([])
+
 
 const handleInputChange=(data)=>{    
     dispatch(autoUpdateAllReducer({id: data.id, state: 'newCategory', str: data.str}))    
@@ -32,9 +35,9 @@ const handleCategoryAtributesChange=(e, newValue)=>{
         return
     }
     let newCategory = [...newValue].filter((str, index, array) => array.indexOf(str) === index );
-    let ids = newCategory.map(n=>(n.id))
-     dispatch(autoUpdateAllReducer({id: 'ids', state: 'newCategory', str: newCategory}))
+    let ids = newCategory.map(n=>(n.id))   
      dispatch(autoUpdateAllReducer({id: 'attributes', state: 'newCategory', str: ids}))
+     setAtribute(newCategory)
 
 }
 
@@ -54,7 +57,7 @@ const handleCategoryAtributesChange=(e, newValue)=>{
 
             <ListItem>
         <MultipleAutocompliteComponent data={[newCategoryAtributes, ...atrCategory]} disp={handleCategoryAtributesChange} textContent={'Категорія атрибутів:'} id={'attributes'}
-         value={category?.ids} dafaultValue={false} label={'Не вибрано'} 
+         value={atribute} dafaultValue={false} label={'Не вибрано'} 
          showInput={true}  onInputFunc={false} sort={true} alignCenter={true} alignText={true} buttonId={'newAtr_category'} free={false}/ >
             </ListItem>
         </List>

@@ -7,7 +7,8 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
           setNewPostTtnCreate, getPrintTtn,getNewPostTtnDelete, getNewPostTtnReturn, RemoveOrderFromId,
           getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList,
           getDescriptionList, setNewProductCreate, setNewSupplierCreate, setAtributeCategoryList,
-          setProductCategoryCreate, setAddCategoryAtribute} from './asyncThunc';
+          setProductCategoryCreate, setAddCategoryAtribute, setAddAtribute, setAtributesCreate,
+          updateProductFromId} from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
@@ -172,7 +173,23 @@ discount: '',
 
 const calcVolumeRef={length: 1, width: 1, heigth: 1, value: ''}
 
-const productCreate={
+const productCreateRef={
+
+//   attribute_category: ["3", "6", "7"],
+// booked: 1б,
+// category_id: "14",
+// cost: "340",
+// description_novaposhta: "OLX одежда и обувь",
+// name: "Штаны",
+// price: "345",
+// sell_in_the_red: 1,
+// sku: "11234567",
+// status: 1,
+// supplier: [],
+// volume_general: "1",
+// weight: "2",
+  
+    attribute_category: [],
     booked: 1,
     category_id: "",
     cost: "",
@@ -184,14 +201,16 @@ const productCreate={
     status: 1,
     supplier: [],
     volume_general: "",
-    weight: ""
+    weight: "",
 }
 
 const newSuppliersRef={  name: "",   phone: "",  email: "",   comment: ""}
 
-const newCategoryRef = {name: "", parent_id: "", attributes: [], ids: []}
+const newCategoryRef = {name: "", parent_id: "", attributes: []}
 
 const newCategoryAtributeRef = {name: "newCategoryAtr-1", prod_categ: []}
+
+const newAtributesRef = {name: '', category: ''}
 
 const ordersReduser = createSlice({
     name: 'orders',
@@ -232,15 +251,17 @@ const ordersReduser = createSlice({
       newSuppliers: false,
       newCategory: false,
       volumeCalc: false,
-   atributeCategory: false,
+      atributeCategory: false,
+   newCreateAtribute: false,
 
   },
-productData:{...ProductDataRef},
+productData:[],
 newProduct: {...newProductRef},
-productCreate: {...productCreate},
+productCreate: {...productCreateRef},
 newSuplplier: {...newSuppliersRef},
 newCategory: {...newCategoryRef},
 newCetegoryAtribute: {...newCategoryAtributeRef},
+newAtribute: {...newAtributesRef},
 ttn_status: {},
 client: {...client},
  createRows:{...rows},
@@ -326,23 +347,18 @@ if (action.payload.str === 'clear' && action.payload.state ) {
     newProductCreate:(state, action) => {  
       console.log({[action.payload.id]: action.payload.str}, 'newProductCreate');
 if (action.payload.str === 'clear') {
- state.productCreate = {...productCreate}
+ state.productCreate = {...productCreateRef}
 } else if (action.payload.id === 'all') {
   state.productCreate = {...action.payload.str,}
 }else  state.productCreate= {...state.productCreate,[action.payload.id]: action.payload.str}
   },
-    productsdataUpdate:(state, action) => {  
-    state.productData= {[action.payload.id]: action.payload.str}
-  },
   newProductUpdate:(state, action) => {  
-        console.log({[action.payload.id]: action.payload.str});
+        // console.log({[action.payload.id]: action.payload.str});
   if (action.payload.str === 'clear') {
     state.newProduct = {...newProductRef}
   } else if (action.payload.id === 'all') {
     state.newProduct = {...action.payload.str,count: '', discount: '',}
-  }
-
-      state.newProduct= {...state.newProduct,[action.payload.id]: action.payload.str}
+  }  else state.newProduct= {...state.newProduct,[action.payload.id]: action.payload.str}
     },
 
     alertMessageUpdate: (state, action) => {  
@@ -435,10 +451,51 @@ if (action.payload.str === 'clear') {
 
       extraReducers: {
         
+        [updateProductFromId.pending]:handlePending,
+        [updateProductFromId.fulfilled](state, action) { 
+            if (String(action.payload?.data) === '1') {
+               state.typeMessage= typeMessage.success;
+            state.message = ['Атрибут додано', action.payload.text]
+            
+          } else if (String(action.payload?.data) !== '1') {
+            state.typeMessage= typeMessage.warn;
+             state.message = ['Атрибут не додано', 'помилка']
+          }   
+          state.newProduct = {...newProductRef}
+            requestFulfilled(state, action)
+        },
+        [updateProductFromId.rejected]:handleRejected, 
+        
+        [setAtributesCreate.pending]:handlePending,
+        [setAtributesCreate.fulfilled](state, action) { 
+            if (action.payload?.data[0]?.toLowerCase()  === 'ok') {
+               state.typeMessage= typeMessage.success;
+            state.message = ['Атрибут додано', action.payload.text]
+            
+          } else if (action.payload?.data[0]?.toLowerCase()  !== 'ok') {
+            state.typeMessage= typeMessage.warn;
+             state.message = ['Атрибут не додано', 'помилка']
+          }   
+          state.newAtribute = {...newAtributesRef}
+            requestFulfilled(state, action)
+        },
+        [setAtributesCreate.rejected]:handleRejected, 
+
+        [setAddAtribute.pending]:handlePending,
+        [setAddAtribute.fulfilled](state, action) { 
+          console.log(action.payload.data);
+           if (action.payload.data) {
+            state.typeMessage= typeMessage.success;
+            state.message = ['Упішно','атрибут додано']
+            
+          }          
+            requestFulfilled(state, action)
+        },
+        [setAddAtribute.rejected]:handleRejected, 
 
         [setAddCategoryAtribute.pending]:handlePending,
         [setAddCategoryAtribute.fulfilled](state, action) { 
-          console.log(action.payload.data);
+          // console.log(action.payload.data);
            if (action.payload.data) {
             state.typeMessage= typeMessage.success;
             state.message = [`Створено категорію №: ${action.payload.data}`,]
@@ -507,7 +564,7 @@ if (action.payload.str === 'clear') {
 
         [getCategoryList.pending]:handlePending,
         [getCategoryList.fulfilled](state, action) { 
-          console.log(action.payload.data);
+          // console.log(action.payload.data);
           state.category = action.payload.data.filter(n=>n.name !== '')
             requestFulfilled(state, action)
         },
@@ -523,8 +580,15 @@ if (action.payload.str === 'clear') {
         [getSupliersList.rejected]:handleRejected, 
 
         [getAtributesAutocompliteList.pending]:handlePending,
-        [getAtributesAutocompliteList.fulfilled](state, action) { 
+        [getAtributesAutocompliteList.fulfilled](state, action) {
           state.atributes = action.payload.data
+          // console.log(action.payload.data);
+          // if (action.payload.data[0]) {
+          //   state.atributes = action.payload.data
+          // }  else if (action.payload.data[3]) {
+          //   state.atributes = action.payload.data[3]
+          // } else state.atributes = [...Object.values(action.payload.data)]
+          
             requestFulfilled(state, action)
         },
         [getAtributesAutocompliteList.rejected]:handleRejected, 

@@ -7,7 +7,7 @@ import { setAtributeCategoryList, setProductCategoryCreate, getCategoryList } fr
  const CategoryCreate =()=>{
     const dispatch =useDispatch();
     const open = useSelector((state) => state.ordersAll.modalControl.newCategory);
-    const ref = {name: "", parent_id: "", attributes: [], ids: []}
+    const ref = {name: "", parent_id: "", attributes: []}
 
 const handleClouse=()=>{
     dispatch(getOpenTableCreate({id: 'newCategory', str: false}));

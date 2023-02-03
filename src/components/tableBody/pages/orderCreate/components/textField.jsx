@@ -8,10 +8,10 @@ import s from './style.module.scss';
 
 
 const InputTextComponent=({id, textContent, num,label, path, showInput=true, alignCenter=false, disp=newProductUpdate, alignText=false, 
-                            textWidth='110px', ContentComponent=null, func=false, Inwidth=6 } )=>{
+                            textWidth='110px', ContentComponent=null, func=false, Inwidth=6, value} )=>{
     const dispatch =useDispatch();
 const dubleValue =useSelector((state)=>state.ordersAll)
-const v = dubleValue[path]?dubleValue[path]:0
+const v = dubleValue[path]?dubleValue[path]:''
 
 
 const handleChahnge=(e)=>{
@@ -29,7 +29,7 @@ const handleChahnge=(e)=>{
  { !ContentComponent?<Typography sx={{fontSize: '14px'}}>{textContent}</Typography>:<ContentComponent/>}
   </Grid>
   <Grid xs={6} sm={Inwidth} sx={{maxWidth: '250px',maxHeight: '40px', width: '250px'}}>
-  {showInput?<input role="presentation" autoComplete="off" id={id}  className={s.inputModal} onChange={handleChahnge} value={v[id]}
+  {showInput?<input role="presentation" autoComplete="off" id={id}  className={s.inputModal} onChange={handleChahnge} value={value?value:(v[id]?v[id]:'')}
           placeholder={label}  />:null} 
 </Grid>
 </Grid>

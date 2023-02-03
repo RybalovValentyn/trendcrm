@@ -24,6 +24,8 @@ import NewSupliersCreate from './modals/newSupliers';
 import CategoryCreate from './modals/newCategory';
 import VolumeCalcModal from './modals/volumeCalc';
 import AtrCategoryCreate from './modals/newAtrCategory';
+import InstallAtribute from './modals/installAtribute';
+
 
 export function CreateRows(){
     const dispatch = useDispatch();
@@ -207,6 +209,7 @@ return(
 <CategoryCreate/>
 <VolumeCalcModal/>
 <AtrCategoryCreate/>
+<InstallAtribute/>
     </Box>
 )
 

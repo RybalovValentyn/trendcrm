@@ -1,9 +1,8 @@
-import ModalProductComponent from "./modalComponent";
 import { useDispatch, useSelector,  } from 'react-redux';
 import { getOpenTableCreate, newProductUpdate, alertMessageUpdate } from "../../../../../redux/ordersReduser";
 import DialogContent from '@mui/material/DialogContent';
 import Box from '@mui/material/Box';
-import { Typography, Autocomplete, List, ListItem} from "@mui/material";
+import { Typography,List, ListItem} from "@mui/material";
 import AutocompliteComponent from "../components/autocomplite";
 import InputTextComponent from "../components/textField";
 import { useState, useEffect, useMemo, memo } from "react";
@@ -14,22 +13,30 @@ import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import { getDataForAutocompliteList, getCategoryList, getDescriptionList } from "../../../../../redux/asyncThunc";
 
+
 export const Component=()=>{
     const dispatch =useDispatch();
-    const open = useSelector((state) => state.ordersAll.modalControl.productCreate);
     const products = useSelector((state) => state.ordersAll.products);
     const atributes = useSelector((state) => state.ordersAll.atributes);
     const newProduct = useSelector((state) => state.ordersAll.newProduct);
     const suppliers = useSelector((state) => state.ordersAll.suppliers);
     const cost=useSelector((state)=>state.ordersAll.newProduct.cost)
     const count =useSelector((state)=>state.ordersAll.newProduct.count);
-    const [isShow, setIsShow] = useState(false);
+    const categoryList = useSelector((state) => state.ordersAll.category);
     const discount =useSelector((state)=>state.ordersAll.newProduct.discount);
+    const atrCategory = useSelector((state) => state.ordersAll.atributeCategory);
       const [typeDiscount, setTypeDiscount] = useState('%');
     const price =useSelector((state)=>state.ordersAll.newProduct.price);
+    const [attribute, setAtribute] = useState([])
 
 const handleAutocompliteChange=(e, newValue)=>{
- if (newValue.id === 'new_product') {
+   let category =  categoryList.find(n=>n.id === newValue.category)
+   if (category?.attribute?.length > 0) {
+    let atribyteTooRender = category?.attribute.map(str=>(atrCategory.find(n=>n.id === str)))
+    setAtribute(atribyteTooRender)
+   } else setAtribute([])
+    
+ if (newValue.id === 'new_product') {   
     dispatch(getDescriptionList())
         dispatch(getCategoryList())
     dispatch(newProductUpdate({ str: 'clear'}))
@@ -37,41 +44,62 @@ const handleAutocompliteChange=(e, newValue)=>{
     return
  }
  dispatch(newProductUpdate({id: 'all', str: newValue}))
-   if (newValue) {
-        setIsShow(true)
-    }
 }
 
 useEffect(()=>{
-    let t = ((cost?Number(cost):0) * (count?Number(count):1))
+    let t = ((price?Number(price):0) * (count?Number(count):1)).toFixed(2)
     if (typeDiscount === '%') {
         let d = t* Number(discount)/100        
         let num = t - d
-        dispatch(newProductUpdate({id: 'price', str: num})
-        )} else if (typeDiscount === 'ua') {
+        if (price !== t) {
+     dispatch(newProductUpdate({id: 'cost', str: num.toFixed(2)}))
+        }
+      
+        } else if (typeDiscount === 'ua') {
             let num = t- (discount?Number(discount):0)
-            dispatch(newProductUpdate({id: 'price', str: num}))   
+            if (price !== t) {
+         dispatch(newProductUpdate({id: 'cost', str: num.toFixed(2)}))
+              }  
         } else dispatch(alertMessageUpdate({message: 'alert1', type: 'info'}))
 
-},[cost, count, discount,typeDiscount])
+
+},[price, count, discount,typeDiscount])
 
 
-const handleAtributeChange=(e, newValue)=>{    
-    if (newValue.id === 'new_atribute') {
-        console.log(newValue);
-          dispatch(getOpenTableCreate({id: 'newAtribute', str: true}));
+const handleAtributeChange=(e, newValue,text, index)=>{  
+    if (newValue.id === 'new_atribute') {      
+        dispatch(getOpenTableCreate({id: 'newCreateAtribute', str: true}));  
+        //   dispatch(getOpenTableCreate({id: 'newAtribute', str: true}));
         return
      }
-    dispatch(newProductUpdate({id: 'attribute_id', str: newValue.id}))
-console.log('newValue');
+let value = ''
+if (newProduct.attribute_id !== '' && !newProduct.attribute_id.includes(newValue.id) && attribute.length > 1) {
+    
+    if (newProduct.attribute_id.split(',').length === attribute?.length) {       
+        let atr = newProduct.attribute_id.split(',')
+       value = atr.splice(index,1, newValue.id)       
+      return dispatch(newProductUpdate({id: 'attribute_id', str: atr.join(',')}))
+    } else return  value = `${newProduct.attribute_id}, ${newValue.id}`
+   
+} else if (newProduct.attribute_id !== '' && !newProduct.attribute_id.includes(newValue.id) && attribute.length === 1) {
+     value = newValue.id
+}  else if (newProduct.attribute_id === '') {
+    let arr =[ ...attribute].fill('')
+    arr.splice(index,1, newValue.id)
+    console.log('value = atr.splice(index,1, newValue.id)', arr.join(','));
+  return  dispatch(newProductUpdate({id: 'attribute_id', str: arr.join(',')}))
+} value = newValue.id
+console.log(value);
+    dispatch(newProductUpdate({id: 'attribute_id', str: value}))
+
 }
 const handleSupliersChange=(e, newValue)=>{    
     if (newValue.id === 'new_suppliers') {
           dispatch(getOpenTableCreate({id: 'newSuppliers', str: true}));
         return
      }
-    dispatch(newProductUpdate({id: 'parent_id', str: newValue.name}))
-    dispatch(newProductUpdate({id: 'supplier_id', str: newValue}))
+    // dispatch(newProductUpdate({id: 'parent_id', str: newValue.name}))
+    dispatch(newProductUpdate({id: 'supplier_id', str: [newValue.id]}))
 }
 
 
@@ -96,8 +124,9 @@ const addAtribute = {id: 'new_atribute', name: 'Встановити атриб�
 const newSupliers = {id: 'new_suppliers', name: 'Створити постачальника', data: 'Створити постачальника'}
 
 const handleOnProductChange=(value)=>{
-dispatch(getDataForAutocompliteList(value))
+// dispatch(getDataForAutocompliteList(value))
 dispatch(newProductUpdate({str: 'clear'}))
+setAtribute([])
 }
 const handleOnAtributesChange=(value)=>{
     // dispatch(getDataForAutocompliteList(value))
@@ -105,8 +134,18 @@ const handleOnAtributesChange=(value)=>{
     }
 
 const getSupliersAutocompliteList=(value)=>{
-    dispatch(newProductUpdate({id: 'parent_id', str: ''}))
+    // dispatch(newProductUpdate({id: 'parent_id', str: ''}))
   
+}
+const getValue=(str,i)=>{
+    if (newProduct.attribute_id.split(',')[i] && attribute?.length === 1) {
+         return  atributes[str.id].find(n=>n.id === newProduct.attribute_id.split(',')[i])    
+    } else if (newProduct.attribute_id.split(',')[i] && attribute?.length > 1) {
+        if (atributes[str.id]?.find(n=>n.id === newProduct.attribute_id?.split(',')[i]) ) {
+            return atributes[str.id]?.find(n=>n.id === newProduct.attribute_id?.split(',')[i]) 
+        } else return atributes[str.id][0]?atributes[str.id][0]:str
+    } else  return str
+   
 }
 
 const ListItemStyle = {width: '100%', padding: '5px'}
@@ -118,15 +157,30 @@ const ListItemStyle = {width: '100%', padding: '5px'}
     <ListItem sx={ListItemStyle}>
         <AutocompliteComponent data={[createNewProduct,...products]} disp={handleAutocompliteChange} textContent={'Товар:'} id={'name'}
          value={products.find(n=>n.name === newProduct.name)} dafaultValue={createNewProduct.name} label={'Назва товару'} 
-         showInput={true}  onInputFunc={handleOnProductChange} sort={false}/ >
+         showInput={true}  onInputFunc={handleOnProductChange} sort={true} onInputfocus={handleOnProductChange} render={'value'}/ >
     </ListItem>
+{ attribute.length === 0 ?   <ListItem  sx={ListItemStyle}>
+            <AutocompliteComponent  data={[addAtribute]} disp={handleAtributeChange} textContent={'Атрибути:'}
+                 value={null} dafaultValue={false} index={0}
+                 label={'Не встановлено'} onInputFunc={false} showInput={attribute.length >0 || newProduct.name !== ''} sort={false} / >
+            </ListItem>:null }
+    {attribute.length >0 ? attribute.map((str,i)=>{
+     let data = []
+     if (atributes[str.id]) {
+        data = [...atributes[str.id]]
+     }
+        return(
+            <ListItem key = {i} sx={ListItemStyle}>
+            <AutocompliteComponent key={i} data={[addAtribute, ...data]} disp={handleAtributeChange} textContent={i === 0?'Атрибути:':''}
+                //  value={atributes[str.id][0]?atributes[str.id][0]:str} 
+                 value={getValue(str,i)} 
+                 dafaultValue={false} index={i}
+                 label={'Не встановлено'} onInputFunc={false} showInput={true} sort={false} / >
+            </ListItem> 
+        )
+    }):null}
     <ListItem sx={ListItemStyle}>
-    <AutocompliteComponent data={[addAtribute, ...atributes]} disp={handleAtributeChange} textContent={'Атрибути:'}
-         value={atributes.find(n=>n.name === newProduct.attribute_id)} dafaultValue={addAtribute.name}
-         label={'Не встановлено'} onInputFunc={handleOnAtributesChange} showInput={isShow} sort={false} / >
-    </ListItem>
-    <ListItem sx={ListItemStyle}>
-        <InputTextComponent id={'cost'} textContent={'Ціна:'} num={true} path={'newProduct'} label={'Ціна'} />
+        <InputTextComponent id={'price'} textContent={'Ціна:'} num={true} path={'newProduct'} label={'Ціна'} />
     </ListItem>
     <ListItem sx={ListItemStyle}>
         <InputTextComponent id={'count'} textContent={'Кількість:'} num={true} path={'newProduct'} label={'Кількість'}/>
@@ -156,9 +210,9 @@ const ListItemStyle = {width: '100%', padding: '5px'}
 </Grid>
 </Box>
     </ListItem>
-    <ListItem sx={ListItemStyle}>
+    <ListItem sx={ListItemStyle}>   
         <AutocompliteComponent data={[newSupliers, ...suppliers]} disp={handleSupliersChange} textContent={'Постачальник:'}
-         value={suppliers.find(n=>n.name === newProduct.parent_id)} dafaultValue={newSupliers.name} label={'Не встановлено'}
+         value={suppliers.find(n=>n.id === newProduct?.supplier_id[0])} dafaultValue={false} label={'Не встановлено'}
          onInputFunc={getSupliersAutocompliteList} showInput={true} free={false} sort={true}/ >
     </ListItem>
     <ListItem sx={{width: '100%', padding: '5px', alignItems: 'center', maxHeight: '30px'}}>
@@ -168,7 +222,7 @@ const ListItemStyle = {width: '100%', padding: '5px'}
         <Typography component={'h5'}>Всього:</Typography>
         </Grid>
         <Grid xs={4} sm={6} sx={{maxWidth: '250px', justifyContent: 'space-around', alignItems: 'center', maxHeigth: '40px' }} >
-        {price >0 && <Typography sx={{fontSize: '16px', textAlign: 'center', alignItems: 'center'}} component={'h5'}>{Number(price).toFixed(2)}</Typography>}
+        {cost >0 && <Typography sx={{fontSize: '16px', textAlign: 'center', alignItems: 'center'}} component={'h5'}>{Number(cost).toFixed(2)}</Typography>}
        
   </Grid>
 
