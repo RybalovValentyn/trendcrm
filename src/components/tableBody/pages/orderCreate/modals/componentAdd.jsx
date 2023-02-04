@@ -116,7 +116,7 @@ const handleChangeDiscount=(e)=>{
 
 const handleChangeSelect=(e)=>{
     dispatch(newProductUpdate({id: 'discount', str: ''})) 
-    dispatch(newProductUpdate({id: 'price', str: ''}))
+    // dispatch(newProductUpdate({id: 'price', str: ''}))
     setTypeDiscount(e.target.value)
 }
 const createNewProduct={id: 'new_product', name: 'Створити новий товар', data: 'Створити новий товар'}
@@ -196,7 +196,7 @@ const ListItemStyle = {width: '100%', padding: '5px'}
         <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"        
-                label="Age"
+                label="Discount"
                 onChange={handleChangeSelect}
                 defaultValue= '%'
                 value={typeDiscount}

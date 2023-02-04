@@ -12,14 +12,14 @@ import { StyledButton } from '../../../buttons/buttons';
 import { colorsRef } from '../../../../consts/colorConstants';
 // import { colorsRef } from '../../../../../consts/colorConstants';
 import Switch from '@mui/material/Switch';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { productsdataUpdate, getOpenTableCreate } from '../../../../redux/ordersReduser';
-import { getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList } from '../../../../redux/asyncThunc';
+import { getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList, setAtributeCategoryList } from '../../../../redux/asyncThunc';
 
 const  ProductCreateComponent=()=>{
 const dispatch = useDispatch();
@@ -27,6 +27,8 @@ const [add1, setAdd1] = useState(false)
 const [add2, setAdd2] = useState(false)
 const [value1, setValue1]= useState(0.00)
 const [value2, setValue2]= useState(0.00)
+
+const products = useSelector((state) => state.ordersAll.productData);
 
 const discountValue = useSelector((state)=>state.ordersAll.productData.discount)
 const switchBoxStyle={
@@ -50,12 +52,23 @@ const selectStyle={
     }
 
 }
+
+useEffect(()=>{
+    let summ  = products.reduce((acc,str,i)=>{
+if (Number(str.cost)) {
+    acc = acc+Number(str.cost)
+}
+return acc
+    },0)
+    setValue2(summ.toFixed(2))
+      },[products])
 const handleAddProduct=()=>{
     dispatch(getOpenTableCreate({id: 'productCreate', str: true}));
     dispatch(getDataForAutocompliteList())
     dispatch(getAtributesAutocompliteList())
     dispatch(getSupliersList())
     dispatch(getCategoryList())
+    dispatch(setAtributeCategoryList())
     // console.log('sdfsff');
 
 }

@@ -10,15 +10,15 @@ import { Component } from "./componentAdd";
     const products = useSelector((state) => state.ordersAll.productData);
 
 
-const handleClouse=()=>{
-    dispatch(autoUpdate({id: 'productData', str:[...products,newProduct]}))
+const handleClouse=()=>{   
     dispatch(getOpenTableCreate({id: 'productCreate', str: false}));
     dispatch(newProductUpdate({id: '', str: 'clear'}))
 }
 
 
 const handleChange=(e)=>{
-console.log('handleChange', products);
+    dispatch(autoUpdate({id: 'productData', str:[...products,newProduct]}))
+// console.log('handleChange', products);
 console.log(newProduct);
 }
 

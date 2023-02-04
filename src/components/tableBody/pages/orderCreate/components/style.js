@@ -54,9 +54,8 @@ export const typoGrafyStyle = {
 }
 
 export const selectStyle={
-  // maxWidth: '81px',   
+
   minWidth: '60px', 
-  // marginLeft: '10px',
   maxWidth: '120px',
   width: '100%',
   maxHeight: '32px',

@@ -25,3 +25,30 @@
     }
 
 }
+
+.inputTable{
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 50px;
+    min-width: 40px;
+    padding: 3px ;
+    height: 33px;
+    align-items: center;
+    font-size: 12px;
+    color: #333;
+    overflow-x: unset;
+    text-overflow: ellipsis;
+}
+
+.inputTableNoboard{
+    border: none;
+    width: 100%;
+    max-width: 50px;
+    min-width: 40px;
+    align-items: center;
+    font-size: 12px;
+    color: #333;
+    overflow-x: unset;
+    text-overflow: ellipsis;
+}

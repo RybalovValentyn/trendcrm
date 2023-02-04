@@ -166,7 +166,7 @@ parent_id: "0",
 price: '',
 supplier_id: [],
 value: "",
-count: '',
+count: '1',
 discount: '',
 
 }
