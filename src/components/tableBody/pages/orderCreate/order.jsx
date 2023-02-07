@@ -38,8 +38,9 @@ export function CreateRows(){
 
     useEffect(() => {
         if (isUpdateRows) {
-            dispatch(autoUpdate({id:'isUpdateRows', str: false}));
+            // dispatch(autoUpdate({id:'isUpdateRows', str: false}));
         }
+        // dispatch(autoUpdate({ id: 'productData', str: []}))
       }, []);
 
     const boxStyle ={
@@ -84,7 +85,6 @@ return(
 
 <Box sx={{width: '34%'}}>
         <ClientForm/>
-
         <Paper component="form" sx={formStyle}>
         <Typography sx={ typographyStyle} variant="h2" component="h3">
          Доставка:

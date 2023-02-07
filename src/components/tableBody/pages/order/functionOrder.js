@@ -1,4 +1,4 @@
- 
+
 
 export  const  hexToRgbA = (hex) =>{
   if (hex?.includes("rgba")) {
@@ -15,4 +15,20 @@ export  const  hexToRgbA = (hex) =>{
   } else return hex
   throw new Error('Bad Hex');
 }
+
+export const priceUpdate=(price, count, discount, type)=>{
+  let t = ((price?Number(price):0) * (count?Number(count):1)).toFixed(2)
+    if (type === '%') {
+      let d = t* Number(discount)/100      
+      let num = t - d
+      if (price > 0) {
+         return num.toFixed(2)
+      }  
+      } else if (type === 'ua') {
+          let num = t- (discount?Number(discount):0)
+          if (price > 0) {
+      return num.toFixed(2)
+            }  
+      } else return '0'
+  }
 

@@ -8,7 +8,7 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
           getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList,
           getDescriptionList, setNewProductCreate, setNewSupplierCreate, setAtributeCategoryList,
           setProductCategoryCreate, setAddCategoryAtribute, setAddAtribute, setAtributesCreate,
-          updateProductFromId} from './asyncThunc';
+          updateProductFromId, addProductTooOrder} from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
@@ -151,10 +151,10 @@ const colorUpdate=(str)=>{
   } else return color = str.status_style
 
 }
-const ProductDataRef={
-discount: 0,
+// const ProductDataRef={
+// discount: 0,
 
-};
+// };
 const newProductRef ={
   attribute_id: "",
 category: "0",
@@ -166,29 +166,16 @@ parent_id: "0",
 price: '',
 supplier_id: [],
 value: "",
-count: '1',
+count: '',
 discount: '',
-
+typeDiscount: '%',
+atrCategoryIds: [],
+atributeIds: [],
 }
 
 const calcVolumeRef={length: 1, width: 1, heigth: 1, value: ''}
 
 const productCreateRef={
-
-//   attribute_category: ["3", "6", "7"],
-// booked: 1б,
-// category_id: "14",
-// cost: "340",
-// description_novaposhta: "OLX одежда и обувь",
-// name: "Штаны",
-// price: "345",
-// sell_in_the_red: 1,
-// sku: "11234567",
-// status: 1,
-// supplier: [],
-// volume_general: "1",
-// weight: "2",
-  
     attribute_category: [],
     booked: 1,
     category_id: "",
@@ -203,7 +190,6 @@ const productCreateRef={
     volume_general: "",
     weight: "",
 }
-
 const newSuppliersRef={  name: "",   phone: "",  email: "",   comment: ""}
 
 const newCategoryRef = {name: "", parent_id: "", attributes: []}
@@ -256,6 +242,7 @@ const ordersReduser = createSlice({
 
   },
 productData:[],
+productsTooSend: [],
 newProduct: {...newProductRef},
 productCreate: {...productCreateRef},
 newSuplplier: {...newSuppliersRef},
@@ -357,7 +344,7 @@ if (action.payload.str === 'clear') {
   if (action.payload.str === 'clear') {
     state.newProduct = {...newProductRef}
   } else if (action.payload.id === 'all') {
-    state.newProduct = {...action.payload.str,count: '', discount: '',}
+    state.newProduct = {...action.payload.str,count: 1, discount: '', cost: action.payload.str.price, typeDiscount: '%'}
   }  else state.newProduct= {...state.newProduct,[action.payload.id]: action.payload.str}
     },
 
@@ -448,8 +435,31 @@ if (action.payload.str === 'clear') {
         }, 
   },
 
+  
 
       extraReducers: {
+        
+        [addProductTooOrder.pending]:handlePending,
+        [addProductTooOrder.fulfilled](state, action) { 
+          console.log(action.payload?.data);
+
+          const func = ({amount, attribute, cost, discount, name, discount_type, id, order_id, information, order_product_id, order_total,
+            presale_type, price, product_id, product_name, product_volume_general, product_weight, supplier_id, supplier_name})=>{
+              
+return (
+  {}
+)
+          }
+    if (action.payload?.data) {
+            state.typeMessage= typeMessage.success;
+             state.message = ['Товар додано', `замовлення ${action.payload?.id}`]
+          }  
+        const data = func(action.payload?.data)
+
+          state.productData = [...state.productData]
+            requestFulfilled(state, action)
+        },
+        [addProductTooOrder.rejected]:handleRejected,
         
         [updateProductFromId.pending]:handlePending,
         [updateProductFromId.fulfilled](state, action) { 
@@ -582,12 +592,6 @@ if (action.payload.str === 'clear') {
         [getAtributesAutocompliteList.pending]:handlePending,
         [getAtributesAutocompliteList.fulfilled](state, action) {
           state.atributes = action.payload.data
-          // console.log(action.payload.data);
-          // if (action.payload.data[0]) {
-          //   state.atributes = action.payload.data
-          // }  else if (action.payload.data[3]) {
-          //   state.atributes = action.payload.data[3]
-          // } else state.atributes = [...Object.values(action.payload.data)]
           
             requestFulfilled(state, action)
         },

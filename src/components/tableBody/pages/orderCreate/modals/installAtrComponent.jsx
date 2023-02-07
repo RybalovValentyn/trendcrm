@@ -24,13 +24,28 @@ const InstallAtributeComponent=()=>{
    const newAtributeSelected = useSelector((state) => state.ordersAll.newAtribute);
    const [ind, setInd]  = useState([]);
 
+   const update = ()=>{
+    let category =  categoryList.find(n=>n.id === newProduct.category)
+    if (renderAtribute.length === 0) {
+    if (category) {
+        let atr = category.attribute
+        if (atr.length > 0) {
+            let atributesId =  atr.map(str=>(atrCategory.find(n=>n.id === str))) 
+        setRenderAtribute(atributesId)
+        }
+    }
+}
+    
+}
+   update()
+
 const handleAtributeSelect =(e, newValue)=>{
+
     if (newValue.id === 'new_atribute') {
         dispatch(getOpenTableCreate({id: 'newCategory', str: true}));
           dispatch(setAtributeCategoryList())
       return
    }
-    console.log(newValue);
     dispatch(autoUpdateAllReducer({id: 'category', state: 'newProduct', str: newValue.id}))
 
     let atrArrId = newValue.attribute
@@ -46,7 +61,6 @@ const handleAtributeSelect =(e, newValue)=>{
 }
 
 const handleChange=({id, str})=>{
-    console.log(id, str);
     dispatch(autoUpdateAllReducer({id: 'category', state: 'newAtribute', str: id}))
     dispatch(autoUpdateAllReducer({id: 'name', state: 'newAtribute', str: str}))
 }
@@ -69,8 +83,6 @@ const handleButtonSendClick =()=>{
 dispatch(setAtributesCreate())  
 setTimeout(getAtributes, 200)      
     } else dispatch(alertMessageUpdate({message: 'clearString', type: 'warn'}))
-console.log(newAtribute);
-
 }
 
 const getAtributes = ()=>{

@@ -15,7 +15,6 @@ const NewAtributeCreateComponent=()=>{
 
 
 const handleAtributeSelect =(e, newValue)=>{
-    console.log(newValue);
     dispatch(autoUpdateAllReducer({id: 'category', state: 'newAtribute', str: newValue.id}))
 }
 const handleChange=(data)=>{

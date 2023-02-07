@@ -15,7 +15,8 @@ import TableInput from './components/tableInput'
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import {alertMessageUpdate} from "../../../../redux/ordersReduser";
+import {alertMessageUpdate, autoUpdateAllReducer, autoUpdate} from "../../../../redux/ordersReduser";
+import { priceUpdate } from '../order/functionOrder';
 
 export default function TableProduct() {
   const dispatch =useDispatch();
@@ -24,23 +25,25 @@ export default function TableProduct() {
   const suppliers = useSelector((state) => state.ordersAll.suppliers);
   const atributes = useSelector((state) => state.ordersAll.atributes);
   const categoryList = useSelector((state) => state.ordersAll.category);
+
   const [rows, setRows] =useState([])
 
-  useEffect(()=>{
+useEffect(()=>{
 let renderRows  = products.map((str,i)=>(createData(str)))
 setRows(renderRows)
   },[products])
 
-  function createData({data, name, attribute_id, price, count =1, discount, cost, supplier_id, category}) {
-    let atr = attribute_id.split(',')
+  function createData({data, name, attribute_id, price, count, discount, cost, supplier_id, category, typeDiscount}) {
+    let atr = attribute_id?.split(',');
     let atrCategoryProd = []
     if (atr[0]) {
       let categoryProduct = categoryList.find(n=>n.id === category).attribute
+      
       let atributesProduct = categoryProduct.map(n=>(atributes[n]))
            atrCategoryProd = categoryProduct.map((n, i )=>{
         let nameProd = atrCategory.find(s=>s.id === n)?.name
         let atributeProduct = ''
-        let data = atributesProduct[i]?.find(s=>s.id === atr[i])?.name
+        let data = atributesProduct[i]?.find(s=> +s.id === +eval(atr[i]))?.name
         if (data) {
           atributeProduct = data
         } 
@@ -48,16 +51,7 @@ setRows(renderRows)
       }
          )
     }
-    let supplier = supplier_id.map((n=>(suppliers.find(s=>s.id === n).name)))
-    let typeDiscount = '%'
-    if (cost && price && count) {
-      let sum = Number(price)*Number(count)
-      let allSumm = sum - Number(discount)
-      if (Number(cost) == allSumm.toFixed(2) ) {
-        typeDiscount= 'ua'
-        }
-         }
-    return {data, name, atrCategoryProd, price, count, discount, cost, supplier, typeDiscount };
+    return {data, name, atrCategoryProd, price, count, discount, cost, supplier_id, typeDiscount };
   }
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -94,58 +88,44 @@ setRows(renderRows)
     }
   }
 const handleDeleteClick=(i)=>{
-let newRows = [...rows]
+let newRows = [...products]
  newRows.splice(i, 1)
-  setRows(newRows)
+  // setRows(newRows)
+  dispatch(autoUpdate({ id: 'productData', str: newRows}))
 }
 
 const handleInputChange=(e,i, row)=>{
   let id = e.target.id
   const el = document.getElementById(id)
-  const textEl = document.getElementById(`${i}-cost`)
-  let copyRow = {...row}
-  let cost = priceUpdate(copyRow.price, copyRow.count ,copyRow.discount ,copyRow.typeDiscount )
-  textEl.value = cost
   let str = e.target.value.replace(/[^0-9.]/g, ''); 
   el.value = str
 }
 const handleBlurAction=(e,i, row)=>{
   let id = e.target.id.split('-')[1]
 let value = e.target.value
-let copyRow = {...row}
-copyRow[id] = value
-updateState(i,copyRow)
+let product = {...products[i]}
+product[id] = value
+updateState(i,product)
 }
 
 const handleChangeSelect=(e, i, row)=>{
- let value = e.target.value
- let copyRow = {...row}
- copyRow.typeDiscount = value
- updateState(i,copyRow)
-}
-const updateState=(i,copyRow)=>{
-  copyRow.cost = priceUpdate(copyRow.price, copyRow.count ,copyRow.discount ,copyRow.typeDiscount )
-  let copyRows = [...rows]
- copyRows.splice(i, 1, copyRow)
- setRows(copyRows)
+ let type = e.target.value
+ let product = {...products[i]}
+product.typeDiscount = type
+ 
+ updateState(i, product, type)
 }
 
-const priceUpdate=(price, count, discount, type)=>{
-let t = ((price?Number(price):0) * (count?Number(count):1)).toFixed(2)
-if (type === '%') {
-    let d = t* Number(discount)/100        
-    let num = t - d
-    if (price !== t) {
- return num.toFixed(2)
-    }  
-    } else if (type === 'ua') {
-        let num = t- (discount?Number(discount):0)
-        if (price !== t) {
-    return num.toFixed(2)
-          }  
-    } else dispatch(alertMessageUpdate({message: 'alert1', type: 'info'}))
+const updateState=(i,product, type)=>{
+ console.log(product);
+ product.cost = priceUpdate(product.price, product.count ,product.discount ,type?type:product.typeDiscount )
+  let productCopy = [...products]
+  productCopy.splice(i, 1, product)
+ dispatch(autoUpdate({ id: 'productData', str: productCopy}))
 }
+const handleChangeInput=()=>{
 
+}
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650, fontSize: '12px', padding: 0 }}  aria-label="a table">
@@ -193,9 +173,10 @@ if (type === '%') {
                 </Select>
                  </Box> }</StyledTableCell>
 
-              <StyledTableCell align="center" > <input className={s.inputTableNoboard} id={`${i}-cost`}  role="presentation" autoComplete="off" defaultValue={row.cost} ></input></StyledTableCell>
-              <StyledTableCell align="center">{row.supplier.length>0 ? row.supplier.map((str,i)=>(
-                <Typography sx={{fontSize: '12px',}} key ={i}>{str}</Typography>
+              <StyledTableCell align="center" > <input className={s.inputTableNoboard} id={`${i}-cost`}  role="presentation" autoComplete="off"
+                                    onChange={handleChangeInput}  value={row.cost}></input></StyledTableCell>
+              <StyledTableCell align="center">{row.supplier_id.length>0 ? row.supplier_id.map((str,i)=>(
+                <Typography sx={{fontSize: '12px',}} key ={i}>{suppliers.find(s=>s.id === str)?.name}</Typography>
               )): 'Не вибрано'}</StyledTableCell>
               <StyledTableCell align="center"><BackspaceIcon onClick={()=>handleDeleteClick(i)} sx={{color: 'red', '&:hover': {cursor: 'pointer'}}}/></StyledTableCell>
             </TableRow>

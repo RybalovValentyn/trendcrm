@@ -20,6 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { productsdataUpdate, getOpenTableCreate } from '../../../../redux/ordersReduser';
 import { getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList, setAtributeCategoryList } from '../../../../redux/asyncThunc';
+import { priceUpdate } from '../order/functionOrder';
 
 const  ProductCreateComponent=()=>{
 const dispatch = useDispatch();
@@ -27,10 +28,11 @@ const [add1, setAdd1] = useState(false)
 const [add2, setAdd2] = useState(false)
 const [value1, setValue1]= useState(0.00)
 const [value2, setValue2]= useState(0.00)
+const [discount, setDiscount] = useState(0)
+const [type, setType] = useState('%')
 
 const products = useSelector((state) => state.ordersAll.productData);
 
-const discountValue = useSelector((state)=>state.ordersAll.productData.discount)
 const switchBoxStyle={
 display: 'flex',
 alignItems: 'center',
@@ -54,14 +56,23 @@ const selectStyle={
 }
 
 useEffect(()=>{
-    let summ  = products.reduce((acc,str,i)=>{
-if (Number(str.cost)) {
-    acc = acc+Number(str.cost)
+    let summ = getSum()
+    let cost =  priceUpdate(summ, '1' ,discount ,type )
+    if (cost) {
+        setValue2(cost)  
+    }
+    
+ },[discount, type, products])
+
+
+function getSum(){
+ return (products.reduce((acc,str,i)=>{
+        if (Number(str.cost)) {
+            acc = acc+Number(str.cost)
+        }
+        return acc
+            },0) ) 
 }
-return acc
-    },0)
-    setValue2(summ.toFixed(2))
-      },[products])
 const handleAddProduct=()=>{
     dispatch(getOpenTableCreate({id: 'productCreate', str: true}));
     dispatch(getDataForAutocompliteList())
@@ -69,7 +80,6 @@ const handleAddProduct=()=>{
     dispatch(getSupliersList())
     dispatch(getCategoryList())
     dispatch(setAtributeCategoryList())
-    // console.log('sdfsff');
 
 }
 const handleAddGroupProducts=()=>{
@@ -93,13 +103,12 @@ const ButtonComponent =()=>(
             /> 
         </Box>
 )
-const handleChangeSelect=()=>{
-
+const handleChangeSelect=(e)=>{
+    setType(e.target.value)
 }
 const handleChangeDiscount=(e)=>{
     let n = e.target.value.replace(/[^0-9.]/g, '');
-    console.log(discountValue);
-dispatch(productsdataUpdate({id:'discount', str: n}))
+    setDiscount(n)
 }
 
     return(
@@ -109,6 +118,7 @@ dispatch(productsdataUpdate({id:'discount', str: n}))
         </Typography >
 
         <TableProduct/>
+
         <ButtonComponent/>
         <Box>
             <Box>
@@ -140,13 +150,14 @@ dispatch(productsdataUpdate({id:'discount', str: n}))
 <List sx={{textAlign: 'right'}}>
     <ListItem sx={{padding: 0}}>
         <Typography sx={listTextStyle} component={'h5'}>Скидка:</Typography>
-    <TextField value={discountValue} onChange={handleChangeDiscount} sx={selectStyle} id="outlined-basic" variant="outlined" />
+    <TextField value={discount} onChange={handleChangeDiscount} sx={selectStyle} id="outlined-basic" variant="outlined" />
     <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"        
           label="Age"
           onChange={handleChangeSelect}
           defaultValue= '%'
+          value = {type}
         sx={selectStyle}
         >
         <MenuItem value={'%'}>{'%'}</MenuItem>

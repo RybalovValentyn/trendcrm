@@ -1,5 +1,5 @@
 import { useDispatch, useSelector,  } from 'react-redux';
-import { getOpenTableCreate, newProductUpdate, alertMessageUpdate } from "../../../../../redux/ordersReduser";
+import { getOpenTableCreate, newProductUpdate, alertMessageUpdate, autoUpdateAllReducer} from "../../../../../redux/ordersReduser";
 import DialogContent from '@mui/material/DialogContent';
 import Box from '@mui/material/Box';
 import { Typography,List, ListItem} from "@mui/material";
@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import { getDataForAutocompliteList, getCategoryList, getDescriptionList } from "../../../../../redux/asyncThunc";
-
+import { priceUpdate } from '../../order/functionOrder';
 
 export const Component=()=>{
     const dispatch =useDispatch();
@@ -25,11 +25,13 @@ export const Component=()=>{
     const categoryList = useSelector((state) => state.ordersAll.category);
     const discount =useSelector((state)=>state.ordersAll.newProduct.discount);
     const atrCategory = useSelector((state) => state.ordersAll.atributeCategory);
-      const [typeDiscount, setTypeDiscount] = useState('%');
+    const typeDiscount = useSelector((state)=>state.ordersAll.newProduct.typeDiscount);
+    //   const [typeDiscount, setTypeDiscount] = useState('%');
     const price =useSelector((state)=>state.ordersAll.newProduct.price);
     const [attribute, setAtribute] = useState([])
 
 const handleAutocompliteChange=(e, newValue)=>{
+    // console.log(newValue);
    let category =  categoryList.find(n=>n.id === newValue.category)
    if (category?.attribute?.length > 0) {
     let atribyteTooRender = category?.attribute.map(str=>(atrCategory.find(n=>n.id === str)))
@@ -47,29 +49,24 @@ const handleAutocompliteChange=(e, newValue)=>{
 }
 
 useEffect(()=>{
-    let t = ((price?Number(price):0) * (count?Number(count):1)).toFixed(2)
-    if (typeDiscount === '%') {
-        let d = t* Number(discount)/100        
-        let num = t - d
-        if (price !== t) {
-     dispatch(newProductUpdate({id: 'cost', str: num.toFixed(2)}))
-        }
-      
-        } else if (typeDiscount === 'ua') {
-            let num = t- (discount?Number(discount):0)
-            if (price !== t) {
-         dispatch(newProductUpdate({id: 'cost', str: num.toFixed(2)}))
-              }  
-        } else dispatch(alertMessageUpdate({message: 'alert1', type: 'info'}))
+   let cost =  priceUpdate(price, count ,discount ,typeDiscount)
 
+   dispatch(newProductUpdate({id: 'cost', str: cost}))
 
 },[price, count, discount,typeDiscount])
 
 
 const handleAtributeChange=(e, newValue,text, index)=>{  
-    if (newValue.id === 'new_atribute') {      
+let productAtributes = newProduct.attribute_id.split(',')[0]?newProduct.attribute_id.split(','):''
+    if (newValue.id === 'new_atribute') { 
+        if (productAtributes) {
+            let prodCategory = categoryList.find(n=>n.id === newProduct.category).attribute[index]
+            console.log(prodCategory);
+            let prodAtrCat = atrCategory.find(n=>n.id === prodCategory)
+            dispatch(autoUpdateAllReducer({id: 'category', state: 'newAtribute', str: prodAtrCat.id}))
+          return  dispatch(getOpenTableCreate({id: 'newAtribute', str: true}));
+        }  
         dispatch(getOpenTableCreate({id: 'newCreateAtribute', str: true}));  
-        //   dispatch(getOpenTableCreate({id: 'newAtribute', str: true}));
         return
      }
 let value = ''
@@ -86,7 +83,7 @@ if (newProduct.attribute_id !== '' && !newProduct.attribute_id.includes(newValue
 }  else if (newProduct.attribute_id === '') {
     let arr =[ ...attribute].fill('')
     arr.splice(index,1, newValue.id)
-    console.log('value = atr.splice(index,1, newValue.id)', arr.join(','));
+    // console.log('value = atr.splice(index,1, newValue.id)', arr.join(','));
   return  dispatch(newProductUpdate({id: 'attribute_id', str: arr.join(',')}))
 } value = newValue.id
 console.log(value);
@@ -98,7 +95,6 @@ const handleSupliersChange=(e, newValue)=>{
           dispatch(getOpenTableCreate({id: 'newSuppliers', str: true}));
         return
      }
-    // dispatch(newProductUpdate({id: 'parent_id', str: newValue.name}))
     dispatch(newProductUpdate({id: 'supplier_id', str: [newValue.id]}))
 }
 
@@ -116,15 +112,14 @@ const handleChangeDiscount=(e)=>{
 
 const handleChangeSelect=(e)=>{
     dispatch(newProductUpdate({id: 'discount', str: ''})) 
-    // dispatch(newProductUpdate({id: 'price', str: ''}))
-    setTypeDiscount(e.target.value)
+    dispatch(newProductUpdate({id: 'typeDiscount', str: e.target.value})) 
+    // setTypeDiscount(e.target.value)
 }
 const createNewProduct={id: 'new_product', name: 'Створити новий товар', data: 'Створити новий товар'}
 const addAtribute = {id: 'new_atribute', name: 'Встановити атрибут', data: 'Встановити атрибут'}
 const newSupliers = {id: 'new_suppliers', name: 'Створити постачальника', data: 'Створити постачальника'}
 
 const handleOnProductChange=(value)=>{
-// dispatch(getDataForAutocompliteList(value))
 dispatch(newProductUpdate({str: 'clear'}))
 setAtribute([])
 }
@@ -172,8 +167,7 @@ const ListItemStyle = {width: '100%', padding: '5px'}
         return(
             <ListItem key = {i} sx={ListItemStyle}>
             <AutocompliteComponent key={i} data={[addAtribute, ...data]} disp={handleAtributeChange} textContent={i === 0?'Атрибути:':''}
-                //  value={atributes[str.id][0]?atributes[str.id][0]:str} 
-                 value={getValue(str,i)} 
+                   value={getValue(str,i)} 
                  dafaultValue={false} index={i}
                  label={'Не встановлено'} onInputFunc={false} showInput={true} sort={false} / >
             </ListItem> 
@@ -192,7 +186,7 @@ const ListItemStyle = {width: '100%', padding: '5px'}
         <Typography sx={typoGrafyStyle} component={'h5'}>Скидка:</Typography>
         </Grid>
         <Grid xs={6} sm={6} sx={{maxWidth: '250px',width: '250px', justifyContent: 'space-between',maxHeight: '32px', '@media (min-width:599px)':{textAlign: 'right'  }, display: 'flex', justifyContent: 'space-between'}} >
-        <TextField  value={discount} onChange={handleChangeDiscount} sx={selectStyle} id="outlined-basic" variant="outlined" placeholder="Скидка" />
+        <TextField autoComplete='off'  value={discount} onChange={handleChangeDiscount} sx={selectStyle} id="outlined-basic" variant="outlined" placeholder="Скидка" />
         <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"        

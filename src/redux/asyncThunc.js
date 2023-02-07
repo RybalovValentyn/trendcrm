@@ -44,7 +44,8 @@ const supplier = '/supplier';
 const atrCategory = '/attribute_category';
 const createProdCategory = '/create_product_category';
 const addCategory ='/add_category';
-const addAtribute = '/add_attribute'
+const addAtribute = '/add_attribute';
+const add = '/add'
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -873,3 +874,42 @@ export const updateProductFromId= createAsyncThunk(
     
   },
 );
+
+// https://react.trendcrm.biz/api/order/87/product/add
+
+export const addProductTooOrder= createAsyncThunk(
+  'product_add/create',
+  async ({id, data}, { rejectWithValue, getState}) => {
+    const state = getState(); 
+    // console.log(data);
+          try {
+        const resp = await axios({
+          method: "post",
+           url:  REBASE_URL+addOrder+`/${id}`+product+add,
+           data:  data
+           });
+          //  console.log(resp);
+           return {data: resp.data, id: id }       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
+
+// https://react.trendcrm.biz/api/product/20
+
+// https://react.trendcrm.biz/api/order/product/17
+
+
+
+
+
+
+
+
+
+
+
