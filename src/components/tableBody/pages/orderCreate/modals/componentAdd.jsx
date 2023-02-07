@@ -133,9 +133,9 @@ const getSupliersAutocompliteList=(value)=>{
   
 }
 const getValue=(str,i)=>{
-    if (newProduct.attribute_id.split(',')[i] && attribute?.length === 1) {
+    if (newProduct.attribute_id?.split(',')[i] && attribute?.length === 1) {
          return  atributes[str.id].find(n=>n.id === newProduct.attribute_id.split(',')[i])    
-    } else if (newProduct.attribute_id.split(',')[i] && attribute?.length > 1) {
+    } else if (newProduct.attribute_id?.split(',')[i] && attribute?.length > 1) {
         if (atributes[str.id]?.find(n=>n.id === newProduct.attribute_id?.split(',')[i]) ) {
             return atributes[str.id]?.find(n=>n.id === newProduct.attribute_id?.split(',')[i]) 
         } else return atributes[str.id][0]?atributes[str.id][0]:str
@@ -190,11 +190,12 @@ const ListItemStyle = {width: '100%', padding: '5px'}
         <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"        
-                label="Discount"
+                label={!typeDiscount?"Discount":''}
                 onChange={handleChangeSelect}
                 defaultValue= '%'
                 value={typeDiscount}
                 sx={selectStyle}
+                
                 >
                             <MenuItem value={'%'}>{'%'}</MenuItem>
                              <MenuItem value={'ua'}>{'UAH'}</MenuItem>

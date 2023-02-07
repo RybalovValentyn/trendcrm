@@ -33,12 +33,11 @@ let renderRows  = products.map((str,i)=>(createData(str)))
 setRows(renderRows)
   },[products])
 
-  function createData({data, name, attribute_id, price, count, discount, cost, supplier_id, category, typeDiscount}) {
+  function createData({data, name, attribute_id, price, count, discount, cost, supplier_id, category, typeDiscount, categoryListFrom}) {
     let atr = attribute_id?.split(',');
     let atrCategoryProd = []
-    if (atr[0]) {
-      let categoryProduct = categoryList.find(n=>n.id === category).attribute
-      
+    if (atr[0] && category) {
+      let categoryProduct = categoryList.find(n=>n.id === category)?.attribute      
       let atributesProduct = categoryProduct.map(n=>(atributes[n]))
            atrCategoryProd = categoryProduct.map((n, i )=>{
         let nameProd = atrCategory.find(s=>s.id === n)?.name
@@ -50,6 +49,8 @@ setRows(renderRows)
         return ([nameProd, atributeProduct])
       }
          )
+    } else if (categoryListFrom.length > 0 ) {
+      atrCategoryProd = [...categoryListFrom]
     }
     return {data, name, atrCategoryProd, price, count, discount, cost, supplier_id, typeDiscount };
   }
@@ -83,7 +84,7 @@ setRows(renderRows)
                           
   },
     '& .MuiInputBase-input':{
-        padding: '5px',
+        padding: '7.5px',
         borderRadius: '8px'
     }
   }
@@ -117,7 +118,7 @@ product.typeDiscount = type
 }
 
 const updateState=(i,product, type)=>{
- console.log(product);
+//  console.log(product);
  product.cost = priceUpdate(product.price, product.count ,product.discount ,type?type:product.typeDiscount )
   let productCopy = [...products]
   productCopy.splice(i, 1, product)

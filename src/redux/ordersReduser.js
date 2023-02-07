@@ -8,7 +8,7 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
           getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList,
           getDescriptionList, setNewProductCreate, setNewSupplierCreate, setAtributeCategoryList,
           setProductCategoryCreate, setAddCategoryAtribute, setAddAtribute, setAtributesCreate,
-          updateProductFromId, addProductTooOrder} from './asyncThunc';
+          updateProductFromId, addProductTooOrder, getProductFromId} from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
@@ -439,16 +439,36 @@ if (action.payload.str === 'clear') {
 
       extraReducers: {
         
+        [getProductFromId.pending]:handlePending,
+        [getProductFromId.fulfilled](state, action) { 
+          const func = ({category_id, attribute_id, attribute_name, parent_id, id, name})=>{
+            let category = category_id
+            let value = `${state.newProduct.name}-${attribute_name }`    
+            name = `${id} - ${name}`
+            return (
+              {category, attribute_id, value, parent_id, name}
+            )
+          }
+        const data = func(action.payload?.data)          
+          state.newProduct = {...state.newProduct,...data}
+          state.productData = [state.newProduct,...state.productData]
+            requestFulfilled(state, action)
+          // state.newProduct = {...newProductRef}
+        },
+        [getProductFromId.rejected]:handleRejected,
+        
         [addProductTooOrder.pending]:handlePending,
         [addProductTooOrder.fulfilled](state, action) { 
-          console.log(action.payload?.data);
-
-          const func = ({amount, attribute, cost, discount, name, discount_type, id, order_id, information, order_product_id, order_total,
-            presale_type, price, product_id, product_name, product_volume_general, product_weight, supplier_id, supplier_name})=>{
-              
-return (
-  {}
-)
+          const func = ({amount, cost, discount, name, discount_type, price, product_id,supplier_id, icon})=>{
+            let count = amount
+             let  data = product_id
+             let typeDiscount = discount_type === '0'? '%':'ua'
+             let d = []
+             d.push(supplier_id)
+            supplier_id =[...d]
+            return (
+              {count, cost, discount, data, typeDiscount, price, icon, supplier_id, name  }
+            )
           }
     if (action.payload?.data) {
             state.typeMessage= typeMessage.success;
@@ -457,6 +477,7 @@ return (
         const data = func(action.payload?.data)
 
           state.productData = [...state.productData]
+          state.newProduct = {...data}
             requestFulfilled(state, action)
         },
         [addProductTooOrder.rejected]:handleRejected,
@@ -951,6 +972,22 @@ return (
           
           [getRowsAfterAdd.pending]:handlePending,
           [getRowsAfterAdd.fulfilled](state, action) {    
+
+            const getData = ({attribute_id, amount, price, parent_id, name, cost, id, discount, discount_type, attribute_name, supplier_id, icon, attribute})=>{
+              let data = id
+              let typeDiscount = discount_type === '0'? '%': 'ua'
+              let value = `${id}-${name}-${attribute_name}`
+             let d = []
+             d.push(supplier_id)
+             supplier_id = [...d]             
+             let count = amount
+             let categoryListFrom = []
+             if (attribute?.length > 0) {
+               categoryListFrom = attribute.map(n=>([n.category, n.name])) 
+             }
+
+              return {attribute_id, count, price, parent_id, name, cost, data, discount, typeDiscount, value, supplier_id, icon, categoryListFrom            }
+            }
             // console.log(action.payload);
             let packer_name = action.payload.delivery.packer_name?action.payload.delivery.packer_name: '0' ;
             let payment_type = action.payload.order.payment_type?action.payload.order.payment_type : '0';
@@ -960,8 +997,12 @@ return (
             let weight = action.payload.delivery.weight?action.payload.delivery.weight: 0;
             let volume_general = action.payload.delivery.volume_general?action.payload.delivery.volume_general: 0;
             let seats_amount = action.payload.delivery.seats_amount?action.payload.delivery.seats_amount:1;
-            let prepay_status = action.payload.delivery.prepay_status?action.payload.delivery.prepay_status: 0
-              return{
+            let prepay_status = action.payload.delivery.prepay_status?action.payload.delivery.prepay_status: 0;
+            let products = []
+            if (action.payload.products.length > 0) {
+              products = [...action.payload.products.map(n=>(getData(n)))]
+            }
+           return{
              ...state,            
              client: {...action.payload.client, comment: action.payload.order.comment, 
                additional_field: action.payload.order.additional_field,},          
@@ -980,7 +1021,7 @@ return (
                   backward_delivery_summ: action.payload.delivery.backward_delivery_summ?action.payload.delivery.backward_delivery_summ: 0.00,
                   
                 }, 
-            
+            productData: products,
              isError: false,
              isLoading: false,
 

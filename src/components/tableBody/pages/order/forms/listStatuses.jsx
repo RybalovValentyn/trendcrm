@@ -114,6 +114,7 @@ const paperStyle={
                 onChange={onAutocompliteChange}
                 value={defaultStatus}                
                 options={renderFilteredStatus}
+                disableClearable
                 getOptionLabel={(option) => option.name}
                 renderOption={(props, option, { selected }) => (
                     <li key={option.id} style={listStyle} {...props}>
@@ -136,12 +137,14 @@ const paperStyle={
                 options={responsibleList}  
                 getOptionLabel={(option) => option.name}        
                 sx={autocompliteInputStyle}
+                disableClearable
                 renderInput={(params) => <TextField sx={textFieldStyles}  {...params} />}
                  />
     </ListItem>
     <ListItem sx={listItemStyles}>
         <Autocomplete
             disablePortal
+            disableClearable
                 // id={'group_name'}
                 id={'responsible_group'}
                  onChange={onAutocompliteGrop}

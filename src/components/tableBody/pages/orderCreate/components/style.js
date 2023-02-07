@@ -59,6 +59,8 @@ export const selectStyle={
   maxWidth: '120px',
   width: '100%',
   maxHeight: '32px',
+  borderRadius: '8px',
+  textAlign: 'center',
   '& .MuiOutlinedInput-root':{
       padding: 0,
       maxHeight: '33px',

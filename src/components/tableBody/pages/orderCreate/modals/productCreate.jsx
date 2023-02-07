@@ -2,7 +2,7 @@ import ModalProductComponent from "./modalComponent";
 import { useDispatch, useSelector,  } from 'react-redux';
 import { getOpenTableCreate, newProductUpdate, autoUpdate } from "../../../../../redux/ordersReduser";
 import { Component } from "./componentAdd";
-import {addProductTooOrder} from '../../../../../redux/asyncThunc.js';
+import {addProductTooOrder, getProductFromId} from '../../../../../redux/asyncThunc.js';
 
  const ProductCreate =()=>{
     const dispatch =useDispatch();
@@ -38,16 +38,18 @@ supplier_id = supplier_id[0]?supplier_id[0]:null
 
 return {attribute,amount, cost, discount, name, presale_type, price, product_id, supplier, supplier_id, type_discount, order_id}
 }
-
+const getData =(id)=>{
+    dispatch(getProductFromId(id))
+}
 
 const handleChange=(e)=>{
     if (isUpdateRows) {
         let sendData =  sendNewProduct(newProduct)
         dispatch(addProductTooOrder({id: sendData.order_id, data: sendData}))
-        return
-    }
-   
-    dispatch(autoUpdate({id: 'productData', str:[newProduct,...products]}))
+        setTimeout(getData(newProduct.data), 200)
+         return
+    } else dispatch(autoUpdate({id: 'productData', str:[newProduct,...products]}))   
+    
  }
 
 

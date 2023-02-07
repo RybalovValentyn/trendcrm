@@ -299,7 +299,7 @@ export const getRowsAfterAdd = createAsyncThunk(
           method: "get",
            url:  REBASE_URL+addOrder+`/${id}`,
           });
-        // console.log(data);
+        console.log(data);
         if (data.order) {
           return data;
         } else throw new Error('Неможливо, пусто');
@@ -486,13 +486,7 @@ export const setFileExcelSend = createAsyncThunk(
   },
 );
 // https://react.trendcrm.biz/api/novaposhta/order/68/ttn
-// https://react.trendcrm.biz/api/import/orders/from/excel
 
-// https://react.trendcrm.biz/api/select/orders/ttn/from/excel
-
-// https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function/import/orders/excel
-
-// {weight: "34", responsible_packer: "1"}
 
 export const setNewPostTtnCreate = createAsyncThunk(
   'ttn/create',
@@ -903,7 +897,23 @@ export const addProductTooOrder= createAsyncThunk(
 
 // https://react.trendcrm.biz/api/order/product/17
 
-
+export const getProductFromId= createAsyncThunk(
+  'product/get',
+  async (id, { rejectWithValue}) => { 
+          try {
+        const resp = await axios({
+          method: "get",
+           url:  REBASE_URL+product+`/${id}`,
+           });
+        return {data: resp.data}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
 
 
 
