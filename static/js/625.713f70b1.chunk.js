@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunktrendcrm=self.webpackChunktrendcrm||[]).push([[625],{88625:function(r,n,e){e.r(n),e.d(n,{Products:function(){return u}});var t=e(80184);function u(r){return(0,t.jsx)("div",{children:"Products pages"})}n.default=u}}]);
-//# sourceMappingURL=625.713f70b1.chunk.js.map
