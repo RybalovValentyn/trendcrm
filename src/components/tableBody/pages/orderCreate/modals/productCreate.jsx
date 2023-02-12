@@ -20,15 +20,13 @@ const handleClouse=()=>{
     dispatch(getOpenTableCreate({id: 'productCreate', str: false}));
     dispatch(newProductUpdate({id: '', str: 'clear'}))
 }
-const sendNewProduct =({attribute_id, category, cost, count, discount, name, price, data, supplier_id,typeDiscount})=>{
+const sendNewProduct =({attribute_id, category, cost, amount, discount, name, price, data, supplier_id,typeDiscount})=>{
     let atr = attribute_id?.split(',');
-    let categoryProduct = categoryList.find(n=>n.id === category).attribute
+    let categoryProduct = categoryList.find(n=>n.id === category)?.attribute
     let atributesProduct = categoryProduct.map(n=>(atributes[n]))
     let attribute = atributesProduct.map((str,i)=>{
-   return atributesProduct[i].find(n=> +n.id === +eval(atr[i]))    
+   return atributesProduct[i]?.find(n=> +n.id === +eval(atr[i]))   
     });
-
-let amount = count;
 let type_discount = typeDiscount === '%'?'0': '1'
 let order_id = orderUpdate.id;
 let presale_type = '0';

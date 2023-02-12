@@ -1,22 +1,20 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// import { alert } from '@pnotify/core';
-// axios.defaults.baseURL = 'https://react.trendcrm.biz';
-// axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.withCredentials = true;
 
-// https://react.trendcrm.biz/api/order/66/order_return
+// const BASE_URL = 'http://localhost:8080/api';
 
-const login = "/auth";
-const auth = '/auth';
 
+const BASE_URL = 'http://react.trendcrm.win/api';
+const login = "/login";
+const auth = '/authenticate'; 
 const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
+
+
 // const TREND_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function'
 
-// const REBASE_URL= 'http://localhost:5000/api';
-
-
-const syties = '/sityes';
+const syties = '/cities';
 const adress = '/adress';
 const addOrder = '/order';
 const orders = '/orders';
@@ -28,6 +26,7 @@ const excel = '/excel';
 const imp = '/import';
 const ttn = '/ttn';
 const novaPochta = '/novaposhta';
+const warehouses = '/warehouses';
 const remove = '/delete';
 const returnTtn = '/return';
 const deletOrder = '/basket';
@@ -46,12 +45,16 @@ const createProdCategory = '/create_product_category';
 const addCategory ='/add_category';
 const addAtribute = '/add_attribute';
 const add = '/add'
+const updateProductCategory = '/update_product_category'
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
-
+// let config = {headers: {Authorization: `Bearer ${cookie_value}`}
+// withCredentials: true
+// }
 
 // https://react.trendcrm.biz/api/order/27/comment
+
 
 export const loginThunk = createAsyncThunk(
   'users/login',  
@@ -59,10 +62,10 @@ export const loginThunk = createAsyncThunk(
     try {
       const response = await axios({
         method: 'post',
-        url: REBASE_URL+login,
+        url: BASE_URL+login,
          data: user});      
       const data = await response
-      console.log('loginThunk', data );
+      console.log('loginThunk', response );
       return data.data;
     } catch (error) {
       return rejectWithValue({
@@ -80,7 +83,7 @@ export const currentThunk = createAsyncThunk(
           try {
         const response = await axios({
           method: "get",
-           url:  REBASE_URL+auth,
+           url:  BASE_URL+auth,
            params: {
             id: state.auth.id,
             hashKey: state.auth.hashKey,
@@ -88,7 +91,7 @@ export const currentThunk = createAsyncThunk(
           },
           })
           const data = await response
-        // console.log('currentThunk',data);
+        console.log('currentThunk',response);
         return data.status;
       } catch (error) {
         return rejectWithValue({
@@ -107,7 +110,7 @@ export const getSitysFromNp = createAsyncThunk(
           try {
         const { data } = await axios({
           method: "post",
-           url:  REBASE_URL+syties,
+           url:  BASE_URL+novaPochta+syties+list,
           })
       return data.suggestions.flatMap(sity=> sity.value).filter((sity, index, array) => array.indexOf(sity) === index);
         
@@ -128,7 +131,7 @@ export const getAdressFromNp = createAsyncThunk(
         try {
         const { data } = await axios({
           method: "post",
-           url:  REBASE_URL+adress,
+           url:  BASE_URL+novaPochta+warehouses+list,
            data: {warehouse_city: sity}
           });
          return data.suggestions.flatMap(street=> street.value).filter((street, index, array) => array.indexOf(street) === index);
@@ -141,25 +144,22 @@ export const getAdressFromNp = createAsyncThunk(
     
   },
 );
-// method.request.querystring.params
+
 export const getAllStatuses = createAsyncThunk(
   'statuses/all',
   async (_, { rejectWithValue, getState }) => {
     const state = getState(); 
     const statuses = state.auth.order_statuses_access
-    const cookie = state.auth.id
-
         try {
-        const { data } = await axios({
+        const resp = await axios({
           method: "get",
-          url:  REBASE_URL,
-           params:{ cookie: document.cookie}
-          })
-         return {data: data.orders_status_count, statuses: statuses}
-      } catch (error) {
-        // console.log(error.message);
-        return rejectWithValue({
+          url:  BASE_URL+getStatus,
+          },
           
+          )
+         return {data: resp.data.orders_status_count, statuses: statuses}
+      } catch (error) {
+        return rejectWithValue({          
          error: error.message
         });
       }
@@ -174,11 +174,6 @@ export const getFilteredOrders = createAsyncThunk(
     const state = getState();  
     const params =  state.ordersAll.searchParams
 const searchColumn = state.ordersAll.tHeadColumnFiltered
-// const columnAll = searchColumn.map((col, ind)=>{
-// let newSearch = params[col.data]
-// return {...col, search:{value: newSearch}} 
-// })
-// console.log(columnAll, searchColumn);
     const column =searchColumn.map((col, ind)=>{
       let newSearch = params[col.data]
       return {...col, search:{value: newSearch}} 
@@ -202,7 +197,7 @@ const searchColumn = state.ordersAll.tHeadColumnFiltered
         try {
         const response = await axios({
           method: "post",
-           url:  REBASE_URL+orders,
+           url:  BASE_URL+orders,
            data: columns
           })
           // console.log('getFilteredOrders', Object.keys(response.data?.data[0])?.length);
@@ -276,10 +271,10 @@ export const getAllOrders = createAsyncThunk(
         try {
         const response = await axios({
           method: "post",
-           url:  REBASE_URL+orders,
+           url:  BASE_URL+orders,
            data: columns
           })
-
+console.log('all');
          return response.data
       } catch (error) {
         return rejectWithValue({
@@ -292,12 +287,10 @@ export const getAllOrders = createAsyncThunk(
 export const getRowsAfterAdd = createAsyncThunk(
   'rows/post',
   async (id, { rejectWithValue, getState }) => {
-  
-    // console.log(id);
-            try {
+             try {
         const { data } = await axios({
           method: "get",
-           url:  REBASE_URL+addOrder+`/${id}`,
+           url: BASE_URL+addOrder+`/${id}`,
           });
         console.log(data);
         if (data.order) {
@@ -314,7 +307,7 @@ export const getRowsAfterAdd = createAsyncThunk(
 
 export const postRowsFromForm = createAsyncThunk(
   'rows/create',
-  async (_, { rejectWithValue, getState }) => {    
+  async (sendData , { rejectWithValue, getState }) => {    
 
     const state = getState();
     
@@ -330,21 +323,22 @@ const client = state.ordersAll.client
       }
 const dataSend ={
   client: {...client, phone: state.ordersAll.client.client_phone },
-  delivery: {...rows},
+  delivery: {...rows},  
+  order_products: sendData,
   utm: {...utm}, 
   date_create: '',
   discount: "",
   discount_type: "0",
   responsible: rows.responsible,
   responsible_group: rows.responsible_group,
-  status:  rows.status,
+  status:  rows.status?rows.status: '4',
   store_url: rows.store_url
   }
   console.log(dataSend);
        try {
         const { data } = await axios({
           method: "post", 
-           url:  REBASE_URL+addOrder,
+           url:  BASE_URL+addOrder,
            data: dataSend,  
   
           })
@@ -367,7 +361,7 @@ export const setCommentAdd = createAsyncThunk(
           try {
         const { data } = await axios({
           method: "post",
-           url:  REBASE_URL+addOrder+`/${idComent}/comment`,
+           url:  BASE_URL+addOrder+`/${idComent}/comment`,
            data: {comment: coment},
           });
         console.log(data);
@@ -389,7 +383,7 @@ export const setOrderReturn = createAsyncThunk(
           try {
         const resp = await axios({
           method: "post",
-           url:  REBASE_URL+addOrder+`/${id}/${orderReturn}`,
+           url:  BASE_URL+addOrder+`/${id}/${orderReturn}`,
            data: {order_return: value},
           });
           return {data: resp.data, id, status: resp.status}
@@ -409,7 +403,7 @@ export const setOrderPayment = createAsyncThunk(
           try {
         const resp = await axios({
           method: "post",
-           url:  REBASE_URL+addOrder+`/${id}/${payment}`,
+           url:  BASE_URL+addOrder+`/${id}/${payment}`,
            data: {payment_received: value},
           });
           return {data: resp.data, id, status: resp.status}
@@ -429,7 +423,7 @@ export const setOrderUpdatestatusPrepay = createAsyncThunk(
           try {
         const {data} = await axios({
           method: "post",
-           url:  REBASE_URL+orders+prepayStatus,
+           url:  BASE_URL+orders+prepayStatus,
            data: {orders: selected, value: value},
           });
         return {data, selected}
@@ -450,7 +444,7 @@ export const setOrderStatusUpdate = createAsyncThunk(
           try {
         const {data} = await axios({
           method: "post",
-           url:  REBASE_URL+addOrder+`/${id}`,
+           url:  BASE_URL+addOrder+`/${id}`,
            data: status?{status: status, sent: sent?sent:''}:{sent: sent?sent:''},
           });
          return {data, id}       
@@ -462,7 +456,7 @@ export const setOrderStatusUpdate = createAsyncThunk(
     
   },
 );
-// https://react.trendcrm.biz/api/select/orders/ttn/from/excel
+// https://react.trendcrm.biz/api/select/orders/ttn/from/excel---------------------
 export const setFileExcelSend = createAsyncThunk(
   'file/post',
   async (file, { rejectWithValue}) => {
@@ -471,7 +465,7 @@ export const setFileExcelSend = createAsyncThunk(
           try {
         const {data} = await axios({
           method: "post",
-           url:  REBASE_URL+imp+orders+excel, 
+           url:  BASE_URL+imp+orders+excel, 
            data: {file: file},
            headers: {"Content-Type": "multipart/form-data"}
           });
@@ -485,16 +479,15 @@ export const setFileExcelSend = createAsyncThunk(
     
   },
 );
-// https://react.trendcrm.biz/api/novaposhta/order/68/ttn
 
-
+// https://react.trendcrm.biz/api/novaposhta/order/68/ttn---------------------
 export const setNewPostTtnCreate = createAsyncThunk(
   'ttn/create',
   async ({id, weight, responsible_packer }, { rejectWithValue}) => {
           try {
         const {data} = await axios({
           method: "post",
-           url:  REBASE_URL+novaPochta+addOrder+`/${id}`+ttn,
+           url:  BASE_URL+novaPochta+addOrder+`/${id}`+ttn,
            data: {weight: weight, responsible_packer: responsible_packer},
           });
          return {data, id}       
@@ -509,12 +502,12 @@ export const setNewPostTtnCreate = createAsyncThunk(
 
 export const getPrintTtn = createAsyncThunk(
   'ttn/print',
-  async ({orders, type}, { rejectWithValue}) => {
+  async ({ordersData, type}, { rejectWithValue}) => {
           try {
         const {data} = await axios({
           method: "post",
-           url:  REBASE_URL+novaPochta+ttn,
-           data: {orders: orders, type: type},
+           url:  BASE_URL+orders+novaPochta+ttn,
+           data: {orders: ordersData, type: type},
           });
          return {data}       
       } catch (error) {
@@ -526,7 +519,7 @@ export const getPrintTtn = createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/novaposhta/order/69/ttn/delete
+// https://react.trendcrm.biz/api/novaposhta/order/69/ttn/delete----------------conflict-409
 
 export const getNewPostTtnDelete = createAsyncThunk(
   'ttn/delete',
@@ -534,7 +527,7 @@ export const getNewPostTtnDelete = createAsyncThunk(
           try {
         const {data} = await axios({
           method: "post",
-           url:  REBASE_URL+novaPochta+addOrder+`/${id}`+ttn+remove,
+           url:  BASE_URL+novaPochta+addOrder+`/${id}`+ttn+remove,
            });
          return {data, id}       
       } catch (error) {
@@ -545,15 +538,14 @@ export const getNewPostTtnDelete = createAsyncThunk(
     
   },
 );
-//react.trendcrm.biz/api/novaposhta/ttn/75/return
-
+//react.trendcrm.biz/api/novaposhta/ttn/75/return -----------------conflict -409
 export const getNewPostTtnReturn = createAsyncThunk(
   'ttn/return',
   async (id, { rejectWithValue}) => {
           try {
         const {data} = await axios({
           method: "post",
-           url:  REBASE_URL+novaPochta+addOrder+`/${id}`+ttn+returnTtn,
+           url:  BASE_URL+novaPochta+addOrder+`/${id}`+ttn+returnTtn,
            });
          return {data, id}       
       } catch (error) {
@@ -564,7 +556,6 @@ export const getNewPostTtnReturn = createAsyncThunk(
     
   },
 );
-// https://react.trendcrm.biz/api/order/31/basket
 
 export const RemoveOrderFromId= createAsyncThunk(
   'order/delete',
@@ -572,7 +563,7 @@ export const RemoveOrderFromId= createAsyncThunk(
           try {
         const resp = await axios({
           method: "post",
-           url:  REBASE_URL+addOrder+`/${id}`+deletOrder,
+           url:  BASE_URL+addOrder+`/${id}`+deletOrder,
            data: {orders: [id], values: {status: 32}}
            });
            return {data: resp.status, id}       
@@ -591,7 +582,7 @@ export const getDataForAutocompliteList= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+products+name+autocomplete+list,
+           url:  BASE_URL+products+name+autocomplete+list,
            data: {query: query?query:''}
            });
           //  console.log(resp.data.suggestions);
@@ -611,7 +602,7 @@ export const getAtributesAutocompliteList= createAsyncThunk(
           try {
         const resp = await axios({
           method: "get",
-           url:  REBASE_URL+attributes,
+           url:  BASE_URL+attributes,
            });
         
            return {data: resp.data.data}       
@@ -631,7 +622,7 @@ export const setAtributesCreate= createAsyncThunk(
           try {
         const resp = await axios({
           method: "post",
-           url:  REBASE_URL+attributes,
+           url:  BASE_URL+attributes,
            data: state.ordersAll.newAtribute
            });
            return {data: resp.data ,text: state.ordersAll.newAtribute.name }       
@@ -650,7 +641,7 @@ export const getSupliersList= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+suppliers,
+           url:  BASE_URL+suppliers,
            data: {query: query?query:''}
            });
           //  console.log(resp);
@@ -664,16 +655,13 @@ export const getSupliersList= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/category_list
-
-
 export const getCategoryList= createAsyncThunk(
   'category/list',
   async (_,{ rejectWithValue}) => {
           try {
         const resp = await axios({
           method: "get",
-           url:  REBASE_URL+category,
+           url:  BASE_URL+category,
            });
           //  console.log(resp.data);
            return {data: resp.data}       
@@ -686,7 +674,6 @@ export const getCategoryList= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/novaposhta/description_list_by_data
 
 export const getDescriptionList= createAsyncThunk(
   'description/list',
@@ -694,7 +681,7 @@ export const getDescriptionList= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+novaPochta+description,
+           url:  BASE_URL+novaPochta+description,
            data: {query: query?query:''}
            });
            return {data: resp.data.suggestions}       
@@ -707,8 +694,6 @@ export const getDescriptionList= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/product
-
 export const setNewProductCreate= createAsyncThunk(
   'product/create',
   async (_, { rejectWithValue, getState}) => {
@@ -716,7 +701,7 @@ export const setNewProductCreate= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+product,
+           url:  BASE_URL+product,
            data: state.ordersAll.productCreate
            });
            console.log(state.ordersAll.productCreate);
@@ -731,8 +716,6 @@ export const setNewProductCreate= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/supplier
-
 export const setNewSupplierCreate= createAsyncThunk(
   'supplier/create',
   async (_, { rejectWithValue, getState}) => {
@@ -740,7 +723,7 @@ export const setNewSupplierCreate= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+supplier,
+           url:  BASE_URL+supplier,
            data: state.ordersAll.newSuplplier
            });
            return {data: resp.data}       
@@ -753,16 +736,13 @@ export const setNewSupplierCreate= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/attribute_category
-// atrCategory
-
 export const setAtributeCategoryList= createAsyncThunk(
   'atribute_category/list',
   async (_, { rejectWithValue}) => {
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+atrCategory,
+           url:  BASE_URL+atrCategory,
            });
           //  console.log(resp);
            return {data: resp.data}       
@@ -775,7 +755,6 @@ export const setAtributeCategoryList= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/create_product_category
 
 export const setProductCategoryCreate= createAsyncThunk(
   'prod_category/create',
@@ -785,7 +764,7 @@ export const setProductCategoryCreate= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+createProdCategory,
+           url:  BASE_URL+createProdCategory,
            data: state.ordersAll.newCategory
            });
            return {data: resp.data}       
@@ -798,8 +777,6 @@ export const setProductCategoryCreate= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/add_category
-
 export const setAddCategoryAtribute= createAsyncThunk(
   'add_category/create',
   async (_, { rejectWithValue, getState}) => {
@@ -808,7 +785,7 @@ export const setAddCategoryAtribute= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+addCategory,
+           url:  BASE_URL+addCategory,
            data: state.ordersAll.newCetegoryAtribute
            });
            console.log(resp);
@@ -832,7 +809,7 @@ export const setAddAtribute= createAsyncThunk(
           try {
          const resp = await axios({
           method: "post",
-           url:  REBASE_URL+addAtribute,
+           url:  BASE_URL+addAtribute,
            data: state.ordersAll.newAtribute
            });
            console.log(resp);
@@ -855,7 +832,7 @@ export const updateProductFromId= createAsyncThunk(
           try {
         const resp = await axios({
           method: "post",
-           url:  REBASE_URL+product+`/${id}`,
+           url:  BASE_URL+product+`/${id}`,
            data:  {category_id: state.ordersAll.newProduct.category}
            });
           //  console.log(resp);
@@ -869,20 +846,16 @@ export const updateProductFromId= createAsyncThunk(
   },
 );
 
-// https://react.trendcrm.biz/api/order/87/product/add
-
 export const addProductTooOrder= createAsyncThunk(
   'product_add/create',
   async ({id, data}, { rejectWithValue, getState}) => {
     const state = getState(); 
-    // console.log(data);
           try {
         const resp = await axios({
           method: "post",
-           url:  REBASE_URL+addOrder+`/${id}`+product+add,
+           url:  BASE_URL+addOrder+`/${id}`+product+add,
            data:  data
            });
-          //  console.log(resp);
            return {data: resp.data, id: id }       
       } catch (error) {
         return rejectWithValue({
@@ -903,7 +876,7 @@ export const getProductFromId= createAsyncThunk(
           try {
         const resp = await axios({
           method: "get",
-           url:  REBASE_URL+product+`/${id}`,
+           url:  BASE_URL+product+`/${id}`,
            });
         return {data: resp.data}       
       } catch (error) {
@@ -915,11 +888,46 @@ export const getProductFromId= createAsyncThunk(
   },
 );
 
+// https://react.trendcrm.biz/api/order/product/40
+export const setProductInOrderFromId= createAsyncThunk(
+  'product/set',
+  async ({id, data}, { rejectWithValue}) => { 
+    console.log(id, data);
+          try {
+        const resp = await axios({
+          method: "post",
+           url:  BASE_URL+addOrder+product+`/${id}`,
+           data: data   
+          });
+        return {data: resp.data, id: id}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
 
-
-
-
-
+export const setUpdateProductCategory= createAsyncThunk(
+  'productCategory/update',
+  async (data, { rejectWithValue}) => { 
+            try {
+        const resp = await axios({
+          method: "post",
+           url:  BASE_URL+updateProductCategory,
+           data: data   
+          });
+          console.log(resp.data);
+        return {data: resp.data, id: data.id}       
+      } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
 
 
 

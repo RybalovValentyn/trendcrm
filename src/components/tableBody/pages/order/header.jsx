@@ -73,7 +73,7 @@ const stopTimer = ()=>{
 
 const handleClick = ()=>{
   dispatch(getClouseTableCreate())
-  navigate('/trendcrm/order')
+  navigate('/order')
   
 }
 
@@ -83,7 +83,7 @@ dispatch(CountUpdate())
 if (filteredRows?.length > 0) {
   dispatch(getFilteredOrders())
 } else dispatch(getAllOrders())
-// navigate('/trendcrm/orders')
+// navigate('/orders')
 }
 
 

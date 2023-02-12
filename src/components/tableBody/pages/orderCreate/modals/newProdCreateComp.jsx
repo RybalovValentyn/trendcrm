@@ -9,9 +9,11 @@ import Grid from '@mui/material/Unstable_Grid2';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import { BootstrapTooltip } from "../../order/styles";
 import CheckComponent from "../components/checkComponent";
-import { setAtributeCategoryList } from '../../../../../redux/asyncThunc';
+import { setAtributeCategoryList, getCategoryList, setUpdateProductCategory } from '../../../../../redux/asyncThunc';
 import MultipleAutocompliteComponent from '../components/multipleAutocomplite';
 import { useState } from 'react';
+import Button from '@mui/material/Button';
+import SaveIcon from '@mui/icons-material/Save';
 
 const NewProductCreateComponent=()=>{
     const dispatch =useDispatch();
@@ -26,7 +28,8 @@ const NewProductCreateComponent=()=>{
    const newCategoryAtributes = {name: "Створити категорію атрибуту", id: "newAtr_category", status: '', sort: '', prod_categ: ''}
    const [newSuppliers, setNewSuppliers] = useState([]);
    const [newAtribute, setNewAtribute] = useState([]);
-   const [renderAtribute, setRenderAtribute] = useState([])
+   const [renderAtribute, setRenderAtribute] = useState([]);
+   const [show, setshow]= useState(false);
 
 const handleClickIcon=()=>{
     dispatch(getOpenTableCreate({id: 'volumeCalc', str: true}));
@@ -52,12 +55,11 @@ const handleCategorySelect=(e, newValue)=>{
 //    console.log(newValue);
     let atrArrId = newValue.attribute
     if (atrArrId.length > 0) {
-        // console.log(atrArrId);
       let atributesId =  atrArrId.map(str=>(atrCategory.find(n=>n.id === str))) 
-        handleCategoryAtrSelect(e, atributesId)
+      setshow(false)
+        handleCategoryAtrSelect(e, atributesId, atrArrId)
               if (atributesId.length > 0) {
-                // console.log(atributesId);
-            setRenderAtribute(atributesId)
+               setRenderAtribute(atributesId)
         }
  
     } else if (atrArrId.length <= 0) {
@@ -99,7 +101,9 @@ if (s.includes('new_suplier') ) {
 dispatch(newProductCreate({id: 'supplier', str: s}))
 setNewSuppliers(newSupliers)
 }
-const handleCategoryAtrSelect=(e, newValue)=>{
+
+
+const handleCategoryAtrSelect=(e, newValue, newCategorySelected)=>{
     // console.log(newValue);
     let ind = newValue.findIndex(n=>n.id === 'newAtr_category')
     if (ind !== -1) {
@@ -108,26 +112,51 @@ const handleCategoryAtrSelect=(e, newValue)=>{
         dispatch(newProductCreate({id: 'attribute_category', str: []}))
         return
     }
+
     let newCategory = [...newValue].filter((str, index, array) => array.indexOf(str) === index );
-    let ids = newCategory.map(n=>(n.id))    
+
+    let ids = newCategory.map(n=>(n.id))      
+    setRenderAtribute(newCategory) 
+
+
+if (!newCategorySelected) {   
+    let atributeCategoryId =  categoryList.find(n=>n.id === category)?.attribute
+    let isIncludes =indentArray(atributeCategoryId, ids );
+    setshow(!isIncludes)
+// console.log(isIncludes);
+}
+
      dispatch(newProductCreate({id: 'attribute_category', str: ids}))
      setNewAtribute(newCategory)
 
 }
 
+const indentArray = (arr1, arr2)=>{
+    console.log(arr1, arr2);
+    if (arr1?.length === arr2?.length) {
+    let inc = arr1.map(n=>(arr2.includes(n)))
+       return arr1.length === inc.length?true:false
+    } else return false
+}
+
 const handleAtributeSelect =(e, newValue, textContent)=>{
-    console.log(newValue);
     let d =atrCategory.find(n=>n.name === textContent)
-    console.log(d);
     if (newValue.id === 'new_atribute') {
         dispatch(getOpenTableCreate({id: 'newAtribute', str: true}));
         dispatch(autoUpdateAllReducer({id: 'category', state: 'newAtribute', str: d.id}))
       return
    }
-//    let value = ''
-//    value = `${newProduct.attribute_id}, ${newValue.id}`
-//    dispatch(newProductCreate({id: 'attribute_id', str: newValue.id}))
-//    dispatch(autoUpdateAllReducer({id: 'category', state: 'newAtribute', str: d.id}))
+}
+
+const saveButtonClick=()=>{
+    dispatch(setUpdateProductCategory({id:category, attributes: renderAtribute.map(n=>(n.id))}))
+    setTimeout(updateCategory, 200);
+}
+
+const updateCategory=()=>{
+  dispatch(setAtributeCategoryList()) 
+  dispatch(getCategoryList()) 
+  setshow(false)
 }
 
     return(
@@ -156,7 +185,10 @@ const handleAtributeSelect =(e, newValue, textContent)=>{
         <MultipleAutocompliteComponent data={[newCategoryAtributes, ...atrCategory]} disp={handleCategoryAtrSelect} textContent={'Категорія атрибутів:'} id={'attribute_category'}
         value={newAtribute} dafaultValue={false} label={'Не вибрано'} inputWidth={6} 
         showInput={true}  onInputFunc={false} sort={true} alignCenter={true} alignText={true} buttonId={'newAtr_category'} free={false}/ >
-        
+        {show?<Box sx={{width: '100%', textAlign: 'center'}}><Button onClick={saveButtonClick} size="small" variant="outlined" startIcon={<SaveIcon  />}>
+       Зберегти зміни в категорії
+        </Button>
+        </Box>:null}
         {renderAtribute.length > 0 && renderAtribute.map((str,i)=>{
             let data = []
             if (atributes[str.id]) {

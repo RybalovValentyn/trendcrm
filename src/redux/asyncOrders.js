@@ -1,9 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
-// const REBASE_URL= 'http://localhost:5000/api';
-const postStatus = '/status'
+const REBASE_URL = 'http://react.trendcrm.win/api'
+// const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
+// const REBASE_URL= 'http://localhost:8080/api';
+const postStatus = '/select_list/3/select_item/add'
 
 
 export const getValidationForm = createAsyncThunk(
@@ -41,7 +42,7 @@ return error
   },
 );
 
-
+// https://react.trendcrm.biz/api/select_list/3/select_item/add
 
 export const orderStatusThunk = createAsyncThunk(
   'orders/status',

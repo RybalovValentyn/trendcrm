@@ -26,7 +26,7 @@ import functionReduser from './funcReduser';
   const orderPersistConfig = {
     key: 'orderAll',
     storage,
-    blacklist: ['isError', 'error', 'createRows', 'message', 'typeMessage', 'sneckBarMessage',
+    blacklist: ['isError', 'error', 'createRows', 'message', 'typeMessage', 'sneckBarMessage', 'statusName',
      'messageSendFile', 'sortColumn', 'sortTable', 'modalControl', 'ttnWeigth', 'ttnResponsible', 'calcVolume', 'newCategory',
     'newProduct']
     };

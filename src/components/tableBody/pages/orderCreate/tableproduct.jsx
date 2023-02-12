@@ -17,6 +17,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import {alertMessageUpdate, autoUpdateAllReducer, autoUpdate} from "../../../../redux/ordersReduser";
 import { priceUpdate } from '../order/functionOrder';
+import { setProductInOrderFromId } from '../../../../redux/asyncThunc';
 
 export default function TableProduct() {
   const dispatch =useDispatch();
@@ -25,18 +26,22 @@ export default function TableProduct() {
   const suppliers = useSelector((state) => state.ordersAll.suppliers);
   const atributes = useSelector((state) => state.ordersAll.atributes);
   const categoryList = useSelector((state) => state.ordersAll.category);
-
+  const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
   const [rows, setRows] =useState([])
+  const [isUpdate, setIsUpdate] = useState('')
+
+const supplierUpdate =[{id: 'slose', name: '-закрити-'}, {id: 'null', name: '-пусто-'}]
 
 useEffect(()=>{
+  // console.log(products);
 let renderRows  = products.map((str,i)=>(createData(str)))
 setRows(renderRows)
   },[products])
 
-  function createData({data, name, attribute_id, price, count, discount, cost, supplier_id, category, typeDiscount, categoryListFrom}) {
+  function createData({data, name, attribute_id, price, count ,amount, discount, cost, supplier_id, category, typeDiscount, categoryListFrom}) {
     let atr = attribute_id?.split(',');
     let atrCategoryProd = []
-    if (atr[0] && category) {
+    if (atr && atr[0] && category) {
       let categoryProduct = categoryList.find(n=>n.id === category)?.attribute      
       let atributesProduct = categoryProduct.map(n=>(atributes[n]))
            atrCategoryProd = categoryProduct.map((n, i )=>{
@@ -49,10 +54,11 @@ setRows(renderRows)
         return ([nameProd, atributeProduct])
       }
          )
-    } else if (categoryListFrom.length > 0 ) {
+    } else if (categoryListFrom?.length > 0 ) {
       atrCategoryProd = [...categoryListFrom]
     }
-    return {data, name, atrCategoryProd, price, count, discount, cost, supplier_id, typeDiscount };
+    amount=amount?amount:count
+    return {data, name, atrCategoryProd, price, amount, discount, cost, supplier_id, typeDiscount };
   }
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -102,30 +108,59 @@ const handleInputChange=(e,i, row)=>{
   el.value = str
 }
 const handleBlurAction=(e,i, row)=>{
-  let id = e.target.id.split('-')[1]
+    let id = e.target.id.split('-')[1]
 let value = e.target.value
 let product = {...products[i]}
 product[id] = value
 updateState(i,product)
+if (isUpdateRows) {
+dispatch(setProductInOrderFromId({id: row.data, data:{[id]:value }}))
+}
 }
 
 const handleChangeSelect=(e, i, row)=>{
  let type = e.target.value
  let product = {...products[i]}
-product.typeDiscount = type
- 
+product.typeDiscount = type 
  updateState(i, product, type)
+ if (isUpdateRows) {
+  console.log(i);
+  let t = type === '%'?'0':'1'
+  dispatch(setProductInOrderFromId({id: row.data, data:{type_discount:t }}))
+  }
+ 
 }
 
 const updateState=(i,product, type)=>{
-//  console.log(product);
- product.cost = priceUpdate(product.price, product.count ,product.discount ,type?type:product.typeDiscount )
+ product.cost = priceUpdate(product.price, product.amount ,product.discount ,type?type:product.typeDiscount )
   let productCopy = [...products]
   productCopy.splice(i, 1, product)
  dispatch(autoUpdate({ id: 'productData', str: productCopy}))
 }
-const handleChangeInput=()=>{
+const handleChangeInput=()=>{}
 
+const handleChangeSelectSupplier=(e, i, row)=>{
+  let suplier = e.target.value
+  if (suplier === 'slose') {
+    setIsUpdate('')
+    return
+  } else if (suplier === 'null') {
+    suplier = ''
+  }
+  let product = {...products[i]}
+  product.supplier_id = [suplier]
+  let productCopy = [...products]
+  productCopy.splice(i, 1, product)
+ dispatch(autoUpdate({ id: 'productData', str: productCopy}))
+  setIsUpdate('')
+  if (isUpdateRows) {
+    console.log(i);
+    dispatch(setProductInOrderFromId({id: row.data, data:{supplier_id:suplier }}))
+    }
+}
+
+const handleSuppliersDoubleClick =(e,i)=>{
+  setIsUpdate(i)
 }
   return (
     <TableContainer component={Paper}>
@@ -157,13 +192,13 @@ const handleChangeInput=()=>{
                 <Typography sx={{fontSize: '12px',}} key ={i}>{`${str[0]}: ${str[1]}`}</Typography>
               ))}</StyledTableCell>
               <StyledTableCell align="center">{<TableInput func = {handleInputChange} id={'price'} row = {row} i={i} funcBlur={handleBlurAction}></TableInput>}</StyledTableCell>
-              <StyledTableCell align="center">{<TableInput func = {handleInputChange} id={'count'} row = {row} i={i} funcBlur={handleBlurAction}></TableInput>}</StyledTableCell>
+              <StyledTableCell align="center">{<TableInput func = {handleInputChange} id={'amount'} row = {row} i={i} funcBlur={handleBlurAction}></TableInput>}</StyledTableCell>
 
               <StyledTableCell align="center">{<Box sx={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}><TableInput func = {handleInputChange} id={'discount'} row = {row} i={i} funcBlur={handleBlurAction}></TableInput>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"        
-                label="Discount"
+                label=""
                 onChange={(e)=>handleChangeSelect(e,i,row)}
                 defaultValue= '%'
                 value={row.typeDiscount}
@@ -171,14 +206,34 @@ const handleChangeInput=()=>{
                 >
                             <MenuItem value={'%'}>{'%'}</MenuItem>
                              <MenuItem value={'ua'}>{'UAH'}</MenuItem>
-                </Select>
+              </Select>
                  </Box> }</StyledTableCell>
 
               <StyledTableCell align="center" > <input className={s.inputTableNoboard} id={`${i}-cost`}  role="presentation" autoComplete="off"
                                     onChange={handleChangeInput}  value={row.cost}></input></StyledTableCell>
-              <StyledTableCell align="center">{row.supplier_id.length>0 ? row.supplier_id.map((str,i)=>(
-                <Typography sx={{fontSize: '12px',}} key ={i}>{suppliers.find(s=>s.id === str)?.name}</Typography>
-              )): 'Не вибрано'}</StyledTableCell>
+              <StyledTableCell   align="center"><div onDoubleClick={(e)=>handleSuppliersDoubleClick(e,i)}>{row.supplier_id.length && (isUpdate !== i) >0 ? 
+              row.supplier_id.map((str,i)=>(
+               <Typography  sx={{fontSize: '12px',"&:hover":{cursor:'pointer'}}} key ={i}>{suppliers.find(s=>s.id === str)?.name?suppliers.find(s=>s.id === str)?.name:'Не вибрано'}</Typography>
+              )): null}
+              </div>
+            
+              {isUpdate === i && <Select
+                labelId="supplierst-label"
+                id="supplierst"        
+                label=""
+                autoWidth
+                onChange={(e)=>handleChangeSelectSupplier(e,i,row)}
+                defaultValue= {suppliers.find(s=>s.id === row.supplier_id[0])?suppliers.find(s=>s.id === row.supplier_id[0]).id: ''}
+                value={suppliers.find(s=>s.id === row?.supplier_id[0])?suppliers.find(s=>s.id === row?.supplier_id[0])?.id: 'Не вибрано'}
+                sx={selectStyle}
+                >
+          {[...supplierUpdate, ...suppliers].map((str) => (
+            <MenuItem key={str.id} value={str.id}>
+                  {str.name}
+            </MenuItem>
+          ))}
+                </Select>}
+              </StyledTableCell>
               <StyledTableCell align="center"><BackspaceIcon onClick={()=>handleDeleteClick(i)} sx={{color: 'red', '&:hover': {cursor: 'pointer'}}}/></StyledTableCell>
             </TableRow>
           ))}

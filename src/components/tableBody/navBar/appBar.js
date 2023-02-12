@@ -39,21 +39,21 @@ const isShowMediaUserList=()=>{
     <Box  sx={navListStyle}>
         <List sx={{padding: 0, heigth: '47px', alignItems: 'center', display: 'flex', '& :hover':{backgroundColor: '#eeeeee'}}}>
             <ListItem  sx={{heigth: '100%',width: '54px', padding: '5px 15px'}}>
-                <NavLink to="/trendcrm/orders">
+                <NavLink to="/orders">
                     <BootstrapTooltip  title="Замовлення">
                 <ListAltOutlinedIcon sx={{fill: '#777', marginTop: '5px'}} />
                      </BootstrapTooltip>
                 </NavLink>
             </ListItem>
             <ListItem sx={{heigth: '100%',width: '54px', padding: '5px 15px'}}>
-                <NavLink to="/trendcrm/orders">
+                <NavLink to="/orders">
                     <BootstrapTooltip  title="Аналітика">
                 <LeaderboardOutlinedIcon sx={{fill: colorsRef.svgColor, marginTop: '5px'}} />
                      </BootstrapTooltip>
                 </NavLink>
             </ListItem>
             <ListItem sx={{heigth: '100%',width: '54px', padding: '5px 15px'}}>
-                <NavLink to="/trendcrm/orders">
+                <NavLink to="/orders">
                     <BootstrapTooltip  title="Info">
                 <InfoOutlinedIcon sx={{fill: colorsRef.svgColor, marginTop: '5px'}} />
                      </BootstrapTooltip>

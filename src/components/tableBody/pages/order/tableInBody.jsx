@@ -49,34 +49,31 @@ const handleClick =(e)=>{
   let str = e.target.id;
   if (e.target.id === '0' || e.target.id === 0) {
     dispatch(autoUpdate({id:'statusName', str: null}));
-    navigate('/trendcrm/orders');
-  } else if (Number(str)) {
+    navigate('/orders');
+  } else 
+  if (Number(str)) {
     dispatch(autoUpdate({id:'statusName', str: str}));
     setSearchParams(createSearchParams({ status: str }));
   }
   getUpdate()
 }
 
-// useEffect(()=>{
-//   console.log('searchstatus', seachStatus, statusName);
-//   if(Number(seachStatus)){
-//     console.log('statusName');
-//     setSearchParams(createSearchParams({ status: seachStatus }));
-//   }
-//   getUpdate()
-// },[seachStatus])
 
-// useEffect(()=>{
-//   console.log('statusName dddddddddddddd', statusName);
-//   // if(Number(seachStatus)){
-//   //   console.log('statusName');
-//   //   setSearchParams(createSearchParams({ status: seachStatus }));
-//   // }
-//   // getUpdate()
-// },[statusName])
+useEffect(()=>{
+  if(Number(statusName )){    
+    // setSearchParams(createSearchParams({ status: statusName }));
+    dispatch(autoUpdate({id:'statusName', str: statusName}));
+    
+  }
+  if (seachStatus !== statusName) {
+    setValue(statusName?statuses.findIndex(n=>n.id === statusName):statuses.findIndex(n=>n.id === seachStatus))   
+    getUpdate()
+  }  
+},[statusName])
 
 
 const getUpdate = ()=>{
+  console.log('update from statuses', seachStatus ,statusName);
   sessionStorage.setItem("selected", '');
   if (filteredRows?.length > 0) {
     dispatch(getFilteredOrders())
@@ -89,7 +86,7 @@ const handleChange = (event, newValue) => {
   return (
     <Box sx={boxStyles} >
       <Tabs
-        value={value}
+        value={value?value:0}
         onChange={handleChange}
         variant="scrollable"
         scrollButtons

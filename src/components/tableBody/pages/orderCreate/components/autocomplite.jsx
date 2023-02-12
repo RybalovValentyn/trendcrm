@@ -13,6 +13,7 @@ const AutocompliteComponent=({data, disp,id, textContent, dafaultValue, value, l
                            sort=true, alignCenter=false, alignText=false, multiple=false, inWidth=6 , readOnly=false, onInputfocus, 
                            render = 'name', index, disabled, textWidth=3, textMaxWidth='110px'}  )=>{
   const dispatch = useDispatch()
+ const renderOptionError =  {id:'render_option_error', name: 'no name'}
 const autocompliteInputStyle={
 '& .MuiAutocomplete-input':{   
         fontSize: '13px',          
@@ -61,7 +62,13 @@ const filterOptions = createFilterOptions({
             )
               
             }
-            getOptionLabel={(option) => option[render]?option[render]:option.data}          
+    
+            getOptionLabel={(option) => {
+              if (option[render] === '') {
+                console.log(option);
+                return renderOptionError.name
+              } else  return (option[render] ?option[render]:option.data)}
+            }     
               sx={autocompliteInputStyle}
               renderOption={(props, option) => {
                 

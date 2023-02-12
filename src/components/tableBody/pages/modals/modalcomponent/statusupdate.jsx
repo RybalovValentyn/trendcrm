@@ -34,7 +34,7 @@ const StatusUpdate = () =>{
         selected =  sessionStorage.getItem("selected")?.split(',');
     }
     if (selected.length >0) {
-      let idStatus = columns.find(n=>n.id === selected[0]).status       
+      let idStatus = columns?.find(n=>n.id === selected[0])?.status       
       defaultStatus =  statuses?.find(str=> str.id === idStatus);
     }
 

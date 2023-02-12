@@ -31,7 +31,7 @@ export const ListAutocompliteStatuses =()=>{
         }
        return array
      },[])
-
+     const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
     const responsibleList = useSelector((state) => state.ordersAll.responsible);
     const groups = useSelector((state)=> state.addStatus.groups);
     const newGroup = {id: "0", name: "Без групи", disabled: "0"};
@@ -40,31 +40,17 @@ export const ListAutocompliteStatuses =()=>{
     const defaultRespinsible = responsibleList.find(str=> str.id === '0');
     const storeUrl = useSelector((state) => state.ordersAll.createRows.store_url);
     const clientDate = useSelector((state) => state.ordersAll.createRows.date_create);
+     const createRows = useSelector((state) => state.ordersAll.createRows);
 
+const onAutocompliteChange=(e, newValue, id)=>{   
+     if (newValue.statusId === '0') {
+       return dispatch(modalOpenUpdate(true)) 
+    } else dispatch( getFormTable({id, str: newValue.id }))
 
-const onAutocompliteChange=(e)=>{    
-    let id = e.target.id.split('-')[0]
-    let ind = e.target.id.split('-')[2]
-    let stat = renderFilteredStatus[ind]
-    console.log(Number(stat?.statusId) === 0);
-    if (Number(stat?.id)) {
-        let str = stat?.id? stat.id: 0;        
-       dispatch( getFormTable({id, str }))
-    } else if (Number(stat?.statusId) === 0) {
-             dispatch(modalOpenUpdate(true))
-    }};
+};
 
-const onAutocompliteResponsible=(e)=>{
-    let id = e.target.id.split('-')[0]
-    let ind = e.target.id.split('-')[2]
-    let str = ind
-    dispatch( getFormTable({id, str }))
-}
-const onAutocompliteGrop =(e)=>{
-    let id = e.target.id.split('-')[0]
-    let ind = e.target.id.split('-')[2]
-    let str = noGroups[ind]?noGroups[ind].id: ''
-    dispatch( getFormTable({id, str }))
+const onAutocompliteResponsible=(e, newValue, id)=>{
+    dispatch( getFormTable({id, str:newValue.id }))
 }
 const inputChange=(e)=>{
     let id = e.target.id
@@ -111,8 +97,8 @@ const paperStyle={
 
             <Autocomplete
                 id={'status'}
-                onChange={onAutocompliteChange}
-                value={defaultStatus}                
+                onChange={(e, newValue, id)=>onAutocompliteChange(e, newValue, id ='status' )}
+                value={createRows.status && createRows.status !== '0'?renderFilteredStatus.find(n=>n.id === createRows.status): defaultStatus}                
                 options={renderFilteredStatus}
                 disableClearable
                 getOptionLabel={(option) => option.name}
@@ -132,9 +118,9 @@ const paperStyle={
         <Autocomplete
             disablePortal
                 id={'responsible'}
-                 onChange={onAutocompliteResponsible}
-                value={defaultRespinsible}
-                options={responsibleList}  
+                 onChange={(e, newValue, id)=>onAutocompliteResponsible(e, newValue, id = 'responsible')}
+                value={(createRows?.responsible && createRows?.responsible !== '0'?responsibleList?.find(n=>n.id === createRows?.responsible):defaultRespinsible)?responsibleList?.find(n=>n.id === createRows?.responsible):null }
+                options={responsibleList} 
                 getOptionLabel={(option) => option.name}        
                 sx={autocompliteInputStyle}
                 disableClearable
@@ -145,10 +131,9 @@ const paperStyle={
         <Autocomplete
             disablePortal
             disableClearable
-                // id={'group_name'}
-                id={'responsible_group'}
-                 onChange={onAutocompliteGrop}
-                value={defaultGroup}
+               id={'responsible_group'}
+                 onChange={(e, newValue, id)=>onAutocompliteResponsible(e, newValue, id = 'responsible_group')}
+                value={createRows.responsible_group && createRows.responsible_group !== '0'?groups.find(n=>n.id === createRows.responsible_group):defaultGroup}
                 options={noGroups}
                 getOptionLabel={(option) => option.name}
                 renderOption={(props, option, { selected }) => (
@@ -166,13 +151,13 @@ const paperStyle={
     <ListItem sx={listItemStyles} >
             <BootstrapInput   
             onChange={inputChange}
-            sx={{backgroundColor: colorsRef.formBgColor,minWidth: '100px', maxWidth: '160px', width: '100%' }} 
+            sx={{backgroundColor: colorsRef.formBgColor,minWidth: '100px', maxWidth: '160px', width: '100%',  textAlign: 'center' }} 
             placeholder={'Сайт'}
              value={storeUrl}
               id="store_url"
              variant="outlined" />
-     </ListItem>
-     <ListItem sx={listItemStyles} >
+   </ListItem>
+   {  !isUpdateRows ? <ListItem sx={listItemStyles} >
      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
             <DatePicker
              id={'date_create'}            
@@ -182,7 +167,7 @@ const paperStyle={
             renderInput={(params) => <ValidationTextField sx={{backgroundColor: colorsRef.formBgColor, borderRadius: '8px'}} align='center' {...params} />}
         />
     </LocalizationProvider>
-     </ListItem>
+     </ListItem>: null}
         </List>
         </Paper>
     )

@@ -15,14 +15,41 @@ const hashKey = Object.freeze({
   },
 });
 
+export const userData = {
+id : '',
+login: '',
+role:'',
+name: '',
+sip_login: '',
+// menu_list_access: [],
+// order_statuses_access: [],
+payment_received: '0',
+order_return: '0',
+create_ttn: null,
+admin: false,
+marketer: null,
+manager: null,
+courier: null,
+show_phone_number: null,
+ port: null,
+vers: null,
+lang: 'ua',
+tour: null,
+group: null,
+is_telephony: false,
+is_c: false,
+call_from_system:'0',
+}
+
+
 const authSlice = createSlice({
   name: 'user',
   initialState: {
    id : '',
    hashKey: null,
    login: '',
-   role: null,
-   name: 'Admin',
+   role:'',
+   name: '',
    sip_login: null,
     isLoading: false,
     isAuth: false,
@@ -31,20 +58,25 @@ const authSlice = createSlice({
     menu_list_access: [],
     order_statuses_access: [],
     payment_received: null,
-    order_return: null,
+    order_return: '0',
     create_ttn: null,
-    admin: null,
+    admin: false,
     marketer: null,
     manager: null,
     courier: null,
     show_phone_number: null,
     port: null,
     vers: null,
-    lang: null,
+    lang: 'ua',
     tour: null,
     group: null,
     taryf: 'SILVER',
-    daysToEnd: '0'
+    daysToEnd: '0',
+    is_telephony: false,
+    is_c: false,
+    call_from_system:'0',
+
+
   },
 
   reducers: {
@@ -68,7 +100,7 @@ const authSlice = createSlice({
       };
     },
     [loginThunk.fulfilled](state, action) {
-      console.log(JSON?.parse(action.payload?.menu_list_access));
+      // console.log(JSON?.parse(action.payload?.menu_list_access));
       return {
         ...state,
         id : action.payload.id,
@@ -78,9 +110,8 @@ const authSlice = createSlice({
         name: action.payload.name,
         sip_login: action.payload.sip_login,
          isLoading: false,
-        //  isAuth: (action.payload.hashKey!== '' && action.payload.hashKey)?true:false,
-         menu_list_access: JSON?.parse(action.payload?.menu_list_access),
-         order_statuses_access: JSON?.parse(action.payload?.order_statuses_access),
+         menu_list_access: JSON?.parse(action.payload?.menu_list_access)?JSON?.parse(action.payload?.menu_list_access):[],
+         order_statuses_access: JSON?.parse(action.payload?.order_statuses_access)? JSON?.parse(action.payload?.order_statuses_access):[],
          payment_received: action.payload.payment_received,
          order_return: action.payload.order_return,
          create_ttn: action.payload.create_ttn,
@@ -94,6 +125,10 @@ const authSlice = createSlice({
          lang: action.payload.lang,
          tour: action.payload.is_tour,
          group: action.payload.group,
+         call_from_system: action.payload.call_from_system,
+         is_c:  action.payload.is_c,
+         is_telephony: action.payload.is_telephony
+
       };
     },
     [loginThunk.rejected](state, action) {

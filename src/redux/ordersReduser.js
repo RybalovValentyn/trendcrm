@@ -8,7 +8,7 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
           getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList,
           getDescriptionList, setNewProductCreate, setNewSupplierCreate, setAtributeCategoryList,
           setProductCategoryCreate, setAddCategoryAtribute, setAddAtribute, setAtributesCreate,
-          updateProductFromId, addProductTooOrder, getProductFromId} from './asyncThunc';
+          updateProductFromId, addProductTooOrder, getProductFromId, setProductInOrderFromId, setUpdateProductCategory} from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
@@ -38,14 +38,14 @@ const rows=  {
   novaposhta_comment: "",
   tnn: '',
   sent: "0",
-  status: "0",
+  status: "4",
   doors_address: "",
   doors_city: "",
   doors_house: "",
   doors_flat: "",
   responsible: '0',
   // group_name: '',
-  responsible_group: "4",
+  responsible_group: "0",
   store_url:'',
   // ttn_cost: '',
   client_comment: '',
@@ -67,6 +67,7 @@ const client={
   comment: '',
   additional_field: '',
   // group_name: '',
+
 }
 
 const searchRefParams = {
@@ -166,7 +167,7 @@ parent_id: "0",
 price: '',
 supplier_id: [],
 value: "",
-count: '',
+amount: '',
 discount: '',
 typeDiscount: '%',
 atrCategoryIds: [],
@@ -439,6 +440,39 @@ if (action.payload.str === 'clear') {
 
       extraReducers: {
         
+        [setUpdateProductCategory.pending]:handlePending,
+        [setUpdateProductCategory.fulfilled](state, action) { 
+         if (action.payload?.data.message) {
+            state.typeMessage= typeMessage.success;
+             state.message = [action.payload?.data.message, `${action.payload?.id}`]
+          }  else if (action.payload?.data.error) {
+            state.typeMessage= typeMessage.error;
+             state.message = [action.payload?.data.error, `${action.payload?.id}`]
+          } 
+            requestFulfilled(state, action)
+        },
+        [setUpdateProductCategory.rejected]:handleRejected,
+        
+        [setProductInOrderFromId.pending]:handlePending,
+        [setProductInOrderFromId.fulfilled](state, action) { 
+          let ind = state.productData.findIndex(n=>n.data === action.payload.id)
+          const func = ({amount, cost, discount,discount_type, order_total,price, supplier_id})=>{
+            let typeDiscount = discount_type === '0'? '%':'ua'
+             let d = []
+             d.push(supplier_id)
+            supplier_id =[...d]
+            return (
+              {amount, cost, discount, typeDiscount, price,supplier_id, }
+            )
+          }
+        const data = func(action.payload?.data)  
+         let s = {...state.productData[ind], ...data}        
+         let newProduct = {...state.productData[ind],...data}
+          state.productData[ind] = {...newProduct}
+            requestFulfilled(state, action)
+        },
+        [setProductInOrderFromId.rejected]:handleRejected,
+        
         [getProductFromId.pending]:handlePending,
         [getProductFromId.fulfilled](state, action) { 
           const func = ({category_id, attribute_id, attribute_name, parent_id, id, name})=>{
@@ -460,14 +494,13 @@ if (action.payload.str === 'clear') {
         [addProductTooOrder.pending]:handlePending,
         [addProductTooOrder.fulfilled](state, action) { 
           const func = ({amount, cost, discount, name, discount_type, price, product_id,supplier_id, icon})=>{
-            let count = amount
-             let  data = product_id
+            let  data = product_id
              let typeDiscount = discount_type === '0'? '%':'ua'
              let d = []
              d.push(supplier_id)
             supplier_id =[...d]
             return (
-              {count, cost, discount, data, typeDiscount, price, icon, supplier_id, name  }
+              {amount, cost, discount, data, typeDiscount, price, icon, supplier_id, name  }
             )
           }
     if (action.payload?.data) {
@@ -1005,7 +1038,9 @@ if (action.payload.str === 'clear') {
            return{
              ...state,            
              client: {...action.payload.client, comment: action.payload.order.comment, 
-               additional_field: action.payload.order.additional_field,},          
+               additional_field: action.payload.order.additional_field,
+               responsible: action.payload.client.responsible?action.payload.client.responsible:'0'
+              },          
                createRows: {...action.payload.order, ...action.payload.delivery,
                   packer_name: packer_name, 
                   payment_type: payment_type,
@@ -1019,8 +1054,8 @@ if (action.payload.str === 'clear') {
                   backward_summ: action.payload.delivery.backward_summ?action.payload.delivery.backward_summ: 0,
                   prepay_status:prepay_status,
                   backward_delivery_summ: action.payload.delivery.backward_delivery_summ?action.payload.delivery.backward_delivery_summ: 0.00,
-                  
-                }, 
+                  responsible: action.payload.client.responsible?action.payload.client.responsible:'0'
+                  }, 
             productData: products,
              isError: false,
              isLoading: false,

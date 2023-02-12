@@ -20,13 +20,12 @@ export const Component=()=>{
     const atributes = useSelector((state) => state.ordersAll.atributes);
     const newProduct = useSelector((state) => state.ordersAll.newProduct);
     const suppliers = useSelector((state) => state.ordersAll.suppliers);
-    const cost=useSelector((state)=>state.ordersAll.newProduct.cost)
-    const count =useSelector((state)=>state.ordersAll.newProduct.count);
+    const cost=useSelector((state)=>state.ordersAll.newProduct.cost);
+    const amount=useSelector((state)=>state.ordersAll.newProduct.amount);
     const categoryList = useSelector((state) => state.ordersAll.category);
     const discount =useSelector((state)=>state.ordersAll.newProduct.discount);
     const atrCategory = useSelector((state) => state.ordersAll.atributeCategory);
     const typeDiscount = useSelector((state)=>state.ordersAll.newProduct.typeDiscount);
-    //   const [typeDiscount, setTypeDiscount] = useState('%');
     const price =useSelector((state)=>state.ordersAll.newProduct.price);
     const [attribute, setAtribute] = useState([])
 
@@ -49,29 +48,28 @@ const handleAutocompliteChange=(e, newValue)=>{
 }
 
 useEffect(()=>{
-   let cost =  priceUpdate(price, count ,discount ,typeDiscount)
+   let cost =  priceUpdate(price, amount ,discount ,typeDiscount)
 
    dispatch(newProductUpdate({id: 'cost', str: cost}))
 
-},[price, count, discount,typeDiscount])
+},[price, amount, discount,typeDiscount])
 
 
 const handleAtributeChange=(e, newValue,text, index)=>{  
 let productAtributes = newProduct.attribute_id.split(',')[0]?newProduct.attribute_id.split(','):''
     if (newValue.id === 'new_atribute') { 
+        // console.log(productAtributes);
         if (productAtributes) {
             let prodCategory = categoryList.find(n=>n.id === newProduct.category).attribute[index]
-            console.log(prodCategory);
+            // console.log(prodCategory);
             let prodAtrCat = atrCategory.find(n=>n.id === prodCategory)
             dispatch(autoUpdateAllReducer({id: 'category', state: 'newAtribute', str: prodAtrCat.id}))
           return  dispatch(getOpenTableCreate({id: 'newAtribute', str: true}));
-        }  
-        dispatch(getOpenTableCreate({id: 'newCreateAtribute', str: true}));  
+        } else dispatch(getOpenTableCreate({id: 'newCreateAtribute', str: true}));  
         return
      }
 let value = ''
-if (newProduct.attribute_id !== '' && !newProduct.attribute_id.includes(newValue.id) && attribute.length > 1) {
-    
+if (newProduct.attribute_id !== '' && !newProduct.attribute_id.includes(newValue.id) && attribute.length > 1) {    
     if (newProduct.attribute_id.split(',').length === attribute?.length) {       
         let atr = newProduct.attribute_id.split(',')
        value = atr.splice(index,1, newValue.id)       
@@ -100,7 +98,7 @@ const handleSupliersChange=(e, newValue)=>{
 
 
 const handleChangeDiscount=(e)=>{
-    let t = ((cost?Number(cost):1) * (count?Number(count):1))
+    let t = ((cost?Number(cost):1) * (amount?Number(amount):1))
     let n = e.target.value.replace(/[^0-9.]/g, '');
     if (typeDiscount === '%' && n <= 100) {
         dispatch(newProductUpdate({id: 'discount', str: n}))
@@ -159,11 +157,13 @@ const ListItemStyle = {width: '100%', padding: '5px'}
                  value={null} dafaultValue={false} index={0}
                  label={'Не встановлено'} onInputFunc={false} showInput={attribute.length >0 || newProduct.name !== ''} sort={false} / >
             </ListItem>:null }
+            
     {attribute.length >0 ? attribute.map((str,i)=>{
      let data = []
      if (atributes[str.id]) {
         data = [...atributes[str.id]]
      }
+     console.log(data);
         return(
             <ListItem key = {i} sx={ListItemStyle}>
             <AutocompliteComponent key={i} data={[addAtribute, ...data]} disp={handleAtributeChange} textContent={i === 0?'Атрибути:':''}
@@ -177,7 +177,7 @@ const ListItemStyle = {width: '100%', padding: '5px'}
         <InputTextComponent id={'price'} textContent={'Ціна:'} num={true} path={'newProduct'} label={'Ціна'} />
     </ListItem>
     <ListItem sx={ListItemStyle}>
-        <InputTextComponent id={'count'} textContent={'Кількість:'} num={true} path={'newProduct'} label={'Кількість'}/>
+        <InputTextComponent id={'amount'} textContent={'Кількість:'} num={true} path={'newProduct'} label={'Кількість'}/>
     </ListItem>
     <ListItem sx={{width: '100%', padding: '5px', }}>
     <Box sx={{ flexGrow: 1, width: '100%', justifyContent: 'center', alignItems: 'center' }} >

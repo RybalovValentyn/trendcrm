@@ -1,7 +1,7 @@
 import {SignIn} from './components/signIn/signIn';
 import CssBaseline from '@mui/material/CssBaseline';
 import {PublicRoute} from './routs/publikRouts';
-import { Route, Routes, useNavigate, useLocation} from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation, createSearchParams, useSearchParams} from 'react-router-dom';
 import {PrivateRoute} from './routs/privatRouts';
 import {Order} from './components/tableBody/pages/order/orders';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +12,8 @@ import { Preloader } from './components/preloader/preloader';
 import { useCookies } from 'react-cookie';
 import { CreateRows } from './components/tableBody/pages/orderCreate/order';
 import {ErrorPage} from './components/errorPage/ErrorPage'
+import { autoUpdate } from './redux/ordersReduser';
+import { userData } from './redux/authReduser';
 const Home = lazy(() => import("./components/tableBody/pages/home/home"));
 const Users = lazy(() => import("./components/tableBody/pages/users/users"));
 const Products = lazy(() => import("./components/tableBody/pages/products/products"));
@@ -28,53 +30,71 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const hashKey = useSelector(state => state.auth.hashKey);
   const currentUser = useSelector(state => state.auth.id);
   const filteredRows = useSelector((state) => state.ordersAll.tHeadColumnFiltered);
   const isLoading = useSelector(state => state.auth.isLoading);
   const ontableLoad = useSelector(state => state.ordersAll.isLoading);
   const idRows = useSelector((state) => state.ordersAll.createRows?.id);
-  const isAuth = useSelector(state => state.auth.isAuth)
-
-  const [cookies, setCookie] = useCookies(['user_id=1']);
+  const isAuth = useSelector(state => state.auth.isAuth);
+  const authReduser = useSelector(state => state.auth);
+  const getstatusName = searchParams.get('status');
+  const [cookies, setCookie] = useCookies(['cookie-name']);
   
-
-  useEffect(()=>{
-    sessionStorage.setItem("selected", '');
-if (location.pathname === '/trendcrm' && isAuth) {
-  navigate('/trendcrm/orders')
-}  else navigate('/auth')
+//   useEffect(()=>{
+//     sessionStorage.setItem("selected", '');
+// if (location.pathname === '/' && isAuth) {
+//   navigate('/orders')
+// }  else navigate('/auth')
    
 
-  },[])  
+//   },[])  
+
+useEffect(()=>{
+  // console.log(hashKey, currentUser);
+  // console.log('setSearchParams', getstatusName);
+  if(Number(getstatusName ) && hashKey && currentUser){    
+    setSearchParams(createSearchParams({ status: getstatusName }));
+    dispatch(autoUpdate({id:'statusName', str: getstatusName}));
+  }
+
+},[])
  
   useEffect(() => {
-    // console.log('currentThunk');
+    // console.log('hashKey');
     if (hashKey) {
+      setCookies()
       dispatch(currentThunk());
     }
   }, [hashKey]);
 
 
   useEffect(() => {
-    // console.log('current user ');
-    // setCookie('user_id', '1', { path: '/' });
-    // handleReload()
+    // console.log('current user');
       if (currentUser) {
-        console.log('current user ');
-        setCookie('user_id', '1', { path: '/' });
-        handleReload()
+           if (!Number(getstatusName)) {
+              // console.log('reload from app');
+              handleReload()
+     }
+       
     }
   }, [currentUser]);
 
   const handleReload =()=>{
-    // console.log('reload');
     dispatch(getAllStatuses())
     if (filteredRows?.length > 0) {
       dispatch(getFilteredOrders())
     } else dispatch(getAllOrders())
   }
 
+  const setCookies =()=>{
+let data = Object.entries(userData)
+data.map(arr=>{
+  let str = `user.${arr[0]}`
+setCookie(str, authReduser[arr[0]]);
+})
+}
 
   const wildcards = [
     {id: 'homeBar', target: Home},
@@ -95,11 +115,10 @@ if (location.pathname === '/trendcrm' && isAuth) {
     
     <div >
       {isLoading && <Preloader/>}
-
         <Routes >      
 
                       <Route loader={<Preloader/>} errorElement={<ErrorPage/>}  path='/auth' element={<PublicRoute component={SignIn}  />}/>
-                       <Route loader={<Preloader/>} errorElement={<ErrorPage/>} path='/trendcrm'  element={<PrivateRoute component={MiniDrawer} />}>
+                       <Route loader={<Preloader/>} errorElement={<ErrorPage/>} path='/'  element={<PrivateRoute component={MiniDrawer} />}>
                            
                            {wildcards.map(e => (
                                   <Route 
@@ -115,7 +134,7 @@ if (location.pathname === '/trendcrm' && isAuth) {
                          
 
                     </Route>
-                    <Route path="/trendcrm/order/*" element={<ErrorPage/>} />         
+                    <Route path="/order/*" element={<ErrorPage/>} />         
                     <Route path="*" element={<Preloader/>} />
 
       </Routes>

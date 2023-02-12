@@ -12,7 +12,13 @@ export const SaveButton = () =>{
     const navigate = useNavigate();
     const id = useSelector((state) => state.ordersAll.createRows.id);
     const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
-    
+    const products = useSelector((state) => state.ordersAll.productData);
+    const atrCategory = useSelector((state) => state.ordersAll.atributeCategory);
+    const suppliers = useSelector((state) => state.ordersAll.suppliers);
+    const atributes = useSelector((state) => state.ordersAll.atributes);
+    const categoryList = useSelector((state) => state.ordersAll.category);
+    const orderUpdate = useSelector((state) => state.ordersAll.createRows);
+
 //     useEffect(() => {
 //      if (id && !isUpdateRows) {
 //         console.log(id);
@@ -20,17 +26,37 @@ export const SaveButton = () =>{
 //      }
 //    }, [id]);
 
+const sendNewProduct =({attribute_id, category,count, discount,price, data, supplier_id,typeDiscount})=>{
+    let atr = attribute_id?.split(',');
+    let attribute = atr.length > 0 ? atr.map((str,i)=>{ return {id: str}}) : []
+let amount = count;
+let discount_type = typeDiscount === '%'?'0': '1'
+let presale_type = '0';
+let product_id = data;
+let supplier = supplier_id[0]?supplier_id[0]:null
 
-
+return {attribute,amount,discount, presale_type, price, product_id, supplier, discount_type}
+}
+const update=()=>{
+    if (id) {
+    dispatch(getRowsAfterAdd(id));
+    dispatch(getAllOrders());
+}
+}
     const btnChangeSave =()=>{
-        dispatch(postRowsFromForm())
-        dispatch(getRowsAfterAdd(id));
-        if (id) {
-            dispatch(getAllOrders());
-            navigate('/trendcrm/orders');               
-            console.log('hi');  
-        }
-
+        let sendData = products.length > 0 ? products.map(n=>(sendNewProduct(n))): []
+        dispatch(postRowsFromForm(sendData))
+  
+            setTimeout(update, 200);
+        
+      
+        // if (id) {
+        //     
+        //     navigate('/trendcrm/orders');               
+        //     console.log('hi');  
+        // }
+        
+        console.log(sendData);
     }
 
 const icoBtnStyle = {

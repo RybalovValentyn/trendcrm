@@ -1,5 +1,5 @@
 {
-  "name": "trendcrm",
+  "name": "public",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -38,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RybalovValentyn/trendcrm.git"
+    "url": "git+https://github.com/RybalovValentyn/public.git"
   },
   "scripts": {
     "start": "react-scripts start ",
@@ -48,7 +48,7 @@
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
   },
-  "homepage": "https:///RybalovValentyn.github.io/trendcrm",
+  "homepage": "https:///RybalovValentyn.github.io/public",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -69,7 +69,7 @@
   },
   "description": "",
   "bugs": {
-    "url": "https://github.com/RybalovValentyn/trendcrm/issues"
+    "url": "https://github.com/RybalovValentyn/public/issues"
   },
   "main": "index.js",
   "keywords": [],

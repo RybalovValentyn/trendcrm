@@ -65,16 +65,15 @@ export  function Order() {
     let countSelected = 0;
 const seachStatus = useSelector((state) => state.ordersAll.statusName);
 
-  //  useEffect(()=>{
-  //   // console.log(seachStatus);
-  //   //    if (Number(seachStatus)) {
-        
-  //   //     console.log('filter status_name');
-  //   //  setSearchParams(createSearchParams({ status: seachStatus }));
-  //   //   dispatch(autoUpdate({id:'statusName', str: seachStatus}));
-  //   //   // getUpdate();      
-  //   //   }
-  //   //    else
+   useEffect(()=>{
+    // console.log(seachStatus);
+       if (Number(seachStatus)) {        
+        // console.log('filter status_name');
+     setSearchParams(createSearchParams({ status: seachStatus }));
+      dispatch(autoUpdate({id:'statusName', str: seachStatus}));
+      // getUpdate();      
+      }
+       },[seachStatus, idRows])  
 
   //       if (!seachStatus && !idRows && location.pathname !== '/trendcrm/orders') {
   //       console.log('orders');
@@ -261,7 +260,7 @@ const handleClick = (e, index) => {
   sessionStorage.setItem("selected", '');
        dispatch(autoUpdate({id: 'isUpdateRows', str: true}));
     dispatch(getRowsAfterAdd(id));  
-    navigate(`/trendcrm/order/${id}`); 
+    navigate(`/order/${id}`); 
   };
 const countUpdate = ()=>{  
   const element = rowRef
