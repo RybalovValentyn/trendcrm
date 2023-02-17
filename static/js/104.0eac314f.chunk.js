@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkpublic=self.webpackChunkpublic||[]).push([[104],{1104:function(u,e,s){s.r(e);var c=s(80184);e.default=function(){return(0,c.jsx)("div",{children:"users psges"})}}}]);
-//# sourceMappingURL=104.0eac314f.chunk.js.map

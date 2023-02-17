@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunktrendcrm=self.webpackChunktrendcrm||[]).push([[104],{1104:function(e,r,n){n.r(r);var s=n(80184);r.default=function(){return(0,s.jsx)("div",{children:"users psges"})}}}]);
+//# sourceMappingURL=104.506e2e92.chunk.js.map
