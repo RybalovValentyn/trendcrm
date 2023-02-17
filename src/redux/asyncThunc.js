@@ -5,11 +5,10 @@ axios.defaults.withCredentials = true;
 
 // const BASE_URL = 'http://localhost:8080/api';
 
-
 const BASE_URL = 'http://react.trendcrm.win/api';
 const login = "/login";
 const auth = '/authenticate'; 
-const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
+// const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
 
 
 // const TREND_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function'
@@ -285,7 +284,7 @@ console.log('all');
   },
 );
 export const getRowsAfterAdd = createAsyncThunk(
-  'rows/post',
+  'rows/get',
   async (id, { rejectWithValue, getState }) => {
              try {
         const { data } = await axios({
@@ -322,7 +321,7 @@ const client = state.ordersAll.client
       utm_campaign:""
       }
 const dataSend ={
-  client: {...client, phone: state.ordersAll.client.client_phone },
+  client: {...client},  
   delivery: {...rows},  
   order_products: sendData,
   utm: {...utm}, 
@@ -336,12 +335,14 @@ const dataSend ={
   }
   console.log(dataSend);
        try {
-        const { data } = await axios({
+        const response = await axios({
           method: "post", 
            url:  BASE_URL+addOrder,
            data: dataSend,  
   
           })
+
+          let data = await response.data
           console.log(data);
          return data
       } catch (error) {
@@ -759,13 +760,17 @@ export const setAtributeCategoryList= createAsyncThunk(
 export const setProductCategoryCreate= createAsyncThunk(
   'prod_category/create',
   async (_, { rejectWithValue, getState}) => {
-    const state = getState(); 
- 
+    const state = getState();
+    const transformData=({attributes,name,parent_id})=>{
+      parent_id = parent_id?parent_id:'0'
+      return {attributes,name,parent_id}
+  }
+  let data = transformData(state.ordersAll.newCategory) 
           try {
          const resp = await axios({
           method: "post",
            url:  BASE_URL+createProdCategory,
-           data: state.ordersAll.newCategory
+           data: data
            });
            return {data: resp.data}       
       } catch (error) {
@@ -826,7 +831,7 @@ export const setAddAtribute= createAsyncThunk(
 // {category_id:"13"}  category
 
 export const updateProductFromId= createAsyncThunk(
-  'product/update',
+  'productOrder/update',
   async (id, { rejectWithValue, getState}) => {
     const state = getState(); 
           try {
@@ -835,7 +840,7 @@ export const updateProductFromId= createAsyncThunk(
            url:  BASE_URL+product+`/${id}`,
            data:  {category_id: state.ordersAll.newProduct.category}
            });
-          //  console.log(resp);
+          //  console.log(resp.data);
            return {data: resp.data, id}       
       } catch (error) {
         return rejectWithValue({
@@ -848,15 +853,17 @@ export const updateProductFromId= createAsyncThunk(
 
 export const addProductTooOrder= createAsyncThunk(
   'product_add/create',
-  async ({id, data}, { rejectWithValue, getState}) => {
-    const state = getState(); 
+  async ({id, sendData}, { rejectWithValue}) => {
           try {
         const resp = await axios({
           method: "post",
            url:  BASE_URL+addOrder+`/${id}`+product+add,
-           data:  data
+           data:  sendData
            });
-           return {data: resp.data, id: id }       
+
+      const data = await resp.data
+      console.log(data);
+           return {data: data, id: id}       
       } catch (error) {
         return rejectWithValue({
           error: error.message,
@@ -871,13 +878,15 @@ export const addProductTooOrder= createAsyncThunk(
 // https://react.trendcrm.biz/api/order/product/17
 
 export const getProductFromId= createAsyncThunk(
-  'product/get',
+  'product_order/get',
   async (id, { rejectWithValue}) => { 
+    console.log('getProductFromIdgetProductFromIdgetProductFromId');
           try {
         const resp = await axios({
           method: "get",
            url:  BASE_URL+product+`/${id}`,
            });
+           console.log('getProductFromId',resp.data);
         return {data: resp.data}       
       } catch (error) {
         return rejectWithValue({
@@ -929,5 +938,43 @@ export const setUpdateProductCategory= createAsyncThunk(
   },
 );
 
+export const postRowsAfterUpdate = createAsyncThunk(
+  'rows/post',
+  async ({id, dataSend}, { rejectWithValue, getState }) => {
+             try {
+        const { data } = await axios({
+          method: "post",
+           url: BASE_URL+addOrder+`/${id}`,
+           data: dataSend
+          });          
+          return {data:data, id: id};
+        } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);
 
+// https://react.trendcrm.biz/api/order/103/product/delete
 
+export const postRowsProductDelete = createAsyncThunk(
+  'product/delete',
+  async ({id, dataSend}, { rejectWithValue, getState }) => {
+             try {
+        const { data } = await axios({
+          method: "post",
+           url: BASE_URL+addOrder+`/${id}`+product+remove,
+           data: dataSend
+          });  
+          console.log(data);        
+          return {data:data, id: id, prod: dataSend.order_product_id};
+        } catch (error) {
+        return rejectWithValue({
+          error: error.message,
+        });
+      }
+    
+  },
+);

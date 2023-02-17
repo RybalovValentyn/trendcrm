@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createSlice } from '@reduxjs/toolkit';
 import { currentThunk, loginThunk} from './asyncThunc';
+import { orderStatusThunk } from './asyncOrders';
 
 // axios.defaults.baseURL = 'https://react.trendcrm.biz/';
 
@@ -40,7 +41,6 @@ is_telephony: false,
 is_c: false,
 call_from_system:'0',
 }
-
 
 const authSlice = createSlice({
   name: 'user',
@@ -139,6 +139,34 @@ const authSlice = createSlice({
         isAuth: false,
       };
     },
+
+    
+    [orderStatusThunk.pending](state, action) {
+      return {
+        ...state,
+        isLoading: true,
+        isError: false
+       };
+    },
+    [orderStatusThunk.fulfilled](state, action) {
+      let statuses = {...state.order_statuses_access}
+      if (Number(action.payload?.data) && action.payload?.isUpdate) {        
+        statuses = {...state.order_statuses_access, ...{[action.payload?.data]: '1'}}
+      }
+      return {
+        ...state,
+         isLoading: false,
+         order_statuses_access: {...statuses}
+        };
+    },
+    [orderStatusThunk.rejected](state, action) {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+    },
+
     [currentThunk.pending](state, action) {
       return {
         ...state,

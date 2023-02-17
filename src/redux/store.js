@@ -19,7 +19,7 @@ import functionReduser from './funcReduser';
   const authPersistConfig = {
     key: 'hash_key',
     storage,
-    whiteList: ['hash_key', 'isAuth'],
+    whiteList: ['hash_key', 'isAuth', ],
     blacklist: ['isAuth']
     
   };
@@ -28,7 +28,7 @@ import functionReduser from './funcReduser';
     storage,
     blacklist: ['isError', 'error', 'createRows', 'message', 'typeMessage', 'sneckBarMessage', 'statusName',
      'messageSendFile', 'sortColumn', 'sortTable', 'modalControl', 'ttnWeigth', 'ttnResponsible', 'calcVolume', 'newCategory',
-    'newProduct']
+    'newProduct', 'nextStatus', 'isValid', 'updateRows', 'copyRowsUpdateAction', 'copyClientUdateAction']
     };
   
   const authPersistReducer = persistReducer(authPersistConfig, authReduser);
@@ -41,6 +41,7 @@ import functionReduser from './funcReduser';
     //   ordersAll: ordersReduser,
     //   function: functionReduser,
     // },
+    
     reducer: {
       auth: authPersistReducer,
      addStatus: statusReduser,

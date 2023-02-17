@@ -84,7 +84,7 @@ const statusReduser = createSlice({
         return { ...state, isValid: action.payload};
       },
       modalOpenUpdate: (state, action) => {
-        console.log(action.payload);
+        // console.log(action.payload);
         return { ...state, modalOpen: action.payload};
       }, 
 

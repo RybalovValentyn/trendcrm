@@ -14,16 +14,52 @@ import { MobiNavList } from "./mibiNavList.jsx";
 import { boxListStyle, navlogoStyle, navListStyle, mediaIconLogoList } from "./styles";
 import { UserSelectMobil } from "./userSelectMob";
 import { colorsRef } from "../../../consts/colorConstants";
+import Swal from 'sweetalert2'
+
 
 const AppBarComponent = () =>{
     const dispatch = useDispatch();
 
     const authReduser = useSelector((state) => state.auth);
     const [isShow, setIsShow] =useState(false);
-
+    const updateClient = useSelector((state) => state.ordersAll.updateClient);
+    const updateRows = useSelector((state) => state.ordersAll.updateRows);
+    const navigate = useNavigate();
 const isShowMediaUserList=()=>{
     setIsShow(!isShow);
 }
+
+
+const onClickNav=(e,path)=>{
+    let s = isUpdated()
+    if (s) {
+        successAlert(path)
+            return      
+    }else navigate(path)
+}
+
+const isUpdated=()=>{
+    let up = Object.values({...updateClient, ...updateRows}).filter(n=>n===1).length
+    return up ===0?false:true
+}
+
+const successAlert = (path) => {
+    Swal.fire({  
+        title: 'Ви маєте не збережені дані!',  
+        text: 'Ви дійно хочете перейти на іншу сторінку?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Ні',
+        confirmButtonText: 'Так',
+      }).then((result) => {        
+        if (result.isConfirmed) {
+            navigate(path)
+        }
+      }); 
+}
+
 
     return (
     
@@ -38,10 +74,10 @@ const isShowMediaUserList=()=>{
         </Box>
     <Box  sx={navListStyle}>
         <List sx={{padding: 0, heigth: '47px', alignItems: 'center', display: 'flex', '& :hover':{backgroundColor: '#eeeeee'}}}>
-            <ListItem  sx={{heigth: '100%',width: '54px', padding: '5px 15px'}}>
-                <NavLink to="/orders">
+            <ListItem  onClick={(e)=>onClickNav(e,'/orders')}  sx={{heigth: '100%',width: '54px', padding: '5px 15px'}}>
+                <NavLink>
                     <BootstrapTooltip  title="Замовлення">
-                <ListAltOutlinedIcon sx={{fill: '#777', marginTop: '5px'}} />
+                <ListAltOutlinedIcon  sx={{fill: '#777', marginTop: '5px'}} />
                      </BootstrapTooltip>
                 </NavLink>
             </ListItem>

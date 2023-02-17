@@ -53,12 +53,13 @@ export const Label = styled('label')(
   export const autocompliteInputStyle={
     '& .MuiAutocomplete-input':{   
       fontSize: '13px', 
-      textAlign: 'center'  
-    },      
+      textAlign: 'center'  ,
+     },      
     width: '100%',
     maxWidth: '250px',
-    textAlign: 'center'
+    textAlign: 'center',
    };
+
   export const textFieldStyles={
   '& .MuiOutlinedInput-root':{
   padding: 0,
@@ -80,7 +81,8 @@ export const Label = styled('label')(
       padding: '6px 32px 6px 12px',
       width:'100%',
       maxWidth: '250px', 
-      textAlign: 'center'
+      textAlign: 'center',
+      // boxShadow: '0px 0px 5px 1px #0322ff9e'
       },
 
   }

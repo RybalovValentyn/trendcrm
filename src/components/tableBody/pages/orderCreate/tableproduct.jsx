@@ -15,9 +15,11 @@ import TableInput from './components/tableInput'
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import {alertMessageUpdate, autoUpdateAllReducer, autoUpdate} from "../../../../redux/ordersReduser";
+import {alertMessageUpdate, autoUpdateAllReducer, autoUpdate, getFormTable} from "../../../../redux/ordersReduser";
 import { priceUpdate } from '../order/functionOrder';
-import { setProductInOrderFromId } from '../../../../redux/asyncThunc';
+import { setProductInOrderFromId, postRowsProductDelete } from '../../../../redux/asyncThunc';
+import Swal from 'sweetalert2'
+
 
 export default function TableProduct() {
   const dispatch =useDispatch();
@@ -27,35 +29,59 @@ export default function TableProduct() {
   const atributes = useSelector((state) => state.ordersAll.atributes);
   const categoryList = useSelector((state) => state.ordersAll.category);
   const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
+  const id = useSelector((state) => state.ordersAll.createRows.id);
+  const messageType = useSelector((state) => state.ordersAll.typeMessage);
+  const message = useSelector((state) => state.ordersAll.messageFromSwal);
+  
   const [rows, setRows] =useState([])
   const [isUpdate, setIsUpdate] = useState('')
 
 const supplierUpdate =[{id: 'slose', name: '-закрити-'}, {id: 'null', name: '-пусто-'}]
 
 useEffect(()=>{
-  // console.log(products);
 let renderRows  = products.map((str,i)=>(createData(str)))
 setRows(renderRows)
+if (!isUpdateRows) {
+let totalAmount = renderRows.reduce((acc, prod, i)=>{return acc +=Number(prod.amount)},0)
+let totalWeight = products?.reduce((acc, prod, i)=>{return acc +=Number(prod?.weight)},0)
+let totaVolume = products?.reduce((acc, prod, i)=>{return acc +=Number(prod?.volume_general)},0)
+dispatch(getFormTable({id:'seats_amount', str: totalAmount}))
+dispatch(getFormTable({id:'weight', str: totalWeight?totalWeight:0}))
+dispatch(getFormTable({id:'volume_general', str: totaVolume?totaVolume:0}))
+let atrArray = renderRows.map(n=>([n.name,n.atrCategoryProd?.map(s=>(s[1])).join('-'),String(n.amount)].join('-')))
+dispatch(getFormTable({id:'novaposhta_comment', str: atrArray.join(';')}))
+}
   },[products])
 
-  function createData({data, name, attribute_id, price, count ,amount, discount, cost, supplier_id, category, typeDiscount, categoryListFrom}) {
-    let atr = attribute_id?.split(',');
+  function createData({data, name, attribute_id, price, count ,amount, discount, cost, supplier_id, category, typeDiscount, categoryListFrom, attribute }) {
+    let atr = typeof(attribute_id) === 'string'?attribute_id?.replace(/[']/g, [])?.split(','): (attribute_id?.length > 0 ? [...attribute_id]: []);
+
     let atrCategoryProd = []
-    if (atr && atr[0] && category) {
-      let categoryProduct = categoryList.find(n=>n.id === category)?.attribute      
+    if (atr.length > 0 && category && !attribute) {
+      let categoryProduct = categoryList.find(n=>n.id === category)?.attribute 
       let atributesProduct = categoryProduct.map(n=>(atributes[n]))
            atrCategoryProd = categoryProduct.map((n, i )=>{
-        let nameProd = atrCategory.find(s=>s.id === n)?.name
-        let atributeProduct = ''
-        let data = atributesProduct[i]?.find(s=> +s.id === +eval(atr[i]))?.name
-        if (data) {
-          atributeProduct = data
-        } 
-        return ([nameProd, atributeProduct])
+              let nameProd = atrCategory.find(s=>s.id === n)?.name
+              let atributeProduct = ''        
+              let data = atributesProduct[i]?.find(s=> s.id === atr[i])?.name
+              if (data) {
+                atributeProduct = data
+              } 
+              return ([nameProd, atributeProduct])
       }
-         )
+         )      
     } else if (categoryListFrom?.length > 0 ) {
       atrCategoryProd = [...categoryListFrom]
+    }else if (attribute?.length > 0) {
+      let responseData = attribute.reduce((acc,str,i)=>{
+          if (str.category) {
+            console.log(str);
+            let s = [str.category, str.name ]
+            acc =[...acc, s]
+          }
+    return acc
+      },[])
+      atrCategoryProd = [...responseData]
     }
     amount=amount?amount:count
     return {data, name, atrCategoryProd, price, amount, discount, cost, supplier_id, typeDiscount };
@@ -95,10 +121,13 @@ setRows(renderRows)
     }
   }
 const handleDeleteClick=(i)=>{
-let newRows = [...products]
- newRows.splice(i, 1)
-  // setRows(newRows)
-  dispatch(autoUpdate({ id: 'productData', str: newRows}))
+  if (isUpdateRows) {
+    successAlert(i)    
+   }else if (!isUpdateRows) {
+    let newRows = [...products]
+    newRows.splice(i, 1)
+     dispatch(autoUpdate({ id: 'productData', str: newRows})) 
+   }
 }
 
 const handleInputChange=(e,i, row)=>{
@@ -136,7 +165,8 @@ const updateState=(i,product, type)=>{
   let productCopy = [...products]
   productCopy.splice(i, 1, product)
  dispatch(autoUpdate({ id: 'productData', str: productCopy}))
-}
+ dispatch(autoUpdate({id: 'resolutionExit', str: false}));
+ }
 const handleChangeInput=()=>{}
 
 const handleChangeSelectSupplier=(e, i, row)=>{
@@ -161,6 +191,31 @@ const handleChangeSelectSupplier=(e, i, row)=>{
 
 const handleSuppliersDoubleClick =(e,i)=>{
   setIsUpdate(i)
+}
+
+const successAlert = (i) => {
+    Swal.fire({  
+        title: 'Увага!',  
+        text: 'Ви дійсно хочете Видалити товар?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Ні',
+        confirmButtonText: 'Так',
+      }).then((result) => {        
+        if (result.isConfirmed) {
+          let newRows = [...products]
+          newRows.splice(i, 1)
+           dispatch(autoUpdate({ id: 'productData', str: newRows})) 
+          dispatch(postRowsProductDelete({id:id, dataSend: {order_product_id: products[i].data}}))
+          Swal.fire(            
+           `${ message[0]}`,
+           `${ message[1]}`,
+           messageType,
+           )
+        }
+      }); 
 }
   return (
     <TableContainer component={Paper}>
@@ -211,8 +266,8 @@ const handleSuppliersDoubleClick =(e,i)=>{
 
               <StyledTableCell align="center" > <input className={s.inputTableNoboard} id={`${i}-cost`}  role="presentation" autoComplete="off"
                                     onChange={handleChangeInput}  value={row.cost}></input></StyledTableCell>
-              <StyledTableCell   align="center"><div onDoubleClick={(e)=>handleSuppliersDoubleClick(e,i)}>{row.supplier_id.length && (isUpdate !== i) >0 ? 
-              row.supplier_id.map((str,i)=>(
+              <StyledTableCell   align="center"><div onDoubleClick={(e)=>handleSuppliersDoubleClick(e,i)}>{row?.supplier_id?.length && (isUpdate !== i) >0 ? 
+              row?.supplier_id?.map((str,i)=>(
                <Typography  sx={{fontSize: '12px',"&:hover":{cursor:'pointer'}}} key ={i}>{suppliers.find(s=>s.id === str)?.name?suppliers.find(s=>s.id === str)?.name:'Не вибрано'}</Typography>
               )): null}
               </div>

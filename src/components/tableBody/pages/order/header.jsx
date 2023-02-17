@@ -75,6 +75,8 @@ const handleClick = ()=>{
   dispatch(getClouseTableCreate())
   navigate('/order')
   
+
+  
 }
 
 

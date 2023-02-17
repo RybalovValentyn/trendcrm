@@ -1,10 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getCookie } from '../components/tableBody/pages/order/functionOrder';
 
-const REBASE_URL = 'http://react.trendcrm.win/api'
+// const REBASE_URL = 'http://react.trendcrm.win/api'
 // const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
-// const REBASE_URL= 'http://localhost:8080/api';
+const REBASE_URL= 'http://localhost:8080/api';
 const postStatus = '/select_list/3/select_item/add'
+
 
 
 export const getValidationForm = createAsyncThunk(
@@ -48,6 +50,11 @@ export const orderStatusThunk = createAsyncThunk(
   'orders/status',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
+    let isUpdate=false
+  let cookieGroup = getCookie('user.group')
+    if ( state.addStatus.group.includes(String(cookieGroup)) ) {
+      isUpdate = true
+    }
     const status = {
       name: state.addStatus.name,
       sort: state.addStatus.statusId,
@@ -66,8 +73,7 @@ export const orderStatusThunk = createAsyncThunk(
          url:  REBASE_URL+postStatus,
          data: status
         })
-      console.log(data);
-       return data
+       return {data:data, isUpdate: isUpdate }
       } catch (error) {
         return rejectWithValue({
          error: error.message

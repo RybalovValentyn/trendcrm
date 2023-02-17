@@ -15,38 +15,65 @@ import {addProductTooOrder, getProductFromId} from '../../../../../redux/asyncTh
     const atributes = useSelector((state) => state.ordersAll.atributes);
     const categoryList = useSelector((state) => state.ordersAll.category);
     const orderUpdate = useSelector((state) => state.ordersAll.createRows);
+    const productData = useSelector((state) => state.ordersAll.productData);
 
 const handleClouse=()=>{   
     dispatch(getOpenTableCreate({id: 'productCreate', str: false}));
     dispatch(newProductUpdate({id: '', str: 'clear'}))
 }
-const sendNewProduct =({attribute_id, category, cost, amount, discount, name, price, data, supplier_id,typeDiscount})=>{
-    let atr = attribute_id?.split(',');
-    let categoryProduct = categoryList.find(n=>n.id === category)?.attribute
-    let atributesProduct = categoryProduct.map(n=>(atributes[n]))
-    let attribute = atributesProduct.map((str,i)=>{
-   return atributesProduct[i]?.find(n=> +n.id === +eval(atr[i]))   
-    });
+const sendNewProduct =({ cost, count, discount, name, price, data, supplier_id,typeDiscount, category})=>{
 let type_discount = typeDiscount === '%'?'0': '1'
 let order_id = orderUpdate.id;
 let presale_type = '0';
 let product_id = data;
-let supplier = suppliers?.find(n=>n.id === supplier_id[0])?.name
-supplier_id = supplier_id[0]?supplier_id[0]:null
+let supplier = suppliers?.find(n=>n.id === supplier_id[0])?.name?suppliers?.find(n=>n.id === supplier_id[0])?.name:'';
+supplier_id = supplier_id[0]?supplier_id[0]:'';
+let amount = count?count:'1';
 
-return {attribute,amount, cost, discount, name, presale_type, price, product_id, supplier, supplier_id, type_discount, order_id}
+return {amount, cost, discount, name, presale_type, price, product_id, supplier, supplier_id, type_discount, order_id, category}
 }
-const getData =(id)=>{
-    dispatch(getProductFromId(id))
+// const getData =()=>{
+//     console.log('ddddddddddddddd',productData[0].data);
+//     if (productData[0].data) {
+//         dispatch(getProductFromId(productData[0].data))     
+//     }   
+// }
+
+
+
+const funcSendData = ({attribute_id, category})=>{
+// console.log(attribute_id, category);
+let categirys = categoryList.find(n=>n.id === category)
+let arrayAtributeCategory = categirys?.attribute
+let atributesArray  = arrayAtributeCategory.map(n=>atrCategory.find(s=>s.id === n))
+let response = atributesArray.reduce((acc,cat, i)=>{
+    let atributesArray = atributes[cat.id]
+    let atr = atributesArray.find(n=>n.id === String(attribute_id[i]))?atributesArray.find(n=>n.id === attribute_id[i]):''
+    if (atr) {
+        let name = atr.name?atr.name:''
+        let atribyteId = attribute_id[i]?attribute_id[i]: ''
+      acc=[...acc, {category: cat.id, id: atribyteId, attribute_name: name}]      
+    }
+     return acc
+},[])
+// console.log(response);
+return response
 }
 
 const handleChange=(e)=>{
+  
     if (isUpdateRows) {
-        let sendData =  sendNewProduct(newProduct)
-        dispatch(addProductTooOrder({id: sendData.order_id, data: sendData}))
-        setTimeout(getData(newProduct.data), 200)
+        let sendDataAtributes = funcSendData(newProduct)
+        let sendDataProduct =  sendNewProduct(newProduct)
+        let sendData={...sendDataProduct, attribute: sendDataAtributes} 
+        console.log(sendData, sendData.order_id); 
+        dispatch(addProductTooOrder({id: sendData.order_id, sendData: sendData}))
+        // setTimeout(getData, 200)
          return
-    } else dispatch(autoUpdate({id: 'productData', str:[newProduct,...products]}))   
+    } else if (!isUpdateRows) {
+        dispatch(autoUpdate({id: 'productData', str:[newProduct,...products]}))   
+    }
+      
     
  }
 

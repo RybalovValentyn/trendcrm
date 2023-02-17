@@ -1,9 +1,8 @@
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { useEffect, useState } from 'react';
+import { useEffect} from 'react';
 import {colorsRef} from '../../../../consts/colorConstants';
 import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
@@ -25,7 +24,7 @@ import { StyledInput } from '../../../inputs/textfield';
 import {clearStatusState, modalOpenUpdate} from '../../../../redux/statusReduser';
 import {SimpleSnackbar} from '../../../alerts/alertStatus';
 import {StatusesSelectInput} from '../../../inputs/statusses';
-import { ColorButton, buttonStyle, textStyle, inputGroupStyle } from '../order/styles';
+import { ColorButton,textStyle, inputGroupStyle } from '../order/styles';
 import { getAllStatuses } from '../../../../redux/asyncThunc';
 import {StyledButton} from '../../../buttons/buttons';
 
@@ -42,7 +41,7 @@ export function AddStatusForm({isbutton}) {
 
   useEffect(()=>{
 if (isValid) {
-console.log('is valid');
+  console.log('is Valid');
   dispatch(orderStatusThunk());
   handleClose();
 } 
@@ -50,7 +49,7 @@ console.log('is valid');
 
   useEffect(()=>{
     if (nextStatus) {
-    console.log('is status');
+      console.log('next Status');
     dispatch(getAllStatuses());   
     } 
       },[nextStatus])

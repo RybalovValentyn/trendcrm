@@ -7,7 +7,7 @@ import { setAtributeCategoryList, setProductCategoryCreate, getCategoryList } fr
  const CategoryCreate =()=>{
     const dispatch =useDispatch();
     const open = useSelector((state) => state.ordersAll.modalControl.newCategory);
-    const ref = {name: "", parent_id: "", attributes: []}
+    const ref = {name: "", parent_id: "0", attributes: []}
 
 const handleClouse=()=>{
     dispatch(getOpenTableCreate({id: 'newCategory', str: false}));
@@ -25,6 +25,8 @@ const handleChange=(e)=>{
     handleClouse()    
    setTimeout(updateFunc,200) 
 }
+
+
 
     return(
         <ModalProductComponent Component={NewCategoryCreate} funcOnClouse={handleClouse} open={open}  sendButtonText={'Створити'} titleText={"Створення категорії товарів"}

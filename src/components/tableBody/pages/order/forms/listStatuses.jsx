@@ -2,7 +2,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { colorsRef } from '../../../../../consts/colorConstants';
-import { Paper, Autocomplete, TextField } from '@mui/material';
+import { Paper, Autocomplete, TextField, Typography } from '@mui/material';
 import {autocompliteInputStyle, BootstrapInput,
     textFieldStyles} from './styles';
 import { getFormTable } from '../../../../../redux/ordersReduser';
@@ -16,6 +16,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from 'react';
+import { getCookie } from '../functionOrder';
+import { useEffect } from 'react';
 
 export const ListAutocompliteStatuses =()=>{
     const dispatch = useDispatch();
@@ -36,11 +38,22 @@ export const ListAutocompliteStatuses =()=>{
     const groups = useSelector((state)=> state.addStatus.groups);
     const newGroup = {id: "0", name: "Без групи", disabled: "0"};
     const noGroups = groups.concat(newGroup).reverse();
-    const defaultGroup = noGroups.find(str=> str.id === '0');
+    const userGroup = String(getCookie('user.group'))
+    const defaultGroup = noGroups.find(str=> str.id === userGroup);
     const defaultRespinsible = responsibleList.find(str=> str.id === '0');
     const storeUrl = useSelector((state) => state.ordersAll.createRows.store_url);
     const clientDate = useSelector((state) => state.ordersAll.createRows.date_create);
      const createRows = useSelector((state) => state.ordersAll.createRows);
+     const id = useSelector((state) => state.ordersAll.createRows.id);
+     const date =new Date()
+     const [value, setValue] =useState(dayjs(date));
+
+     useEffect(()=>{
+        if (!isUpdateRows) {
+            let str = value.format('YYYY-MM-DD T HH:mm:ss').toString().split(' ')[0];
+            dispatch(getFormTable({id: 'date_create', str }))         
+        }   
+     },[])
 
 const onAutocompliteChange=(e, newValue, id)=>{   
      if (newValue.statusId === '0') {
@@ -50,6 +63,7 @@ const onAutocompliteChange=(e, newValue, id)=>{
 };
 
 const onAutocompliteResponsible=(e, newValue, id)=>{
+    console.log(userGroup);
     dispatch( getFormTable({id, str:newValue.id }))
 }
 const inputChange=(e)=>{
@@ -60,7 +74,7 @@ const inputChange=(e)=>{
 
 const daateChange =(newValue) =>{
     let id = 'date_create'
-    let str = newValue.format('YYYY-MM-DD T HH:mm:ss').toString().split(' ')[0];
+    let str = newValue?.format('YYYY-MM-DD HH:mm:ss')?.toString()?.split(' ')[0];
     dispatch(getFormTable({id, str }))
       }
 
@@ -93,6 +107,9 @@ const paperStyle={
     return(
         <Paper sx={paperStyle}>
         <List sx={{padding: '0px',  display: 'flex'}}>
+            {id?<ListItem sx={{margin: '0px 5px',padding: 0,maxWidth: '130px'}}>
+                <Typography sx={{fontWeight: '700', fontSize: '14px'}}>Замовлення № {id}</Typography>
+            </ListItem>:null}
             <ListItem sx={listItemStyles}>
 
             <Autocomplete
@@ -100,6 +117,7 @@ const paperStyle={
                 onChange={(e, newValue, id)=>onAutocompliteChange(e, newValue, id ='status' )}
                 value={createRows.status && createRows.status !== '0'?renderFilteredStatus.find(n=>n.id === createRows.status): defaultStatus}                
                 options={renderFilteredStatus}
+                readOnly={!isUpdateRows}
                 disableClearable
                 getOptionLabel={(option) => option.name}
                 renderOption={(props, option, { selected }) => (
@@ -119,9 +137,11 @@ const paperStyle={
             disablePortal
                 id={'responsible'}
                  onChange={(e, newValue, id)=>onAutocompliteResponsible(e, newValue, id = 'responsible')}
-                value={(createRows?.responsible && createRows?.responsible !== '0'?responsibleList?.find(n=>n.id === createRows?.responsible):defaultRespinsible)?responsibleList?.find(n=>n.id === createRows?.responsible):null }
+                value={(createRows?.responsible && createRows?.responsible !== '0'?
+                responsibleList?.find(n=>n.id === createRows?.responsible):defaultRespinsible)
+                ?responsibleList?.find(n=>n.id === createRows?.responsible):null }
                 options={responsibleList} 
-                getOptionLabel={(option) => option.name}        
+                 getOptionLabel={(option) => option.name}        
                 sx={autocompliteInputStyle}
                 disableClearable
                 renderInput={(params) => <TextField sx={textFieldStyles}  {...params} />}
@@ -148,7 +168,7 @@ const paperStyle={
                  />
      </ListItem>
 
-    <ListItem sx={listItemStyles} >
+   { !isUpdateRows ? <ListItem sx={listItemStyles} >
             <BootstrapInput   
             onChange={inputChange}
             sx={{backgroundColor: colorsRef.formBgColor,minWidth: '100px', maxWidth: '160px', width: '100%',  textAlign: 'center' }} 
@@ -156,13 +176,13 @@ const paperStyle={
              value={storeUrl}
               id="store_url"
              variant="outlined" />
-   </ListItem>
+   </ListItem>:null}
    {  !isUpdateRows ? <ListItem sx={listItemStyles} >
      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
             <DatePicker
              id={'date_create'}            
             inputFormat="YYYY-MM-DD"
-             value={clientDate}
+             value={clientDate?clientDate:null}
              onChange={daateChange}
             renderInput={(params) => <ValidationTextField sx={{backgroundColor: colorsRef.formBgColor, borderRadius: '8px'}} align='center' {...params} />}
         />

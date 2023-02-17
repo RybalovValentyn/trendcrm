@@ -8,29 +8,30 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
           getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList,
           getDescriptionList, setNewProductCreate, setNewSupplierCreate, setAtributeCategoryList,
           setProductCategoryCreate, setAddCategoryAtribute, setAddAtribute, setAtributesCreate,
-          updateProductFromId, addProductTooOrder, getProductFromId, setProductInOrderFromId, setUpdateProductCategory} from './asyncThunc';
+          updateProductFromId, addProductTooOrder, getProductFromId, setProductInOrderFromId, setUpdateProductCategory,
+          postRowsAfterUpdate, postRowsProductDelete
+        } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
-import { tableParse } from '../components/tableBody/pages/order/tableParse';
+
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
 
-const table = tableParse.data
-
-
 const rows=  { 
-  delivery_type: '0',
+  delivery_type: '12',
   responsible_packer: '0',
   packer_name:'0',
-  payment_type: '0',
+  payment_type: '15',
   backward_delivery_summ: '0.00',
   prepay_amount: '0.00',
   datetime: '',
   datetime_sent: '',
-  delivery_service_type: '0',
+  delivery_service_type: '1',
   payment_status: '0',
   warehouse_city: '',
   warehouse_address: '',
-  delivery_payers: '0',
-  delivery_payers_redelivery: '0',
+  // delivery_payers: '1',
+  // delivery_payers_redelivery: '0',
+  payer: "0",
+  payer_redelivery: "1",
   weight: '0',
   volume_general: "0.0000",
   seats_amount: "1",
@@ -38,7 +39,7 @@ const rows=  {
   novaposhta_comment: "",
   tnn: '',
   sent: "0",
-  status: "4",
+  status: "",
   doors_address: "",
   doors_city: "",
   doors_house: "",
@@ -49,19 +50,16 @@ const rows=  {
   store_url:'',
   // ttn_cost: '',
   client_comment: '',
-
+  total: 0,
   discount: "",
 discount_type: "0",
-order_products: [],
-
-
 date_create:'',
 };
 
 const client={
   fio: '',
   // id: null,
-  client_phone: '+38(0__)___-__-__',
+  phone: '',
   email: '',
   ig_username: '',
   comment: '',
@@ -157,7 +155,7 @@ const colorUpdate=(str)=>{
 
 // };
 const newProductRef ={
-  attribute_id: "",
+  attribute_id: [],
 category: "0",
 cost: '',
 data: "1",
@@ -252,7 +250,11 @@ newCetegoryAtribute: {...newCategoryAtributeRef},
 newAtribute: {...newAtributesRef},
 ttn_status: {},
 client: {...client},
+updateClient: {},
  createRows:{...rows},
+ updateRows: {},
+ copyRowsUpdateAction: {},
+ copyClientUdateAction: {},
  searchParams: {...searchRefParams},
  delivery_type: [{name: 'Нова пошта', id: '12'},
                   {name: 'justin', id: '1'}, 
@@ -267,13 +269,13 @@ client: {...client},
                  {name: 'Передплата (не оплачено)', id: '16',  prepay_status: '0'},
                  {name: 'Оплачено ?', id: '95', prepay_status: '' },
                 {name: 'operator', id: '2', prepay_status: '' }],
-  delivery_service_type: [{name: 'Відділення', id: '0'},
-                          {name:'Адреса', id: '1'}],
+  delivery_service_type: [{name: 'Відділення', id: '1'},
+                          {name:'Адреса', id: '2'}],
   sityNewPost:[],
   adressNewPost: [],
-  delivery_payers: [{name: 'Отримувач', value: 'Recipient', id: '0'},
+  payer: [{name: 'Отримувач', value: 'Recipient', id: '0'},
                     {name: 'Відправник', value: 'Sender', id: '1' }],
-  delivery_payers_redelivery: [{name: 'Отримувач', value: 'Recipient',  id: '0'},
+  payer_redelivery: [{name: 'Отримувач', value: 'Recipient',  id: '0'},
                                {name: 'Відправник', value: 'Sender',  id: '1'}],
   packer_name: [{name: 'Нічого не вибрано', id: '0'},
                 {name: 'admin', id:'1'}],
@@ -320,6 +322,7 @@ client: {...client},
   typeMessage: '',
   isStatusUpdated: false,
   sneckBarMessage: null,
+  messageFromSwal: [],
   },
 
    reducers: {
@@ -345,7 +348,10 @@ if (action.payload.str === 'clear') {
   if (action.payload.str === 'clear') {
     state.newProduct = {...newProductRef}
   } else if (action.payload.id === 'all') {
-    state.newProduct = {...action.payload.str,count: 1, discount: '', cost: action.payload.str.price, typeDiscount: '%'}
+    state.newProduct = {...action.payload.str,count: 1, discount: '', cost: action.payload.str.price, typeDiscount: '%',
+     attribute_id: action.payload.str?.attribute_id? action.payload.str?.attribute_id?.replace(/[']/g, []).split(','):[]
+     }
+
   }  else state.newProduct= {...state.newProduct,[action.payload.id]: action.payload.str}
     },
 
@@ -409,36 +415,79 @@ if (action.payload.str === 'clear') {
           return { ...state,
             createRows: {...rows},
             client: {...client},
+            updateClient:{},
+            updateRows:{},
+            copyClientUdateAction:{},
+            copyRowsUpdateAction:{},
             isUpdateRows: false,
         };
         },
         setClientForm:  (state, action) => {  
-          // console.log(action.payload);
-          return { ...state,
-            client: { ...state.client, [action.payload.id]: action.payload.str}
-        };
+          // console.log(action.payload.str);
+          if (state.isUpdateRows) {           
+            if (state.copyClientUdateAction[action.payload.id] === action.payload.str) {
+             state.updateClient= { ...state.updateClient, [action.payload.id]: 0}
+            } else if (state.copyClientUdateAction[action.payload.id] != action.payload.str) {
+              state.updateClient= { ...state.updateClient, [action.payload.id]: 1}
+            }
+           
+          }
+          state.client = { ...state.client, [action.payload.id]: action.payload.str}
+
         },
 
         getFormTable: (state, action) => { 
-          console.log(action.payload);
-          switch (action.payload.id) {
-        case ('warehouse_city'):               
-        return { ...state,
-          createRows:{ ...state.createRows, warehouse_city:action.payload.str,warehouse_address: '' }
-      };
+         
+          if (state.isUpdateRows) { 
+          if (state.copyRowsUpdateAction[action.payload.id] === action.payload.str) {
+            state.updateRows= { ...state.updateRows, [action.payload.id]: 0}
+           } else if (state.copyRowsUpdateAction[action.payload.id] != action.payload.str) {
+             state.updateRows= { ...state.updateRows, [action.payload.id]: 1}
+           }
+          }
+          
+          if (action.payload.id === 'warehouse_city') {
+            state.createRows.warehouse_city =  action.payload.str;
+            state.createRows.warehouse_address = ''  ;
+          } else state.createRows = { ...state.createRows, [action.payload.id]: action.payload.str}
+          
 
-         default:
-          return { ...state,
-            createRows:{ ...state.createRows, [action.payload.id]: action.payload.str}
-        };
-          } 
-  
         }, 
   },
 
   
 
       extraReducers: {
+
+        [postRowsProductDelete.pending]:handlePending,
+        [postRowsProductDelete.fulfilled](state, action) { 
+         if (action.payload?.data?.order_total) {
+            state.typeMessage= typeMessage.success;
+             state.messageFromSwal = [`Замовлення оновлено №-${action.payload?.id}`, `№-${action.payload?.prod} видалено`]
+             state.createRows.total = action.payload.data.order_total
+             state.createRows.backward_delivery_summ = action.payload.data.order_total
+          }  else if (action.payload?.data.error) {
+            state.typeMessage= typeMessage.error;
+             state.messageFromSwal = [action.payload?.data.error, `${action.payload?.id}`]
+          } 
+            requestFulfilled(state, action)
+        },
+        [postRowsProductDelete.rejected]:handleRejected,
+
+        [postRowsAfterUpdate.pending]:handlePending,
+        [postRowsAfterUpdate.fulfilled](state, action) { 
+         if (action.payload?.data.responsible === '1') {
+            state.typeMessage= typeMessage.success;
+            state.updateClient={};
+            state.updateRows={};
+             state.message = ['Замовлення оновлено', `№-${action.payload?.id}`]
+          }  else if (action.payload?.data.error) {
+            state.typeMessage= typeMessage.error;
+             state.message = [action.payload?.data.error, `${action.payload?.id}`]
+          } 
+            requestFulfilled(state, action)
+        },
+        [postRowsAfterUpdate.rejected]:handleRejected,
         
         [setUpdateProductCategory.pending]:handlePending,
         [setUpdateProductCategory.fulfilled](state, action) { 
@@ -455,7 +504,8 @@ if (action.payload.str === 'clear') {
         
         [setProductInOrderFromId.pending]:handlePending,
         [setProductInOrderFromId.fulfilled](state, action) { 
-          let ind = state.productData.findIndex(n=>n.data === action.payload.id)
+          console.log(action.payload?.data);
+         let ind = state.productData.findIndex(n=>n.data === action.payload.id)
           const func = ({amount, cost, discount,discount_type, order_total,price, supplier_id})=>{
             let typeDiscount = discount_type === '0'? '%':'ua'
              let d = []
@@ -465,52 +515,60 @@ if (action.payload.str === 'clear') {
               {amount, cost, discount, typeDiscount, price,supplier_id, }
             )
           }
-        const data = func(action.payload?.data)  
-         let s = {...state.productData[ind], ...data}        
+        const data = func(action.payload?.data) 
          let newProduct = {...state.productData[ind],...data}
           state.productData[ind] = {...newProduct}
+          state.createRows.total = action.payload?.data.order_total
+          state.createRows.backward_delivery_summ = action.payload?.data.order_total
             requestFulfilled(state, action)
         },
         [setProductInOrderFromId.rejected]:handleRejected,
         
         [getProductFromId.pending]:handlePending,
         [getProductFromId.fulfilled](state, action) { 
-          const func = ({category_id, attribute_id, attribute_name, parent_id, id, name})=>{
-            let category = category_id
-            let value = `${state.newProduct.name}-${attribute_name }`    
-            name = `${id} - ${name}`
-            return (
-              {category, attribute_id, value, parent_id, name}
-            )
-          }
-        const data = func(action.payload?.data)          
-          state.newProduct = {...state.newProduct,...data}
-          state.productData = [state.newProduct,...state.productData]
-            requestFulfilled(state, action)
-          // state.newProduct = {...newProductRef}
+          console.log('getProductFromId',action.payload?.data);
+        //   const func = ({category_id, attribute_id, attribute_name, parent_id, id, name})=>{
+        //     let category = category_id
+        //     let value = `${state.newProduct.name}-${attribute_name }`    
+        //     name = `${id} - ${name}`
+        //     attribute_id = typeof(attribute_id) === 'string'?attribute_id?.replace(/[']/g, [])?.split(','): (attribute_id?.length > 0 ? [...attribute_id]: []);
+        //     return (
+        //       {category, attribute_id, value, parent_id, name}
+        //     )
+        //   }
+        // const data = func(action.payload?.data)    
+
+        //   // state.productData = [data,...state.productData]  
+        //   // console.log([data,...state.productData]); 
+             
+        //   // state.newProduct = {...state.newProduct,...data}
+
+        //   state.productData = [state.newProduct,...state.productData]
+        //     requestFulfilled(state, action)
+        //   // state.newProduct = {...newProductRef}
         },
         [getProductFromId.rejected]:handleRejected,
         
         [addProductTooOrder.pending]:handlePending,
         [addProductTooOrder.fulfilled](state, action) { 
-          const func = ({amount, cost, discount, name, discount_type, price, product_id,supplier_id, icon})=>{
-            let  data = product_id
+          const func = ({amount, cost, discount, name, discount_type, price, product_id,supplier_id, icon, attribute, product_name, id})=>{
+            let  data = id
              let typeDiscount = discount_type === '0'? '%':'ua'
              let d = []
              d.push(supplier_id)
             supplier_id =[...d]
+            name=product_name?product_name:''
             return (
-              {amount, cost, discount, data, typeDiscount, price, icon, supplier_id, name  }
+              {amount,attribute, cost, discount, data, typeDiscount, price, icon, supplier_id, name, product_id  }
             )
           }
-    if (action.payload?.data) {
+         if (action.payload?.data) {
             state.typeMessage= typeMessage.success;
              state.message = ['Товар додано', `замовлення ${action.payload?.id}`]
           }  
+          console.log(action.payload.data);
         const data = func(action.payload?.data)
-
-          state.productData = [...state.productData]
-          state.newProduct = {...data}
+        state.productData = [data,...state.productData]
             requestFulfilled(state, action)
         },
         [addProductTooOrder.rejected]:handleRejected,
@@ -518,14 +576,14 @@ if (action.payload.str === 'clear') {
         [updateProductFromId.pending]:handlePending,
         [updateProductFromId.fulfilled](state, action) { 
             if (String(action.payload?.data) === '1') {
-               state.typeMessage= typeMessage.success;
+            state.typeMessage= typeMessage.success;
             state.message = ['Атрибут додано', action.payload.text]
             
           } else if (String(action.payload?.data) !== '1') {
             state.typeMessage= typeMessage.warn;
              state.message = ['Атрибут не додано', 'помилка']
           }   
-          state.newProduct = {...newProductRef}
+            state.newProduct = {...newProductRef}
             requestFulfilled(state, action)
         },
         [updateProductFromId.rejected]:handleRejected, 
@@ -605,7 +663,7 @@ if (action.payload.str === 'clear') {
 
         [setNewProductCreate.pending]:handlePending,
         [setNewProductCreate.fulfilled](state, action) { 
-          console.log(action.payload.data);
+          // console.log(action.payload.data);
            if (action.payload.data?.status) {
             state.typeMessage= typeMessage.error;
             state.message = [action.payload?.data?.message,]
@@ -881,7 +939,7 @@ if (action.payload.str === 'clear') {
 
           return{
            ...state,
-            nextStatus: action.payload,
+            nextStatus: action.payload?.data,
             isLoading: false,
             isError: false,
             isValid: true,
@@ -991,15 +1049,24 @@ if (action.payload.str === 'clear') {
               id: ''
                 }; 
           },
-          [postRowsFromForm.fulfilled](state, action) {    
-            // console.log(action.payload);
-              return{
-             ...state,
-             createRows: { ...state.createRows, id: action.payload.order_id},
-             isError: false,
-             isLoading: false,
+          [postRowsFromForm.fulfilled](state, action) { 
+            console.log(state.isUpdateRows, action.payload.order_id);
+            
+           if (!state.isUpdateRows) {
+             state.createRows = { ...state.createRows, id: action.payload.order_id}
+            state.typeMessage = typeMessage.success
+            state.message = [`Замовлення створено під № ${action.payload.order_id}`,] 
+           } else if (state.isUpdateRows) {
+            state.typeMessage = typeMessage.success
+            state.message = [`Замовлення оновлено`,] 
+           } else if ( !action.payload?.order_id) {
+            state.typeMessage = typeMessage.error
+            state.message = [`Помилка в замовленні`,] 
+           }
 
-            }
+
+           requestFulfilled(state, action)
+
           },
           [postRowsFromForm.rejected]:handleRejected,
           
@@ -1021,42 +1088,48 @@ if (action.payload.str === 'clear') {
 
               return {attribute_id, count, price, parent_id, name, cost, data, discount, typeDiscount, value, supplier_id, icon, categoryListFrom            }
             }
-            // console.log(action.payload);
             let packer_name = action.payload.delivery.packer_name?action.payload.delivery.packer_name: '0' ;
             let payment_type = action.payload.order.payment_type?action.payload.order.payment_type : '0';
-            let delivery_service_type = (action.payload.delivery.delivery_service_type || action.payload.delivery.warehouse_city !== '')?'0' : '1';
-            let delivery_payers =  action.payload.delivery.payer === 'Recipient'?'0': '1';
-            let delivery_payers_redelivery = action.payload.delivery.payer_redelivery === 'Recipient'?'0': '1';                                                
-            let weight = action.payload.delivery.weight?action.payload.delivery.weight: 0;
-            let volume_general = action.payload.delivery.volume_general?action.payload.delivery.volume_general: 0;
-            let seats_amount = action.payload.delivery.seats_amount?action.payload.delivery.seats_amount:1;
             let prepay_status = action.payload.delivery.prepay_status?action.payload.delivery.prepay_status: 0;
             let products = []
             if (action.payload.products.length > 0) {
               products = [...action.payload.products.map(n=>(getData(n)))]
             }
+           let createRows= {...action.payload.order, ...action.payload.delivery,
+          //  backward_delivery_summ = action.payload.data.order_total
+              packer_name: packer_name, 
+              payment_type: payment_type,
+              delivery_service_type: action.payload.delivery.service_type,
+              payer: action.payload.delivery.payer?action.payload.delivery.payer:'1',
+              payer_redelivery: action.payload.delivery.payer_redelivery?action.payload.delivery.payer_redelivery:'1',
+              weight: action.payload.order.total_weight,
+              volume_general: action.payload.order.total_volume_general,
+              seats_amount: action.payload.delivery.seats_amount,
+              status: action.payload.order.status,
+              backward_summ: action.payload.delivery.backward_summ?action.payload.delivery.backward_summ: 0,
+              prepay_status:prepay_status,
+              backward_delivery_summ: action.payload.order.backward_delivery_summ?action.payload.order.backward_delivery_summ: 0.00,
+              responsible: action.payload.client.responsible?action.payload.client.responsible:'0',
+              novaposhta_comment: action.payload.delivery.comment?action.payload.delivery.comment:action.payload.order.comment,
+              sent: action.payload.order.order_return,
+              cost: action.payload.delivery.cost,
+              datetime_sent: action.payload.order.datetime_sent,
+              }
+             let client = {...action.payload.client,
+                comment: action.payload.order.comment,
+                phone: action.payload.client.phone?action.payload.client.phone:'',
+                 additional_field: action.payload.order.additional_field,
+                 responsible: action.payload.client.responsible?action.payload.client.responsible:'0'
+                }
            return{
              ...state,            
-             client: {...action.payload.client, comment: action.payload.order.comment, 
-               additional_field: action.payload.order.additional_field,
-               responsible: action.payload.client.responsible?action.payload.client.responsible:'0'
-              },          
-               createRows: {...action.payload.order, ...action.payload.delivery,
-                  packer_name: packer_name, 
-                  payment_type: payment_type,
-                  delivery_service_type: delivery_service_type,
-                  delivery_payers: delivery_payers,
-                  delivery_payers_redelivery: delivery_payers_redelivery,
-                  weight: weight,
-                  volume_general: volume_general,
-                  seats_amount:seats_amount,
-                  status: action.payload.order.status,
-                  backward_summ: action.payload.delivery.backward_summ?action.payload.delivery.backward_summ: 0,
-                  prepay_status:prepay_status,
-                  backward_delivery_summ: action.payload.delivery.backward_delivery_summ?action.payload.delivery.backward_delivery_summ: 0.00,
-                  responsible: action.payload.client.responsible?action.payload.client.responsible:'0'
-                  }, 
+             client: client,
+            createRows: createRows,
             productData: products,
+            updateClient:{},
+            updateRows:{},
+            copyRowsUpdateAction:{...createRows},
+            copyClientUdateAction:{...client},
              isError: false,
              isLoading: false,
 

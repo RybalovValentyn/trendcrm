@@ -12,6 +12,7 @@ import { DotMenu } from '../../../../inputs/dotMenu';
 import {getSityNP, getAddressNP} from '../../../../../redux/novaPoshta';
 import {BootstrapInput, autocompliteInputStyle,
    textFieldStyles, Label, inputStyle, boxStyle} from './styles';
+import { onChangeConstInInput } from '../../../../buttons/saveButton';
 
 
 export function MultiInput({label, name, func, val, type}) {
@@ -26,6 +27,9 @@ export function MultiInput({label, name, func, val, type}) {
     const adressValue = useSelector((state) => state.ordersAll.createRows.warehouse_address); 
     const paymentType = useSelector((state)=> state.ordersAll.payment_type);
     const ordersAll = useSelector((state) => state.ordersAll);
+    const updateRows = useSelector((state) => state.ordersAll.updateRows);
+  
+
 
     const getSitysNovaPoshta = ordersAll[name]?.flatMap(sity=> sity.Present)?.filter((sity, index, array) => array.indexOf(sity) === index);
 
@@ -53,34 +57,16 @@ const setStreetDelivery=(e)=>{
     dispatch(getFormTable({id, str}))
    
 }
-  
 
 
-const inputFocus =(e)=>{
-  let id = e.target.id;
-  if (id === 'client_phone'){
-    let str = '+38(0'
-   return dispatch(getFormTable({id, str}));
-  }
-  
-}
-const keyCodeInput = (e) =>{ 
-  let id = e.target.id; 
- if (e.key === 'Backspace') {
-    let str = ''
-    dispatch(getFormTable({id, str}))
-  }
-}
-
-    const inputSwicher=(e)=>{
+   const inputSwicher=(e)=>{
         let id = e.target.id;
         let str = e.target.value
         let name = e.target.name
  if (id === 'backward_delivery_summ' || id === 'weight' || id ==='volume_general' || id === 'seats_amount' || id ==='backward_summ') {
-          if (Number(str)) {
-            console.log(str);
+             str = e.target.value.replace(/[^0-9.]/g, '');
            return dispatch(getFormTable({id, str})) 
-        }
+        
              
    }else if (type === 'select' && name !== 'payment_type') {
     let ind = dataForSelect.find(str=>str.name === e.target.value)
@@ -88,16 +74,14 @@ const keyCodeInput = (e) =>{
 
   } else if (type === 'select' && name === 'payment_type') {
     let type = paymentType.find(str=>str.name === e.target.value)
-    console.log(type);
-       dispatch(getFormTable({id:name, str: type.id}))
-                               
+         dispatch(getFormTable({id:name, str: type.id}))                               
   } else dispatch(getFormTable({id, str}))       
           
     }
 
 let raadOnly = false
 let corsor = () =>{
-if (name === 'backward_delivery_summ' && (client['payment_type'] === 0 || client['payment_type'] === 1)) {
+if (name === 'backward_delivery_summ' && (client['payment_type'] === '86' || client['payment_type'] === '0')) {
   raadOnly = true
   return 'not-allowed'
 } 
@@ -133,13 +117,11 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
         </Label>}
     <BootstrapInput
     autoComplete="off"
-    sx={{cursor: corsor()}}
+    sx={{cursor: corsor(), boxShadow: updateRows[name] === 1?'0px 0px 5px 1px #0322ff9e':null}}
     readOnly={raadOnly}
     type={type}
     value={client[name]}
-    id={name}
-    onKeyDown={keyCodeInput}
-    onFocus={inputFocus}      
+    id={name} 
     onChange={inputSwicher}
     variant="outlined" />
  </Box>
@@ -156,8 +138,8 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
         width: '100%',
         resize: 'vertical',
         outline: 'none',
-       height: '100px'
-
+         height: '100px',
+        boxShadow: updateRows[name] === 1?'0px 0px 5px 1px #0322ff9e':null
         }}
         type={type}
         value={client[name]}
@@ -166,7 +148,8 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
          ></textarea>
      </Box>
 
-     )} else if (type === 'select') {return(
+     )} else if (type === 'select') {
+      return(
         <Box sx={boxStyle} autoComplete="off" >
         {label && <Label htmlFor={name}>
         {label}
@@ -178,7 +161,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
         type={type}
         id="multiple-checkbox"
         value ={dataForSelect.find(n=>n.id===String(client[name]))?.name}      
-         sx={inputStyle}
+         sx={{...inputStyle, boxShadow: updateRows[name] === 1?'0px 0px 5px 1px #0322ff9e':null}}
       >
         {dataForSelect.map((nam, ind) => (
          <MenuItem sx={{fontSize: '12px' }}  id={name} key ={ind} value={nam.name}>
@@ -193,10 +176,10 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
      )} else if(type === 'data'){
       return(
         <Box sx={boxStyle} >
-        {label && <Label htmlFor="named-select">
+        {label && <Label htmlFor="named-select" >
         {label}
         </Label>}
-      <BasicDateTimePicker name='datetime_sent' type='data'/>
+      <BasicDateTimePicker name='datetime_sent' type='data' />
       </Box>
       )
      } else if(type === 'time'){
@@ -215,6 +198,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
           </Label>}
 
           {/* <SearchInputSity/> */}
+          <Box sx={{ boxShadow: updateRows[name] === 1?'0px 0px 5px 1px #0322ff9e':null, padding: '0px', borderRadius: '8px', width: '100%', maxWidth: '250px'}}>
           <Autocomplete
               freeSolo  
               id={name}
@@ -225,7 +209,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
                onChange={setSytyDelivery}
               sx={autocompliteInputStyle}
               renderInput={(params) => <TextField sx={textFieldStyles}  {...params}/>}
-            />
+            /></Box>
         </Box>
         )}else if (type === 'autocomplete' && name === 'warehouse_address')      
         {return(
@@ -233,6 +217,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
             {label && <Label htmlFor="warehouse_address">
             {label}
             </Label>}
+            <Box sx={{ boxShadow: updateRows[name] === 1?'0px 0px 5px 1px #0322ff9e':null, padding: '0px', borderRadius: '8px', width: '100%', maxWidth: '250px',}}>
             <Autocomplete
                 freeSolo  
                 id={name}
@@ -242,7 +227,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
                 onChange={setStreetDelivery}
                 sx={autocompliteInputStyle}
                 renderInput={(params) => <TextField sx={textFieldStyles}  {...params}/>}
-              />
+              /></Box>
           </Box>
           )}else if (type === 'autocomplete')      
         {return(
@@ -250,6 +235,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
             {label && <Label htmlFor="named-select">
             {label}
             </Label>}
+            <Box sx={{ boxShadow: updateRows[name] === 1?'0px 0px 5px 1px #0322ff9e':null, padding: '0px', borderRadius: '8px', width: '100%', maxWidth: '250px'}}>
             <Autocomplete
                 freeSolo  
                 id={name}
@@ -259,6 +245,7 @@ if (type === 'text' || type === 'num' || type === 'e-mail') {
                 sx={autocompliteInputStyle}
                 renderInput={(params) => <TextField onChange={searchSityFromNP} sx={textFieldStyles}  {...params}/>}
               />
+              </Box>
           </Box>
           )}else if (type === 'readOnly') {
             return (

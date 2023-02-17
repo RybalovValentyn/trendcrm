@@ -1,5 +1,5 @@
 {
-  "name": "public",
+  "name": "trendcrm",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,6 +24,7 @@
     "react-color": "^2.19.3",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
+    "react-imask": "^6.4.3",
     "react-input-color": "^4.0.1",
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.2",
@@ -38,7 +39,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RybalovValentyn/public.git"
+    "url": "git+https://github.com/RybalovValentyn/trendcrm.git"
   },
   "scripts": {
     "start": "react-scripts start ",
@@ -48,7 +49,7 @@
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
   },
-  "homepage": "https:///RybalovValentyn.github.io/public",
+  "homepage": "https:///RybalovValentyn.github.io/trendcrm",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -69,7 +70,7 @@
   },
   "description": "",
   "bugs": {
-    "url": "https://github.com/RybalovValentyn/public/issues"
+    "url": "https://github.com/RybalovValentyn/trendcrm/issues"
   },
   "main": "index.js",
   "keywords": [],

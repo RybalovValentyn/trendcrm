@@ -30,7 +30,6 @@ export const Component=()=>{
     const [attribute, setAtribute] = useState([])
 
 const handleAutocompliteChange=(e, newValue)=>{
-    // console.log(newValue);
    let category =  categoryList.find(n=>n.id === newValue.category)
    if (category?.attribute?.length > 0) {
     let atribyteTooRender = category?.attribute.map(str=>(atrCategory.find(n=>n.id === str)))
@@ -54,37 +53,38 @@ useEffect(()=>{
 
 },[price, amount, discount,typeDiscount])
 
-
 const handleAtributeChange=(e, newValue,text, index)=>{  
-let productAtributes = newProduct.attribute_id.split(',')[0]?newProduct.attribute_id.split(','):''
+    // console.log(newValue);
+let productAtributes = newProduct?.attribute_id?.length > 0 ?[...newProduct.attribute_id]:[]
     if (newValue.id === 'new_atribute') { 
-        // console.log(productAtributes);
         if (productAtributes) {
             let prodCategory = categoryList.find(n=>n.id === newProduct.category).attribute[index]
-            // console.log(prodCategory);
             let prodAtrCat = atrCategory.find(n=>n.id === prodCategory)
             dispatch(autoUpdateAllReducer({id: 'category', state: 'newAtribute', str: prodAtrCat.id}))
           return  dispatch(getOpenTableCreate({id: 'newAtribute', str: true}));
         } else dispatch(getOpenTableCreate({id: 'newCreateAtribute', str: true}));  
         return
      }
-let value = ''
-if (newProduct.attribute_id !== '' && !newProduct.attribute_id.includes(newValue.id) && attribute.length > 1) {    
-    if (newProduct.attribute_id.split(',').length === attribute?.length) {       
-        let atr = newProduct.attribute_id.split(',')
-       value = atr.splice(index,1, newValue.id)       
-      return dispatch(newProductUpdate({id: 'attribute_id', str: atr.join(',')}))
-    } else return  value = `${newProduct.attribute_id}, ${newValue.id}`
+let value = []
+// console.log(productAtributes, attribute);
+if (productAtributes.length > 0 && attribute.length > 1) {  
+     if (productAtributes.length === attribute?.length) {       
+        let atr = [...productAtributes]
+         atr.splice(index,1, newValue.id) 
+      return dispatch(newProductUpdate({id: 'attribute_id', str: atr}))
+    } else console.log('sssssssssssssssss',productAtributes);
+    //  else
+    // console.log([...newProduct.attribute_id, newValue.id]);
+    // return  value = [...newProduct.attribute_id, newValue.id]
    
-} else if (newProduct.attribute_id !== '' && !newProduct.attribute_id.includes(newValue.id) && attribute.length === 1) {
-     value = newValue.id
-}  else if (newProduct.attribute_id === '') {
+} else if (newProduct.attribute_id.length > 0 && attribute.length === 1) {
+     value = [newValue.id]
+}  else if (newProduct.attribute_id.length === 0 && attribute.length > 0) {
     let arr =[ ...attribute].fill('')
     arr.splice(index,1, newValue.id)
-    // console.log('value = atr.splice(index,1, newValue.id)', arr.join(','));
-  return  dispatch(newProductUpdate({id: 'attribute_id', str: arr.join(',')}))
-} value = newValue.id
-console.log(value);
+    console.log(arr);
+  return  dispatch(newProductUpdate({id: 'attribute_id', str: arr}))
+} else value = [newValue.id]
     dispatch(newProductUpdate({id: 'attribute_id', str: value}))
 
 }
@@ -131,11 +131,12 @@ const getSupliersAutocompliteList=(value)=>{
   
 }
 const getValue=(str,i)=>{
-    if (newProduct.attribute_id?.split(',')[i] && attribute?.length === 1) {
-         return  atributes[str.id].find(n=>n.id === newProduct.attribute_id.split(',')[i])    
-    } else if (newProduct.attribute_id?.split(',')[i] && attribute?.length > 1) {
-        if (atributes[str.id]?.find(n=>n.id === newProduct.attribute_id?.split(',')[i]) ) {
-            return atributes[str.id]?.find(n=>n.id === newProduct.attribute_id?.split(',')[i]) 
+    // console.log(str, i, newProduct);
+    if (newProduct?.attribute_id[i] && attribute?.length === 1) {
+         return  atributes[str.id].find(n=>n.id === newProduct.attribute_id[i])    
+    } else if (newProduct?.attribute_id[i] && attribute?.length > 1) {
+        if (atributes[str.id]?.find(n=>n.id === newProduct.attribute_id[i]) ) {
+            return atributes[str.id]?.find(n=>n.id === newProduct.attribute_id[i]) 
         } else return atributes[str.id][0]?atributes[str.id][0]:str
     } else  return str
    
@@ -163,7 +164,7 @@ const ListItemStyle = {width: '100%', padding: '5px'}
      if (atributes[str.id]) {
         data = [...atributes[str.id]]
      }
-     console.log(data);
+    //  console.log(data);
         return(
             <ListItem key = {i} sx={ListItemStyle}>
             <AutocompliteComponent key={i} data={[addAtribute, ...data]} disp={handleAtributeChange} textContent={i === 0?'Атрибути:':''}

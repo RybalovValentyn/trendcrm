@@ -18,12 +18,15 @@ import ListItem from '@mui/material/ListItem';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import { productsdataUpdate, getOpenTableCreate } from '../../../../redux/ordersReduser';
+import { productsdataUpdate, getOpenTableCreate, getFormTable } from '../../../../redux/ordersReduser';
 import { getDataForAutocompliteList, getAtributesAutocompliteList, getSupliersList, getCategoryList, setAtributeCategoryList } from '../../../../redux/asyncThunc';
 import { priceUpdate } from '../order/functionOrder';
 
+
 const  ProductCreateComponent=()=>{
 const dispatch = useDispatch();
+const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
+const total = useSelector((state) => state.ordersAll.createRows.total);
 const [add1, setAdd1] = useState(false)
 const [add2, setAdd2] = useState(false)
 const [value1, setValue1]= useState(0.00)
@@ -58,8 +61,12 @@ const selectStyle={
 useEffect(()=>{
     let summ = getSum()
     let cost =  priceUpdate(summ, '1' ,discount ,type )
-    if (cost) {
-        setValue2(cost)  
+    if (cost && !isUpdateRows) {
+        setValue2(cost) 
+        dispatch(getFormTable({id:'backward_delivery_summ', str: cost}))        
+    }else if (products.length === 0 && !isUpdateRows) {
+        setValue2(0) 
+        dispatch(getFormTable({id:'backward_delivery_summ', str: 0}))  
     }
     
  },[discount, type, products])
@@ -170,7 +177,7 @@ const handleChangeDiscount=(e)=>{
         
     </ListItem>
     <ListItem sx={{padding: 0}}>
-        <Typography  sx={listTextStyle} component={'h5'}>{`Сума замовлення: ${value2}`}</Typography>
+        <Typography  sx={listTextStyle} component={'h5'}>{`Сума замовлення: ${isUpdateRows?total:value2}`}</Typography>
         
     </ListItem>
 </List>

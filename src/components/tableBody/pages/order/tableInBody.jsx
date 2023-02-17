@@ -61,7 +61,6 @@ const handleClick =(e)=>{
 
 useEffect(()=>{
   if(Number(statusName )){    
-    // setSearchParams(createSearchParams({ status: statusName }));
     dispatch(autoUpdate({id:'statusName', str: statusName}));
     
   }

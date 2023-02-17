@@ -35,6 +35,7 @@ export function CreateRows(){
     const isUpdateRows = useSelector((state) => state.ordersAll.isUpdateRows);
  
 
+    
 
     useEffect(() => {
         if (isUpdateRows) {
@@ -74,9 +75,8 @@ const headerBoxStyle = {display: 'flex',
   },
 
 }
-
 return(
-    <Box sx={boxStyle}>
+    <Box sx={boxStyle} >
         <Box sx={headerBoxStyle}>
         <ListAutocompliteStatuses/>
         <HeaderOrder/>
@@ -126,36 +126,36 @@ return(
                 <MultiInput label='Доставка:' name='delivery_service_type' type='select'/>
                 </StyledList>
 
-                {(deliveryType === '0') &&<StyledList>
+                {(deliveryType === '1') &&<StyledList>
                 <MultiInput label='Місто відділення:' name='warehouse_city' type='autocomplete'/>
                 </StyledList>}
 
-                {(deliveryType === '0') &&<StyledList>
+                {(deliveryType === '1') &&<StyledList>
                 <MultiInput label='Адреса відділення:' name='warehouse_address' type='autocomplete'/>
                 </StyledList>}
 
-                {(deliveryType === '1') &&<StyledList>
+                {(deliveryType === '2') &&<StyledList>
                 <MultiInput label='Місто:' name='doors_city' type='autocomplete'/>
                 </StyledList>}
 
-                {(deliveryType === '1') &&<StyledList>
+                {(deliveryType === '2') &&<StyledList>
                 <MultiInput label='Адреса:' name='doors_address' type='autocomplete'/>
                 </StyledList>}
 
-                {(deliveryType === '1') &&<StyledList>
+                {(deliveryType === '2') &&<StyledList>
                 <MultiInput label='Дім:' name='doors_house' type='text'/>
                 </StyledList>}
 
-                {(deliveryType === '1') &&<StyledList>
+                {(deliveryType === '2') &&<StyledList>
                 <MultiInput label='Квартира:' name='doors_flat' type='text'/>
                 </StyledList>}
 
                 <StyledList>
-                <MultiInput label='Платник за доставку:' name='delivery_payers'  type='select'/>
+                <MultiInput label='Платник за доставку:' name='payer'  type='select'/>
                 </StyledList>
 
                 <StyledList>
-                <MultiInput label='Платник наложеного платежу:' name='delivery_payers_redelivery'  type='select'/>
+                <MultiInput label='Платник наложеного платежу:' name='payer_redelivery'  type='select'/>
                 </StyledList>
 
                 <StyledList>
