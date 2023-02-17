@@ -12,7 +12,7 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
           postRowsAfterUpdate, postRowsProductDelete
         } from './asyncThunc';
 import { getSityNP, getAddressNP } from './novaPoshta';
-
+import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
 
 const rows=  { 

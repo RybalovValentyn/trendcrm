@@ -5,10 +5,12 @@ axios.defaults.withCredentials = true;
 
 // const BASE_URL = 'http://localhost:8080/api';
 
-const BASE_URL = 'http://react.trendcrm.win/api';
+// const BASE_URL = 'http://react.trendcrm.win/api';
+// const login = "/login";
+// const auth = '/authenticate'; 
+const BASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
 const login = "/login";
-const auth = '/authenticate'; 
-// const REBASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
+const auth = '/auth'; 
 
 
 // const TREND_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function'
