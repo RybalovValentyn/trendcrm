@@ -39,7 +39,13 @@ export function MiniDrawer() {
   const [menuHover, setMenuHover] = useState(null)
   const listUserRouting = useSelector((state) => state.auth.menu_list_access);
 
+
+  useEffect(()=>{
+    navigate('orders')
+  },[])
+
 useEffect(()=>{
+
   let current = location.pathname.split('/')
 if (current) {
   setCurrentLocation(current[current.length-1])

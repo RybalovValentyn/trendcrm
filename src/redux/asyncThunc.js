@@ -158,7 +158,7 @@ export const getAllStatuses = createAsyncThunk(
           },
           
           )
-         return {data: resp.data.orders_status_count, statuses: statuses}
+        //  return {data: resp.data.orders_status_count, statuses: statuses}
       } catch (error) {
         return rejectWithValue({          
          error: error.message
@@ -281,7 +281,7 @@ console.log('all');
         return rejectWithValue({
          error: error.message
         });
-      }
+      } 
     
   },
 );

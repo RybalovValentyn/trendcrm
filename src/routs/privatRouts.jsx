@@ -9,7 +9,6 @@ export function PrivateRoute({ component: C, }) {
     // const isAuth = useSelector(state => state.auth.isAuth);
     // const [auth, setAuth] = useState(false)
     const auth = true
-
     // useEffect(() => {
     //     if (isAuth) {
     //         setAuth(true)
