@@ -78,6 +78,8 @@ export const orderStatusThunk = createAsyncThunk(
         return rejectWithValue({
          error: error.message
         });
+      } finally {
+        // console.log('wer');
       }
   },
 );

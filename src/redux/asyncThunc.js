@@ -162,8 +162,12 @@ export const getAllStatuses = createAsyncThunk(
       } catch (error) {
         return rejectWithValue({          
          error: error.message
-        });
-      }
+        }         
+        );
+      } 
+      // finally{
+      //   console.log('wer');
+      // }
     
   },
 );

@@ -63,7 +63,8 @@ export  function Order() {
     const rowsPerPage = useSelector((state) => state.ordersAll.rowsPerPage);
     const rowRef = useRef(null);
     let countSelected = 0;
-const seachStatus = useSelector((state) => state.ordersAll.statusName);
+    const seachStatus = useSelector((state) => state.ordersAll.statusName);
+    const isAuth = useSelector((state) => state.auth.isAuth);
 
    useEffect(()=>{
     // console.log(seachStatus);
@@ -97,9 +98,10 @@ const seachStatus = useSelector((state) => state.ordersAll.statusName);
   
 
   useEffect(() => {
+    console.log(isAuth);
     // dispatch(getAllStatuses());
 dispatch(getLoading(false))
-if (statuses.length === 0) {
+if (statuses.length === 0 && isAuth) {
   dispatch(getAllStatuses());
 }   
 // getUpdate() 

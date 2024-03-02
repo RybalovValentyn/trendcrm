@@ -63,7 +63,7 @@ const onAutocompliteChange=(e, newValue, id)=>{
 };
 
 const onAutocompliteResponsible=(e, newValue, id)=>{
-    console.log(userGroup);
+    console.log('userGroup');
     dispatch( getFormTable({id, str:newValue.id }))
 }
 const inputChange=(e)=>{

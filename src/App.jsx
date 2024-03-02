@@ -49,7 +49,8 @@ function App() {
 // }  else navigate('/auth')
    
 
-//   },[])  
+//   },[]) 
+
 
 useEffect(()=>{
   // console.log(hashKey, currentUser);
