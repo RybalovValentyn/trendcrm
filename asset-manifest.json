@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/trendcrm/static/css/main.30e5025f.css",
-    "main.js": "/trendcrm/static/js/main.4339f0d7.js",
+    "main.js": "/trendcrm/static/js/main.4383e715.js",
     "static/js/224.65aa08c2.chunk.js": "/trendcrm/static/js/224.65aa08c2.chunk.js",
     "static/js/104.506e2e92.chunk.js": "/trendcrm/static/js/104.506e2e92.chunk.js",
     "static/js/625.713f70b1.chunk.js": "/trendcrm/static/js/625.713f70b1.chunk.js",
@@ -24,7 +24,7 @@
     "static/js/116.d37e2282.chunk.js": "/trendcrm/static/js/116.d37e2282.chunk.js",
     "static/js/451.e4a9d8a3.chunk.js": "/trendcrm/static/js/451.e4a9d8a3.chunk.js",
     "static/js/701.53f75a22.chunk.js": "/trendcrm/static/js/701.53f75a22.chunk.js",
-    "static/js/886.1ee072a6.chunk.js": "/trendcrm/static/js/886.1ee072a6.chunk.js",
+    "static/js/886.1b887a83.chunk.js": "/trendcrm/static/js/886.1b887a83.chunk.js",
     "static/js/513.cf97f599.chunk.js": "/trendcrm/static/js/513.cf97f599.chunk.js",
     "static/js/381.efb3d3ff.chunk.js": "/trendcrm/static/js/381.efb3d3ff.chunk.js",
     "static/js/713.ccb34f82.chunk.js": "/trendcrm/static/js/713.ccb34f82.chunk.js",
@@ -34,7 +34,7 @@
     "static/media/Import template.xlsx": "/trendcrm/static/media/Import template.f06e21824f65305778b9.xlsx",
     "index.html": "/trendcrm/index.html",
     "main.30e5025f.css.map": "/trendcrm/static/css/main.30e5025f.css.map",
-    "main.4339f0d7.js.map": "/trendcrm/static/js/main.4339f0d7.js.map",
+    "main.4383e715.js.map": "/trendcrm/static/js/main.4383e715.js.map",
     "224.65aa08c2.chunk.js.map": "/trendcrm/static/js/224.65aa08c2.chunk.js.map",
     "104.506e2e92.chunk.js.map": "/trendcrm/static/js/104.506e2e92.chunk.js.map",
     "625.713f70b1.chunk.js.map": "/trendcrm/static/js/625.713f70b1.chunk.js.map",
@@ -57,7 +57,7 @@
     "116.d37e2282.chunk.js.map": "/trendcrm/static/js/116.d37e2282.chunk.js.map",
     "451.e4a9d8a3.chunk.js.map": "/trendcrm/static/js/451.e4a9d8a3.chunk.js.map",
     "701.53f75a22.chunk.js.map": "/trendcrm/static/js/701.53f75a22.chunk.js.map",
-    "886.1ee072a6.chunk.js.map": "/trendcrm/static/js/886.1ee072a6.chunk.js.map",
+    "886.1b887a83.chunk.js.map": "/trendcrm/static/js/886.1b887a83.chunk.js.map",
     "513.cf97f599.chunk.js.map": "/trendcrm/static/js/513.cf97f599.chunk.js.map",
     "381.efb3d3ff.chunk.js.map": "/trendcrm/static/js/381.efb3d3ff.chunk.js.map",
     "713.ccb34f82.chunk.js.map": "/trendcrm/static/js/713.ccb34f82.chunk.js.map",
@@ -66,6 +66,6 @@
   },
   "entrypoints": [
     "static/css/main.30e5025f.css",
-    "static/js/main.4339f0d7.js"
+    "static/js/main.4383e715.js"
   ]
 }
