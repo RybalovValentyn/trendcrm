@@ -30,7 +30,8 @@ export function MiniDrawer() {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const isLoading = useSelector((state) => state.function.isLoading);
+  // const isLoading = useSelector((state) => state.function.isLoading);
+  const isLoading = useSelector((state) => state.ordersAll.isLoading);
 
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(''); 

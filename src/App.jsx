@@ -122,7 +122,7 @@ setCookie(str, authReduser[arr[0]]);
                        <Route loader={<Preloader/>} errorElement={<ErrorPage/>} path='/'  element={<PrivateRoute component={MiniDrawer} />}>
                            
                            {wildcards.map(e => (
-                                  <Route 
+                            <Route 
                                     path={`${e.id}`}
                                     element={<PrivateRoute component={e.target}/>}
                                     key={`component_${e.id}`}

@@ -98,13 +98,14 @@ export  function Order() {
   
 
   useEffect(() => {
-    console.log(isAuth);
-    // dispatch(getAllStatuses());
-dispatch(getLoading(false))
-if (statuses.length === 0 && isAuth) {
-  dispatch(getAllStatuses());
-}   
-// getUpdate() 
+    // // console.log(isAuth);
+    dispatch(getAllStatuses());
+    dispatch(getAllOrders())
+// dispatch(getLoading(false))
+// if (statuses.length === 0 && isAuth) {
+//   dispatch(getAllStatuses());
+// }   
+getUpdate() 
 }, []);
 
 useEffect(() => {
@@ -275,7 +276,6 @@ const countUpdate = ()=>{
 }
 
 const MemoizedChildComponent = useMemo(()=>TableRows, [bodyTableRows]);
-
 return (
 
     <Box sx={tableBoxStyle} > 

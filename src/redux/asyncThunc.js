@@ -11,8 +11,6 @@ axios.defaults.withCredentials = true;
 const BASE_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/beta/function';
 const login = "/login";
 const auth = '/auth'; 
-
-
 // const TREND_URL = 'https://q096k1qoxe.execute-api.eu-central-1.amazonaws.com/trend/function'
 
 const syties = '/cities';
@@ -46,7 +44,8 @@ const createProdCategory = '/create_product_category';
 const addCategory ='/add_category';
 const addAtribute = '/add_attribute';
 const add = '/add'
-const updateProductCategory = '/update_product_category'
+const updateProductCategory = '/update_product_category';
+
 
 // https://whispering-thicket-39688.herokuapp.com/ | https://git.heroku.com/whispering-thicket-39688.git
 // throw new Error('Неможливо викликати обробник події під час рендерингу.');
@@ -151,17 +150,20 @@ export const getAllStatuses = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     const state = getState(); 
     const statuses = state.auth.order_statuses_access
+    const isAuth = state.auth.isAuth
+    const err = {message: 'Помилка звязку з сервером'}
         try {
-        const resp = await axios({
-          method: "get",
-          url:  BASE_URL+getStatus,
-          },
-          
-          )
-         return {data: resp.data.orders_status_count, statuses: statuses}
+            if (isAuth) {
+              const resp = await axios({
+                method: "get",
+                url:  BASE_URL+getStatus,
+                },          
+                )
+              return {data: resp.data.orders_status_count, statuses: statuses}
+            } throw  err.message
       } catch (error) {
         return rejectWithValue({          
-         error: error.message
+         error: error.message?error.message:err
         }         
         );
       } 
@@ -205,7 +207,7 @@ const searchColumn = state.ordersAll.tHeadColumnFiltered
            url:  BASE_URL+orders,
            data: columns
           })
-          // console.log('getFilteredOrders', Object.keys(response.data?.data[0])?.length);
+                // console.log('getFilteredOrders', Object.keys(response.data?.data[0])?.length);
           // console.log(response.data);
        return response.data
       } catch (error) {
@@ -221,6 +223,8 @@ export const getAllOrders = createAsyncThunk(
   'orders/all',
   async (_, { rejectWithValue, getState }) => { 
     const state = getState();  
+    const isAuth = state.auth.isAuth
+    const err = {message: 'Помилка звязку з сервером - або таблиця пуста'}
       let columns ={ draw: '1',
           start: state.ordersAll.start?state.ordersAll.start:0,
           length: state.ordersAll.rowsPerPage,
@@ -273,17 +277,21 @@ export const getAllOrders = createAsyncThunk(
           ] ,
            }
 
-        try {
-        const response = await axios({
-          method: "post",
-           url:  BASE_URL+orders,
-           data: columns
-          })
-console.log('all');
-         return response.data
+       try {
+
+        if (isAuth) {
+          const response = await axios({
+            method: "post",
+             url:  BASE_URL+orders,
+             data: columns
+            })
+  
+           return response.data
+        } throw  err.message
+
       } catch (error) {
-        return rejectWithValue({
-         error: error.message
+           return rejectWithValue({
+         error: error.message?error.message:err
         });
       } 
     

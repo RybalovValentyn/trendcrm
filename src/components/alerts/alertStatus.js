@@ -9,7 +9,7 @@ const Alert = forwardRef(function Alert(props, ref) {
 //Для загальних сповіщень , які спливають зверху
 export  function SimpleSnackbar() {
     const isError = useSelector((state) => state.ordersAll.isError);
-    const message = useSelector((state) => state.ordersAll.error.error);
+    const message = useSelector((state) => state.ordersAll.error.error?state.ordersAll.error.error:state.ordersAll.error);
     const [open, setOpen] = useState(false);
    const vertical= 'top';
    const horizontal= 'center';

@@ -14,6 +14,7 @@ import { getSitysFromNp, getAdressFromNp, postRowsFromForm, getRowsAfterAdd,
 import { getSityNP, getAddressNP } from './novaPoshta';
 import { tableParse } from '../components/tableBody/pages/order/tableParse';
 import { translater, messages, typeMessage } from '../components/tableBody/pages/order/translate';
+import  {dataParse} from '../components/tableBody/pages/order/dataParse';
 
 const rows=  { 
   delivery_type: '12',
@@ -859,6 +860,7 @@ if (action.payload.str === 'clear') {
         [setCommentAdd.rejected]:handleRejected,
 
           [getAllStatuses.pending]: handlePending,
+
          [getAllStatuses.fulfilled](state, action) {
              const statuses = Object.keys(action.payload.statuses);
               const filteredStatuses = action.payload.data.filter(str=>statuses.includes(str.id) || str.id === 0)
@@ -870,7 +872,21 @@ if (action.payload.str === 'clear') {
  
           }
         },
-        [getAllStatuses.rejected]:handleRejected,
+        // [getAllStatuses.rejected]:handleRejected,
+
+        [getAllStatuses.rejected](state, action) {
+          // const statuses = Object.keys(action.payload.statuses);
+          //  const filteredStatuses = action.payload.data.filter(str=>statuses.includes(str.id) || str.id === 0)
+          return{
+        ...state,
+        getStatuses: [...dataParse.orders_status_count],
+         isLoading: false,
+         isError: true,
+         error: action.payload.error.message
+       }
+       
+      },
+
 
           [getFilteredOrders.pending]: handlePending,
           [getFilteredOrders.fulfilled](state, action) {
@@ -932,7 +948,36 @@ if (action.payload.str === 'clear') {
             bodyTableRows: arrayRows,
             }
         },
-        [getAllOrders.rejected]:handleRejected,
+        // [getAllOrders.rejected]:handleRejected,
+
+        [getAllOrders.rejected](state, action) {
+        //   const searchCount = Object.values(state.searchParams).reduce((acc, str) =>(str!==''?acc+=1:acc+=0),0);
+         const headerValue = Object.entries(translater).reduce((acc,str, ind) =>{
+          if (str.values) {
+            acc.push({id:str[0], str:str[1]})
+          }   
+          return [...acc] 
+            },[]);
+
+         const arrayRows = tableParse.data.map((str, ind) =>{
+          let color = colorUpdate(str)
+          return (headerValue.reduce((acc,val, ind) =>{               
+            acc.push({id:val.id, value: str[val.id], color: color !== ''?color:str.status_style, statusColor: str.status_style })         
+            return [...acc]   
+          },[]));
+        });
+          return{
+         ...state,
+        //  searchParamCount: searchCount,
+         columns: [...tableParse.data],
+         tableLength: Number(tableParse.recordsTotal),
+          isLoading: false,
+          isError: true,
+          // error: action.payload.error.message
+          tHeadColumn: headerValue,
+          bodyTableRows: arrayRows,
+          }
+      },
     
         [orderStatusThunk.pending]:handlePending,
         [orderStatusThunk.fulfilled](state, action) {
